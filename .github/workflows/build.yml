@@ -50,5 +50,5 @@ jobs:
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: ${{ secrets.REMOTE_TARGET }}
-          SCRIPT_BEFORE: systemctl stop pinwall
-          SCRIPT_AFTER: systemctl start pinwall
+          SCRIPT_BEFORE: systemctl stop cardboard
+          SCRIPT_AFTER: systemctl start cardboard
