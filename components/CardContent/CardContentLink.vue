@@ -1,49 +1,58 @@
 <style lang="scss">
 .card-link-embed {
-	width: 254px;
+	display: flex;
+	width: 274px;
 	padding: calc(.5rem - 1px);
+	gap: .5rem;
+	align-items: center;
 
-	.image {
-		display: block;
-		width: 100%;
-		margin-bottom: .5rem;
-		border-radius: .25rem;
-	}
+	.image-container {
+		position: relative;
+		width: 2.25rem;
+		height: 2.25rem;
+		padding: .365rem;
+		background-color: var(--color-background);
+		border-radius: .5rem;
 
-	.title > a,
-	.description {
-		width: 100%;
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-	}
-
-	.title {
-		display: flex;
-		gap: .5rem;
-		font-size: .875rem;
-
-		.favicon {
-			width: 1rem;
-			height: 1rem;
-
-			&.missing {
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				background-color: var(--color-blue-40);
-				border-radius: 100%;
-
-				& >	svg {
-					vertical-align: middle;
-					width: .75rem;
-					height: .75rem;
-				}
-			}
+		&:has(.missing) {
+			background-color: var(--color-link-40);
 		}
 
-		& > a {
-			width: calc(100% - 1.5rem);
+		.icon-glow {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 2.25rem;
+			height: 2.25rem;
+			border-radius: .5rem;
+			filter: blur(24px) saturate(2);
+			clip-path: fill-box;
+		}
+
+		.icon {
+			position: absolute;
+			width: 1.5rem;
+			height: 1.5rem;
+			border-radius: .125rem;
+		}
+	}
+
+	.text-content {
+		display: flex;
+		width: calc(100% - 2.75rem);
+		flex-direction: column;
+		font-size: .875rem;
+
+		.title,
+		.description {
+			width: fit-content;
+			max-width: 100%;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+
+		.title {
 			color: var(--color-text);
 
 			&:not(:hover, :focus-visible) {
@@ -57,37 +66,38 @@
 
 <template>
 	<div class="card-link-embed">
-		<img
-			v-if="card.content.domain.includes('youtu')"
-			class="image"
-			:src="card.content.image"
-			draggable="false"
-			loading="lazy"
-		>
-		<div class="title">
+		<div class="image-container">
 			<img
 				v-if="card.content.favicon"
-				class="favicon"
+				class="icon-glow"
 				:src="card.content.favicon"
 				draggable="false"
 				loading="lazy"
 			>
-			<div
-				v-else
-				class="favicon missing"
+			<img
+				v-if="card.content.favicon"
+				class="icon"
+				:src="card.content.favicon"
+				draggable="false"
+				loading="lazy"
 			>
-				<Icon name="mdi:earth" />
-			</div>
+			<Icon
+				v-else
+				name="mdi:earth"
+				class="icon missing"
+			/>
+		</div>
+		<div class="text-content">
 			<NuxtLink
-				class="text-strong"
+				class="title text-strong"
 				:to="card.content.url"
 				target="_blank"
 			>
 				{{ title }}
 			</NuxtLink>
-		</div>
-		<div class="description text-secondary">
-			{{ description }}
+			<div class="description text-secondary">
+				{{ description }}
+			</div>
 		</div>
 	</div>
 </template>
