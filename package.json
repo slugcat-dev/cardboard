@@ -1,0 +1,29 @@
+{
+	"name": "pinwall-v2",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"build": "nuxt build",
+		"dev": "nuxt dev",
+		"generate": "nuxt generate",
+		"preview": "nuxt preview",
+		"postinstall": "nuxt prepare",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix"
+	},
+	"dependencies": {
+		"google-auth-library": "^9.4.1",
+		"isomorphic-dompurify": "^1.9.0",
+		"nuxt-mongoose": "^1.0.3",
+		"puppeteer-core": "^21.5.2"
+	},
+	"devDependencies": {
+		"@antfu/eslint-config": "^2.1.0",
+		"@vueuse/math": "^10.6.1",
+		"nuxt": "^3.8.2",
+		"nuxt-icon": "^0.6.6",
+		"sass": "^1.69.5",
+		"vue": "^3.3.8",
+		"vue-router": "^4.2.5"
+	}
+}

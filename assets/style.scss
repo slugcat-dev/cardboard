@@ -1,0 +1,84 @@
+:root {
+	--font-stack: Roboto, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+	--color-text: #000000;
+	--color-text-secondary: #000000c0;
+	--color-background: #f3f3f3;
+	--color-scrollbar: #a0a0a0;
+
+	--color-card-background: #ffffff;
+	--color-card-border: #00000020;
+	--shadow-card: 2px 2px 6px #00000010;
+
+	--color-blue: #0088ff;
+	--color-blue-40: #0088ff40;
+	--color-teal: #80c0c0;
+	
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-text: #cccccc;
+		--color-text-secondary: #ccccccc0;
+		--color-background: #101010;
+		--color-scrollbar: #404040;
+
+		--color-card-background: #202020;
+		--color-card-border: #ffffff08;
+		--shadow-card: 2px 2px 4px #00000040;
+
+		--color-blue: #eb5e99;
+		--color-blue-40: #eb5e9960;
+		--color-link: #22aaff;
+		--color-link-40: #22aaff60;
+		--color-teal: #104040;
+	}
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html {
+	font-family: var(--font-stack);
+	line-height: 1.25em;
+}
+
+body {
+	width: 100vw;
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+	color: var(--color-text);
+	background-color: var(--color-background);
+	overflow: hidden;
+}
+
+a {
+	color: var(--color-link);
+	text-decoration: none;
+
+	&:hover,
+	&:focus-visible {
+		text-decoration: underline;
+	}
+}
+
+::selection {
+	color: var(--color-text);
+	background-color: var(--color-blue-40);
+	caret-color: var(--color-blue);
+}
+
+.text-strong {
+	font-weight: 700;
+}
+
+.text-secondary {
+	color: var(--color-text-secondary);
+	font-size: .75rem;
+}
+
+.allow-pointer-events {
+	pointer-events: auto;
+}
