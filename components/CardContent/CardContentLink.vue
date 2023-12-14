@@ -11,7 +11,7 @@
 		width: 2.25rem;
 		height: 2.25rem;
 		padding: .365rem;
-		background-color: var(--color-background);
+		background-color: var(--color-favicon);
 		border-radius: .5rem;
 
 		&:has(.missing) {
@@ -25,7 +25,7 @@
 			width: 2.25rem;
 			height: 2.25rem;
 			border-radius: .5rem;
-			filter: blur(24px) saturate(2);
+			filter: blur(24px) contrast(var(--icon-contrast, 1)) saturate(2);
 			clip-path: fill-box;
 		}
 
@@ -34,6 +34,7 @@
 			width: 1.5rem;
 			height: 1.5rem;
 			border-radius: .125rem;
+			filter: drop-shadow(0px 0px 4px var(--color-icon-shadow));
 		}
 	}
 

@@ -10,10 +10,13 @@
 	--color-card-border: #00000020;
 	--shadow-card: 2px 2px 6px #00000010;
 
-	--color-blue: #0088ff;
-	--color-blue-40: #0088ff40;
+	--color-blue: #eb5e99;
+	--color-blue-40: #eb5e9940;
+	--color-link: #0088ff;
+	--color-link-40: #0088ff40;
 	--color-teal: #80c0c0;
-	
+	--color-favicon: #f3f3f3;
+	--color-icon-shadow: transparent;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -32,6 +35,9 @@
 		--color-link: #22aaff;
 		--color-link-40: #22aaff60;
 		--color-teal: #104040;
+		--color-favicon: #444;
+		--color-icon-shadow: #00000060;
+		--icon-contrast: .75;
 	}
 }
 
