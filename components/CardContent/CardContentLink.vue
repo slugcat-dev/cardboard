@@ -13,6 +13,7 @@
 		padding: .375rem;
 		background-color: var(--color-favicon);
 		border-radius: .5rem;
+		box-shadow: 0px 0px 4px var(--color-icon-shadow);
 
 		&:has(.missing) {
 			background-color: var(--color-link-40);

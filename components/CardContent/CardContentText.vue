@@ -16,6 +16,7 @@
 		@keydown.enter.exact="textRef.blur"
 		@keydown.escape="textRef.blur"
 		@keydown.delete="() => { if (isEmpty()) textRef.blur() }"
+		@input="onInput"
 		@blur="onBlur"
 		@paste="onPaste"
 		v-html="card.content"
@@ -42,6 +43,31 @@ function activate(event: PointerEvent | MouseEvent) {
 
 	if (!isEmpty())
 		selectRange(getMouseEventCaretRange(event))
+}
+
+function onInput() {
+	const content = textRef.value.innerHTML
+
+	if (!content.match(/^todo:?(?:&nbsp;|\s)$/i))
+		return
+
+	const regex = /todo:?/gim
+	let match
+
+	// eslint-disable-next-line no-cond-assign
+	while ((match = regex.exec(content)) !== null) {
+		const selection = window.getSelection()
+		const prevRange = selection?.getRangeAt(0).cloneRange()
+		const hiliteRange = document.createRange()
+
+		hiliteRange.setStart(textRef.value.firstChild, match.index)
+		hiliteRange.setEnd(textRef.value.firstChild, match[0].length)
+		selectRange(hiliteRange)
+		document.execCommand('styleWithCSS', false, 'true')
+		document.execCommand('foreColor', false, 'black')
+		document.execCommand('hiliteColor', false, '#ffaa00')
+		selectRange(prevRange)
+	}
 }
 
 function onBlur() {

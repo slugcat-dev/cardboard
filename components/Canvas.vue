@@ -92,7 +92,7 @@
 				@card-update="onCardUpdate"
 				@card-delete="onCardDelete"
 				@card-selected="onCardSelected"
-				@selection-clear="onSelectionClear"
+				@selection-clear="clearSelection"
 			/>
 		</div>
 	</ClientOnly>
@@ -239,12 +239,10 @@ function onPointerMove(event: PointerEvent) {
 	}
 }
 
-function onPointerUp(event: PointerEvent) {
+function onPointerUp() {
 	// Suppress the following click event if the canvas was panned
 	if (pointerMoved.value)
 		suppressNextClick()
-	else if (event.target === canvasRef.value)
-		selection.value = new DOMRect(-1, -1)
 
 	pointerMoved.value = false
 	selectionVisible.value = false
@@ -253,7 +251,12 @@ function onPointerUp(event: PointerEvent) {
 
 // Create a new text card when you doubleclick or tap the canvas
 async function onClick(event: MouseEvent) {
-	if (event.target !== canvasRef.value || prevActiveElement?.className === 'card-text' || (pointerType === 'mouse' && event.detail < 2))
+	if (event.target !== canvasRef.value)
+		return
+
+	clearSelection()
+
+	if (prevActiveElement?.className === 'card-text' || (pointerType === 'mouse' && event.detail < 2))
 		return
 
 	const canvasRect = canvasRef.value.getBoundingClientRect()
@@ -330,7 +333,7 @@ function onCardSelected(_id: string, selected: boolean) {
 		selectedCards.splice(selectedCards.indexOf(_id), 1)
 }
 
-function onSelectionClear() {
+function clearSelection() {
 	selection.value = new DOMRect(-1, -1)
 	selectedCards = []
 }
