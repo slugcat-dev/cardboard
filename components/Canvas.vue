@@ -163,8 +163,9 @@ defineShortcuts({
 
 // Fetch cards
 const { data } = await useFetch(`/api/boards/${route.params.board}`, { method: 'GET' })
+const board = data.value as Board
 
-cards.value = data.value?.cards as Card[]
+cards.value = board.cards as Card[]
 
 function onPointerDown(event: PointerEvent) {
 	// Save event data for following input events

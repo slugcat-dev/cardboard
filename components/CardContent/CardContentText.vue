@@ -45,6 +45,7 @@ function activate(event: PointerEvent | MouseEvent) {
 		selectRange(getMouseEventCaretRange(event))
 }
 
+// Highlight "todo" in text cards
 function onInput() {
 	const content = textRef.value.innerHTML
 
@@ -66,6 +67,7 @@ function onInput() {
 		document.execCommand('styleWithCSS', false, 'true')
 		document.execCommand('foreColor', false, 'black')
 		document.execCommand('hiliteColor', false, '#ffaa00')
+		document.execCommand('bold', false)
 		selectRange(prevRange)
 	}
 }

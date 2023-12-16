@@ -18,6 +18,23 @@
 	-webkit-user-select: none;
 	pointer-events: none;
 
+	.board-name {
+		margin-left: -.25rem;
+		padding: .125rem .25rem;
+		border: 1px solid transparent;
+
+		&:hover:not(:focus-visible) {
+			text-decoration: underline;
+		}
+
+		&:focus-visible {
+			border: 1px solid var(--color-blue);
+			border-radius: .25rem;
+			box-shadow: 0px 0px 0px 2px var(--color-blue-40);
+			outline: none;
+		}
+	}
+
 	.toolbar {
 		display: flex;
 		gap: 1rem;
@@ -62,10 +79,16 @@
 			</NuxtLink>
 			<span>Workspace</span>
 			<span style="opacity: .5;">/</span>
-			<span style="font-family: monospace;">
-				{{ useRoute().params.board }}
-			</span>
-			<div />
+			<div
+				ref="boardNameRef"
+				class="board-name"
+				contenteditable="plaintext-only"
+				@blur="onBoardNameUpdate"
+				@keydown.enter="boardNameRef.blur"
+				@keydown.escape="boardNameRef.blur"
+			>
+				{{ board.name }}
+			</div>
 			<ClientOnly>
 				<label class="option">
 					<input
@@ -96,5 +119,26 @@
 </template>
 
 <script setup lang="ts">
+const route = useRoute()
 const settings = useSettings()
+const boardNameRef = ref()
+const { data } = await useFetch(`/api/boards/${route.params.board}`, { method: 'GET' })
+const board = data.value as Board
+
+function onBoardNameUpdate() {
+	const name = boardNameRef.value.textContent
+
+	if (name.length === 0) {
+		boardNameRef.value.textContent = board.name
+
+		return
+	}
+
+	board.name = name
+
+	$fetch(`/api/boards/${board._id}`, {
+		method: 'PUT',
+		body: board
+	})
+}
 </script>
