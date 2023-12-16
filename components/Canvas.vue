@@ -54,11 +54,7 @@
 </style>
 
 <template>
-	<CanvasHeader
-		:grid-settings="gridSettings"
-		@toggle-snap="(snap: boolean) => { gridSettings = { ...gridSettings, snap } }"
-		@toggle-grid="(show: boolean) => { gridSettings = { ...gridSettings, show } }"
-	/>
+	<CanvasHeader />
 	<ClientOnly>
 		<template #fallback>
 			<div class="loading">
@@ -77,6 +73,7 @@
 			@click="onClick"
 		>
 			<div
+				v-if="cards.length > 0"
 				class="area-spacer-grid"
 				:style="areaSpacerStyle"
 			/>
@@ -90,7 +87,6 @@
 				:key="card.created.toString()"
 				:card="card"
 				:canvas-ref="canvasRef"
-				:grid-size="gridSettings.snap ? gridSettings.size : 1"
 				:selection="selection"
 				@card-move="onCardMove"
 				@card-update="onCardUpdate"
@@ -107,18 +103,10 @@ import type CardComponent from './Card.vue'
 import { suppressNextClick } from '~/utils'
 
 const route = useRoute()
+const settings = useSettings()
 const canvasRef = ref()
 const cards: Ref<Card[]> = ref([])
 const cardRefs: Ref<InstanceType<typeof CardComponent>[]> = ref([])
-// TODO: localstorage
-const gridSettings = useCookie('gridSettings', {
-	default: () => ({
-		snap: true,
-		show: false,
-		size: 20
-	}),
-	maxAge: 31536e3
-})
 const selection = ref()
 const selectionVisible = ref(false)
 const pointerMoved = ref(false)
@@ -364,8 +352,8 @@ const areaSpacerStyle = computed(() => {
 		'height': `calc(100vh + ${areaRect.height}px)`,
 
 		// Grid background
-		'background-size': `${gridSettings.value.size}px ${gridSettings.value.size}px`,
-		'--grid-color': gridSettings.value.show ? `var(--color-scrollbar)` : 'transparent'
+		'background-size': `${settings.grid.size}px ${settings.grid.size}px`,
+		'--grid-color': settings.grid.show ? `var(--color-scrollbar)` : 'transparent'
 	}
 })
 

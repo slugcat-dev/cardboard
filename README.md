@@ -1,4 +1,4 @@
-# Cardboard
+# ✨ Cardboard
 
 *Place virtual cards on a virtual canvas virtually anywhere*
 

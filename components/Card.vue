@@ -104,11 +104,9 @@ const emit = defineEmits([
 	'cardSelected',
 	'selectionClear'
 ])
-const {
-	card,
-	gridSize
-} = props
+const {	card } = props
 const route = useRoute()
+const settings = useSettings()
 const cardRef = ref()
 const contentRef = ref()
 const selected = ref(false)
@@ -291,6 +289,7 @@ async function updateCard() {
 	}
 
 	// Align to grid
+	const gridSize = settings.grid.snap ? settings.grid.size : 1
 	const prevPosition = card.position
 
 	card.position = {

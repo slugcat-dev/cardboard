@@ -8,9 +8,9 @@
 
 	.image-container {
 		position: relative;
-		width: 2.25rem;
-		height: 2.25rem;
-		padding: .365rem;
+		width: 1.75rem;
+		height: 1.75rem;
+		padding: .375rem;
 		background-color: var(--color-favicon);
 		border-radius: .5rem;
 
@@ -22,17 +22,17 @@
 			position: absolute;
 			top: 0;
 			left: 0;
-			width: 2.25rem;
-			height: 2.25rem;
+			width: 1.75rem;
+			height: 1.75rem;
 			border-radius: .5rem;
-			filter: blur(24px) contrast(var(--icon-contrast, 1)) saturate(2);
+			filter: blur(20px) contrast(var(--icon-contrast, 1)) saturate(2);
 			clip-path: fill-box;
 		}
 
 		.icon {
-			position: absolute;
-			width: 1.5rem;
-			height: 1.5rem;
+			display: block;
+			width: 1rem;
+			height: 1rem;
 			border-radius: .125rem;
 			filter: drop-shadow(0px 0px 4px var(--color-icon-shadow));
 		}
@@ -40,7 +40,7 @@
 
 	.text-content {
 		display: flex;
-		width: calc(100% - 2.75rem);
+		width: calc(100% - 2.5rem);
 		flex-direction: column;
 		font-size: .875rem;
 

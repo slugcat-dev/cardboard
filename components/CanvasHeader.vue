@@ -66,22 +66,24 @@
 				{{ useRoute().params.board }}
 			</span>
 			<div />
-			<label class="option">
-				<input
-					type="checkbox"
-					:checked="gridSettings.snap"
-					@change="$emit('toggleSnap', ($event.target as HTMLInputElement).checked)"
-				>
-				Snap cards to grid
-			</label>
-			<label class="option">
-				<input
-					type="checkbox"
-					:checked="gridSettings.show"
-					@change="$emit('toggleGrid', ($event.target as HTMLInputElement).checked)"
-				>
-				Show grid
-			</label>
+			<ClientOnly>
+				<label class="option">
+					<input
+						type="checkbox"
+						:checked="settings.grid.snap"
+						@change="settings.grid.snap = ($event.target as HTMLInputElement).checked"
+					>
+					Snap cards to grid
+				</label>
+				<label class="option">
+					<input
+						type="checkbox"
+						:checked="settings.grid.show"
+						@change="settings.grid.show = ($event.target as HTMLInputElement).checked"
+					>
+					Show grid
+				</label>
+			</ClientOnly>
 		</div>
 		<div class="profile allow-pointer-events">
 			<Icon
@@ -94,9 +96,5 @@
 </template>
 
 <script setup lang="ts">
-defineProps(['gridSettings'])
-defineEmits([
-	'toggleSnap',
-	'toggleGrid'
-])
+const settings = useSettings()
 </script>
