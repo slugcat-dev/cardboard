@@ -51,6 +51,5 @@ export default defineEventHandler(async (event) => {
 		}
 	)
 
-	setResponseStatus(event, 307)
-	setResponseHeader(event, 'Location', '/')
+	return sendRedirect(event, '/')
 })

@@ -56,7 +56,7 @@ const user = (await useFetch('/api/me', { method: 'GET' })).data.value as User |
 const boards = (await useFetch('/api/boards', { method: 'GET' })).data.value as any
 
 async function createBoard() {
-	await $fetch('/api/boards/create', { method: 'POST' })
+	await $fetch('/api/boards', { method: 'POST' })
 
 	// eslint-disable-next-line no-self-assign
 	window.location.href = window.location.href

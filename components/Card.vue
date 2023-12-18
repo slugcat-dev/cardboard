@@ -68,7 +68,7 @@
 			top: `${card.position.y}px`,
 			left: `${card.position.x}px`
 		}"
-		@pointerdown="onPointerDown"
+		@pointerdown.left="onPointerDown"
 		@pointermove="onPointerMove"
 		@pointerup="onPointerUp"
 		@pointerleave="onPointerUp"
@@ -82,13 +82,14 @@
 			ref="contentRef"
 			:card="card"
 			@content-update="onContentUpdate"
-			@contentUpdateConvertedTODORename="theCrackedThing"
+			@content-update-converted-t-o-d-o-rename="theCrackedThing"
 		/>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { CardContentImage, CardContentLink, CardContentTaskList, CardContentText } from '#components'
+import { render } from 'vue'
+import { CardContentImage, CardContentLink, CardContentTaskList, CardContentText, ContextMenu } from '#components'
 import { convert, suppressNextClick } from '~/utils'
 
 const props = defineProps([
@@ -235,7 +236,19 @@ function onContextMenu(event: MouseEvent) {
 		return
 
 	event.preventDefault()
-	deleteCard()
+
+	// TODO:
+	const contextMenu = h(ContextMenu, {
+		x: event.clientX,
+		y: event.clientY
+	})
+
+	render(contextMenu, document.body)
+
+	// add elm
+	//  set top left to client mouse pos
+	//  with ::before as overlay
+	// how to handle viewport edges?
 }
 
 function onContentUpdate(fetch?: boolean, empty?: boolean) {
@@ -303,7 +316,7 @@ async function updateCard() {
 	if (card._id === 'create') {
 		delete card._id
 
-		const data = await $fetch('/api/cards/create', {
+		const data = await $fetch('/api/cards', {
 			method: 'POST',
 			query: { board: route.params.board },
 			body: card
