@@ -5,6 +5,10 @@
 <script setup lang="ts">
 import '~/assets/style.scss'
 
+definePageMeta({
+	middleware: 'auth'
+})
+
 useHead({
 	title: useRoute().params.board.toString(),
 	meta: [

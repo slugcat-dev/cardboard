@@ -1,6 +1,5 @@
 export default defineEventHandler(async (event) => {
-	if (!event.context.user)
-		return
+	await requireUserSession(event)
 
 	const _id = event.context.params?._id
 

@@ -23,3 +23,8 @@ type User = {
 	name: string
 	picture: string
 }
+
+type UserSession = {
+	// TODO:
+	user?: object
+}

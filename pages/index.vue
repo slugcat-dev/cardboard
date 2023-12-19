@@ -9,8 +9,8 @@
 
 <template>
 	<div class="center">
-		<div v-if="user">
-			<h1>Hello, {{ user?.name }}</h1>
+		<div v-if="loggedIn">
+			<h1>Hello, {{ user.name }}</h1>
 			<ul>
 				<li
 					v-for="board of boards"
@@ -32,18 +32,13 @@
 			</button>
 		</div>
 		<div v-else>
-			<div
-				id="g_id_onload"
-				:data-client_id="googleClientId"
-				data-ux_mode="redirect"
-				data-login_uri="https://pinwall.doublekekse.dev/api/login/google"
-			/>
-			<div
-				class="g_id_signin"
-				data-type="standard"
-				data-locale="en_US"
-				data-text="signin"
-			/>
+			<!-- TODO: nuxt link says 404 -->
+			<a href="/auth/google">
+				Login with Google
+			</a>
+			<a href="/auth/github">
+				Login with GitHub
+			</a>
 		</div>
 	</div>
 </template>
@@ -51,8 +46,7 @@
 <script setup lang="ts">
 import '~/assets/style.scss'
 
-const googleClientId = process.env.GOOGLE_CLIENT_ID
-const user = (await useFetch('/api/me', { method: 'GET' })).data.value as User | null
+const { loggedIn, user } = useUserSession()
 const boards = (await useFetch('/api/boards', { method: 'GET' })).data.value as any
 
 async function createBoard() {

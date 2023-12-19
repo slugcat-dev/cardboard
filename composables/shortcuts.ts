@@ -1,8 +1,26 @@
 // https://github.com/nuxt/ui/blob/dev/src/runtime/composables/defineShortcuts.ts
 
 import { logicAnd, logicNot } from '@vueuse/math'
-import { useDebounceFn, useEventListener } from '@vueuse/core'
+import { useActiveElement, useDebounceFn, useEventListener } from '@vueuse/core'
 import type { WatchSource } from 'vue'
+
+// https://github.com/nuxt/ui/blob/dev/src/runtime/composables/useShortcuts.ts
+// TODO: make shared again
+export function useShortcuts() {
+	const macOS = process.client && navigator.userAgent.includes('Macintosh')
+	const metaSymbol = macOS ? '⌘' : 'Ctrl'
+	const usingInput = computed(() => {
+		const activeElement = useActiveElement()
+
+		return !!(activeElement.value?.tagName === 'INPUT' || activeElement.value?.tagName === 'TEXTAREA' || activeElement.value?.contentEditable === 'true')
+	})
+
+	return {
+		macOS,
+		metaSymbol,
+		usingInput
+	}
+}
 
 export type ShortcutConfig = {
 	handler: Function
