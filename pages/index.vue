@@ -32,7 +32,7 @@
 			</button>
 		</div>
 		<div v-else>
-			<!-- TODO: nuxt link says 404 -->
+			<!-- TODO: nuxt link says 404 -> https://github.com/Atinux/nuxt-auth-utils/issues/28 -->
 			<a href="/auth/google">
 				Login with Google
 			</a>

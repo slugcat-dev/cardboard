@@ -50,6 +50,5 @@ jobs:
           ARGS: -rlgoDzvc -i --delete
           SOURCE: .output/
           TARGET: ${{ secrets.REMOTE_TARGET }}
-          EXCLUDE: /.env
           SCRIPT_BEFORE: systemctl stop cardboard
           SCRIPT_AFTER: systemctl start cardboard

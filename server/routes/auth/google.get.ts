@@ -4,5 +4,8 @@ export default oauth.googleEventHandler({
 
 		// TODO: redirect to dashboard
 		return sendRedirect(event, '/')
+	},
+	config: {
+		redirectUrl: 'https://pinwall.doublekekse.dev/auth/google'
 	}
 })
