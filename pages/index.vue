@@ -5,12 +5,33 @@
 		justify-content: center;
 		align-items: center;
 	}
+
+	.welcome {
+		display: flex;
+		align-items: center;
+		gap: .5ch;
+		font-size: 2.5rem;
+	}
+
+	.profile-picture {
+		width: 1em;
+		height: 1em;
+		border-radius: 100%;
+		background-color: var(--color-card-background);
+	}
 </style>
 
 <template>
 	<div class="center">
 		<div v-if="loggedIn">
-			<h1>Hello, {{ user.name }}</h1>
+			<h1 class="welcome">
+				<span style="font-weight: normal">Hello,</span>
+				<img
+					class="profile-picture"
+					:src="user.picture"
+				>
+				{{ user.name }}
+			</h1>
 			<ul>
 				<li
 					v-for="board of boards"
@@ -46,7 +67,8 @@
 <script setup lang="ts">
 import '~/assets/style.scss'
 
-const { loggedIn, user } = useUserSession()
+const session = useUserSession()
+const { loggedIn, user } = session
 const boards = (await useFetch('/api/boards', { method: 'GET' })).data.value as any
 
 async function createBoard() {
@@ -57,7 +79,7 @@ async function createBoard() {
 }
 
 async function logout() {
-	window.location.href = 'https://pinwall.doublekekse.dev/api/logout'
+	await session.clear()
 }
 
 useHead({

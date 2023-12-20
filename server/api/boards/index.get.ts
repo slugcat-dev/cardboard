@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-	await requireUserSession(event)
+	const session = await requireUserSession(event)
 
-	return await BoardSchema.find({ owner: event.context.user.id })
+	return await BoardSchema.find({ owner: session.user.google || session.user.github || undefined })
 })
