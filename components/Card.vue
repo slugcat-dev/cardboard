@@ -237,6 +237,8 @@ function onContextMenu(event: MouseEvent) {
 
 	event.preventDefault()
 
+	return deleteCard()
+
 	// TODO:
 	const contextMenu = h(ContextMenu, {
 		x: event.clientX,
