@@ -1,11 +1,42 @@
-<style>
-	.center {
+<style lang="scss">
+	main {
 		display: flex;
 		height: 100vh;
 		justify-content: center;
 		align-items: center;
 	}
 
+	/* !-- */
+	.signin {
+		display: flex;
+		flex-direction: column;
+		gap: .75rem;
+		user-select: none;
+
+		.signin-button {
+			display: flex;
+			width: 250px;
+			justify-content: center;
+			align-items: center;
+			gap: .75rem;
+			padding: .75rem;
+			font-size: 1rem;
+			font-weight: bold;
+			color: currentColor;
+			background-color: transparent;
+			border: 1px solid gray;
+			border-radius: .375rem;
+			box-shadow: var(--color-scrollbar) 0px 1px;
+			transition: box-shadow .2s;
+			cursor: pointer;
+
+			&:hover {
+				box-shadow: var(--color-scrollbar) 0px 0px 0px 2px;
+			}
+		}
+	}
+
+	/* !-- */
 	.welcome {
 		display: flex;
 		align-items: center;
@@ -22,7 +53,7 @@
 </style>
 
 <template>
-	<div class="center">
+	<main>
 		<div v-if="loggedIn">
 			<h1 class="welcome">
 				<span style="font-weight: normal">Hello,</span>
@@ -53,20 +84,34 @@
 			</button>
 		</div>
 		<div v-else>
-			<!-- TODO: nuxt link says 404 -> https://github.com/Atinux/nuxt-auth-utils/issues/28 -->
-			<a href="/auth/google">
-				Login with Google
-			</a>
-			<a href="/auth/github">
-				Login with GitHub
-			</a>
+			<h1>Sign In</h1>
+			<div class="signin">
+				<button
+					class="signin-button"
+					@click="navigateTo('/auth/google', { external: true })"
+				>
+					<Icon
+						name="mdi:google"
+						size="1.5rem"
+					/>
+					Google
+				</button>
+				<button
+					class="signin-button"
+					@click="navigateTo('/auth/github', { external: true })"
+				>
+					<Icon
+						name="mdi:github"
+						size="1.5rem"
+					/>
+					GitHub
+				</button>
+			</div>
 		</div>
-	</div>
+	</main>
 </template>
 
 <script setup lang="ts">
-import '~/assets/style.scss'
-
 const session = useUserSession()
 const { loggedIn, user } = session
 const boards = (await useFetch('/api/boards', { method: 'GET' })).data.value as any
@@ -81,39 +126,4 @@ async function createBoard() {
 async function logout() {
 	await session.clear()
 }
-
-useHead({
-	title: 'Pinwall v2',
-	meta: [
-		{
-			name: 'description',
-			content: 'Place virtual cards on a virtual canvas virtually anywhere'
-		},
-		{
-			name: 'theme-color',
-			media: '(prefers-color-scheme: dark)',
-			content: '#101010'
-		},
-		{
-			name: 'theme-color',
-			media: '(prefers-color-scheme: light)',
-			content: '#f3f3f3'
-		}
-	],
-	link: [
-		{
-			rel: 'manifest',
-			href: 'manifest.json'
-		},
-		{
-			rel: 'stylesheet',
-			href: 'https://fonts.googleapis.com/css?family=Roboto:400,700|JetBrains+Mono:400,700&display=swap'
-		}
-	],
-	script: [{
-		src: 'https://accounts.google.com/gsi/client',
-		defer: true,
-		async: true
-	}]
-})
 </script>

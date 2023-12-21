@@ -1,10 +1,14 @@
+<style>
+body {
+	overflow: hidden;
+}
+</style>
+
 <template>
 	<Canvas />
 </template>
 
 <script setup lang="ts">
-import '~/assets/style.scss'
-
 definePageMeta({
 	middleware: 'auth'
 })

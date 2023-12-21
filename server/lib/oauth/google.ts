@@ -74,9 +74,8 @@ export function googleEventHandler({
 			return onError(event, error)
 		}
 
-		// const redirectUrl = getRequestURL(event).href
-		console.log(getRequestURL(event).href)
-		const redirectUrl = 'https://pinwall.doublekekse.dev/auth/google'
+		const requestUrl = getRequestURL(event).href
+		const redirectUrl = requestUrl.includes('localhost') ? requestUrl : 'https://pinwall.doublekekse.dev/auth/google'
 
 		if (!code) {
 			config.scope = config.scope || ['email', 'profile']

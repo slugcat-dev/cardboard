@@ -17,23 +17,6 @@
 	user-select: none;
 	-webkit-user-select: none;
 
-	&::-webkit-scrollbar {
-		background-color: transparent;
-		width: .75rem;
-		height: .75rem;
-	}
-
-	&::-webkit-scrollbar-thumb {
-		background-color: var(--color-scrollbar);
-		background-clip: content-box;
-		border: .25rem solid transparent;
-		border-radius: .5rem;
-	}
-
-	&::-webkit-scrollbar-corner {
-		display: none;
-	}
-
 	.area-spacer-grid {
 		position: absolute;
 		top: 0;

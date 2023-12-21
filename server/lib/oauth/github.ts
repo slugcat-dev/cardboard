@@ -67,8 +67,8 @@ export function githubEventHandler({ config, onSuccess, onError }: OAuthConfig<O
 				config.scope.push('user:email')
 
 			// Redirect to GitHub Oauth page
-			// const redirectUrl = getRequestURL(event).href
-			const redirectUrl = 'https://pinwall.doublekekse.dev/auth/github'
+			const requestUrl = getRequestURL(event).href
+			const redirectUrl = requestUrl.includes('localhost') ? requestUrl : 'https://pinwall.doublekekse.dev/auth/github'
 
 			return sendRedirect(
 				event,

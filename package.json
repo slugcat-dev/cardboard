@@ -13,7 +13,7 @@
 	},
 	"dependencies": {
 		"google-auth-library": "^9.4.1",
-		"isomorphic-dompurify": "^1.12.0",
+		"isomorphic-dompurify": "^1.13.0",
 		"nuxt-mongoose": "^1.0.3",
 		"puppeteer-core": "^21.6.1"
 	},
