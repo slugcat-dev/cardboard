@@ -11,8 +11,7 @@ export default githubEventHandler({
 			}
 		})
 
-		// TODO: redirect to dashboard
-		return sendRedirect(event, '/')
+		return sendRedirect(event, '/boards')
 	},
 	config: {
 		emailRequired: true

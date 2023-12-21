@@ -1,4 +1,4 @@
-<style lang="scss">
+<style>
 .card-text {
 	font-size: .875rem;
 	padding: calc(.5rem - 1px);

@@ -10,6 +10,20 @@ body {
 	background-color: var(--color-background);
 	-webkit-tap-highlight-color: transparent;
 }
+
+.page-enter-active,
+.page-leave-active {
+  transition: all .2s;
+}
+
+.page-enter-from {
+	opacity: 0;
+	transform: translateY(10px);
+}
+
+.page-leave-to {
+	opacity: 0;
+}
 </style>
 
 <template>

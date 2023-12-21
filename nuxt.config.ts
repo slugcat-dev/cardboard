@@ -22,5 +22,8 @@ export default defineNuxtConfig({
 	},
 	mongoose: {
 		uri: 'mongodb+srv://dev:5BwxpBE7RH0pOltF@dev.ndafsw1.mongodb.net/?retryWrites=true&w=majority'
+	},
+	app: {
+		pageTransition: { name: 'page', mode: 'out-in' }
 	}
 })

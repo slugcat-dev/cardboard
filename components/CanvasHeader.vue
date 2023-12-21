@@ -74,7 +74,7 @@
 <template>
 	<header id="header">
 		<div class="toolbar allow-pointer-events">
-			<NuxtLink to="/">
+			<NuxtLink to="/boards">
 				<Icon name="mdi:chevron-left" size="1.5rem" />
 			</NuxtLink>
 			<span>Workspace</span>

@@ -11,11 +11,6 @@ export default googleEventHandler({
 			}
 		})
 
-		// TODO: user type
-		// TODO: Merge user data in db
-		// TODO: session exp
-		// TODO: Google provides a { locale: 'en-GB' }
-		// TODO: redirect to dashboard
-		return sendRedirect(event, '/')
+		return sendRedirect(event, '/boards')
 	}
 })
