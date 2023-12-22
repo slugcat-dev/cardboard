@@ -51,6 +51,9 @@ main {
 			>
 				&lt; Log Out
 			</button>
+			<div class="text-secondary">
+				User ID: {{ user.id }}
+			</div>
 		</div>
 	</main>
 </template>

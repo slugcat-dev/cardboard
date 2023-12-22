@@ -52,20 +52,14 @@
 		display: flex;
 		align-items: center;
 		gap: .5rem;
+		font-weight: bold;
 		cursor: pointer;
 
 		.profile-picture {
 			width: 1.5rem;
 			height: 1.5rem;
-			padding: .125rem;
-			background-color: var(--color-teal);
-			border: 1px solid var(--color-card-border);
+			background-color: var(--color-scrollbar);
 			border-radius: 100%;
-		}
-
-		.dropdown-arrow {
-			font-size: .75rem;
-			opacity: .75;
 		}
 	}
 }
@@ -108,12 +102,16 @@
 				</label>
 			</ClientOnly>
 		</div>
-		<div class="profile allow-pointer-events">
-			<Icon
+		<div
+			class="profile allow-pointer-events"
+			@click="session.clear()"
+		>
+			<img
 				class="profile-picture"
-				name="mi:user"
-			/>
-			<span class="dropdown-arrow">▼</span>
+				:src="user.picture"
+				draggable="false"
+			>
+			{{ user.name }}
 		</div>
 	</header>
 </template>
@@ -124,6 +122,8 @@ const settings = useSettings()
 const boardNameRef = ref()
 const { data } = await useFetch(`/api/boards/${route.params.board}`, { method: 'GET' })
 const board = data.value as Board
+const session = useUserSession()
+const { user } = session
 
 function onBoardNameUpdate() {
 	const name = boardNameRef.value.textContent

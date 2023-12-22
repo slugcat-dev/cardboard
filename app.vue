@@ -11,9 +11,9 @@ body {
 	-webkit-tap-highlight-color: transparent;
 }
 
-.page-enter-active,
-.page-leave-active {
-  transition: all .2s;
+/* .page-leave-active */
+.page-enter-active {
+  transition: all .2s cubic-bezier(0,0,0,1);
 }
 
 .page-enter-from {
