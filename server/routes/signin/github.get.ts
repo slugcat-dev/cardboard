@@ -3,20 +3,20 @@ import { UserSchema } from '~/server/models/user.schema'
 
 export default githubEventHandler({
 	async onSuccess(event, { user }) {
-		let dbUser = await UserSchema.findOne({ $or: [{ email: user.email }, { github: user.id }] })
+		let userLink = await UserSchema.findOne({ $or: [{ email: user.email }, { github: user.id }] })
 
-		if (!dbUser) {
-			dbUser = await new UserSchema({
+		if (!userLink) {
+			userLink = await new UserSchema({
 				email: user.email,
 				github: user.github
 			}).save()
 		}
-		else if (!dbUser.github)
-			await UserSchema.findOneAndUpdate({ _id: dbUser._id }, { github: user.id })
+		else if (!userLink.github)
+			await userLink.updateOne({ github: user.id })
 
 		await setUserSession(event, {
 			user: {
-				id: dbUser._id,
+				id: userLink.id,
 				name: user.name || user.login,
 				picture: user.avatar_url
 			}

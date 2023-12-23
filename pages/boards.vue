@@ -35,9 +35,9 @@ main {
 			<ul>
 				<li
 					v-for="board of boards"
-					:key="board._id"
+					:key="board.id"
 				>
-					<NuxtLink :to="board._id">
+					<NuxtLink :to="board.id">
 						{{ board.name }}
 					</NuxtLink>
 				</li>

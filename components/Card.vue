@@ -143,7 +143,7 @@ watch(() => props.selection, () => {
 	)
 })
 
-watch(selected, () => emit('cardSelected', card._id, selected.value))
+watch(selected, () => emit('cardSelected', card.id, selected.value))
 
 function onPointerDown(event: PointerEvent) {
 	if (isInteractable(event.target) || contentActive.value)
@@ -194,7 +194,7 @@ function onPointerMove(event: PointerEvent) {
 		y: Math.max(props.canvasRef.scrollTop + event.clientY - pointerOffset.y, 0)
 	}
 
-	emit('cardMove', card._id, prevPosition, card.position)
+	emit('cardMove', card.id, prevPosition, card.position)
 }
 
 function onPointerUp() {
@@ -312,19 +312,21 @@ async function updateCard() {
 		y: Math.round(card.position.y / gridSize) * gridSize
 	}
 
-	emit('cardMove', card._id, prevPosition, card.position)
+	emit('cardMove', card.id, prevPosition, card.position)
 
 	// Create or update card
-	if (card._id === 'create') {
-		delete card._id
+	if (card.id === 'create') {
+		delete card.id
 
 		const data = await $fetch('/api/cards', {
 			method: 'POST',
-			query: { board: route.params.board },
-			body: card
+			body: {
+				board: route.params.board,
+				card
+			}
 		})
 
-		card._id = data
+		card.id = data.id
 	}
 	else
 		emit('cardUpdate', card)
@@ -349,7 +351,7 @@ function activate(event: PointerEvent | MouseEvent) {
 }
 
 function deleteCard() {
-	emit('cardDelete', card._id)
+	emit('cardDelete', card.id)
 }
 
 function getSizeRect() {

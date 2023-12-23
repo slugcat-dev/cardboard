@@ -136,8 +136,8 @@ defineShortcuts({
 			body: selectedCards
 		})
 
-		selectedCards.forEach(_id =>
-			cards.value.splice(cards.value.findIndex(card => card._id === _id), 1)
+		selectedCards.forEach(id =>
+			cards.value.splice(cards.value.findIndex(card => card.id === id), 1)
 		)
 
 		selectedCards = []
@@ -246,7 +246,7 @@ async function onClick(event: MouseEvent) {
 	const canvasRect = canvasRef.value.getBoundingClientRect()
 
 	const index = cards.value.push({
-		_id: 'create',
+		id: 'create',
 		type: 'text',
 		created: new Date(),
 		position: {
@@ -261,15 +261,15 @@ async function onClick(event: MouseEvent) {
 	cardRefs.value[index].activate(event)
 }
 
-function onCardMove(_id: string, prevPosition: Position, newPosition: Position) {
+function onCardMove(id: string, prevPosition: Position, newPosition: Position) {
 	if (selectedCards.length === 0)
 		return
 
 	const dX = newPosition.x - prevPosition.x
 	const dY = newPosition.y - prevPosition.y
 
-	selectedCards.filter(selected => selected !== _id).forEach((selected) => {
-		const index = cards.value.findIndex(card => card._id === selected)
+	selectedCards.filter(selected => selected !== id).forEach((selected) => {
+		const index = cards.value.findIndex(card => card.id === selected)
 
 		cards.value[index].position = {
 			x: cards.value[index].position.x + dX,
@@ -280,7 +280,7 @@ function onCardMove(_id: string, prevPosition: Position, newPosition: Position) 
 
 async function onCardUpdate(card: Card) {
 	if (selectedCards.length === 0) {
-		return await $fetch(`/api/cards/${card._id}`, {
+		return await $fetch(`/api/cards/${card.id}`, {
 			method: 'PUT',
 			body: card
 		})
@@ -289,32 +289,32 @@ async function onCardUpdate(card: Card) {
 	await $fetch(`/api/cards/many`, {
 		method: 'PUT',
 		body: cards.value
-			.filter(card => selectedCards.includes(card._id))
+			.filter(card => selectedCards.includes(card.id))
 			.map((card) => {
 				return {
-					_id: card._id,
+					id: card.id,
 					position: card.position
 				}
 			})
 	})
 }
 
-async function onCardDelete(_id: string) {
-	if (_id !== 'create') {
-		await $fetch(`/api/cards/${_id}`, {
+async function onCardDelete(id: string) {
+	if (id !== 'create') {
+		await $fetch(`/api/cards/${id}`, {
 			method: 'DELETE',
 			query: { board: route.params.board }
 		})
 	}
 
-	cards.value.splice(cards.value.findIndex(card => card._id === _id), 1)
+	cards.value.splice(cards.value.findIndex(card => card.id === id), 1)
 }
 
-function onCardSelected(_id: string, selected: boolean) {
-	if (selected && !selectedCards.includes(_id))
-		selectedCards.push(_id)
-	else if (!selected && selectedCards.includes(_id))
-		selectedCards.splice(selectedCards.indexOf(_id), 1)
+function onCardSelected(id: string, selected: boolean) {
+	if (selected && !selectedCards.includes(id))
+		selectedCards.push(id)
+	else if (!selected && selectedCards.includes(id))
+		selectedCards.splice(selectedCards.indexOf(id), 1)
 }
 
 function clearSelection() {

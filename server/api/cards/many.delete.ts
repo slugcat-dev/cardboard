@@ -1,11 +1,11 @@
 export default defineEventHandler(async (event) => {
-	const ids = await readBody(event)
+	await requireUserSession(event)
 
-	console.log(ids)
+	const ids = await readBody(event)
 
 	await BoardSchema.updateMany(
 		{ cards: { $in: ids } },
 		{ $pull: { cards: { $in: ids } } }
 	)
-	await CardSchema.deleteMany({ _id: { $in: ids } })
+	await CardSchema.deleteMany({ id: { $in: ids } })
 })

@@ -25,5 +25,6 @@ export const CardSchema = defineMongooseModel({
 			type: Object,
 			required: true
 		}
-	}
+	},
+	options: { toJSON: { virtuals: true } }
 })

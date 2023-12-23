@@ -3,6 +3,8 @@ import puppeteer from 'puppeteer-core'
 import { isImageAccessible } from '~/utils'
 
 export default defineEventHandler(async (event) => {
+	await requireUserSession(event)
+
 	const query = getQuery(event)
 	const url = validateURL(query.url?.toString())
 

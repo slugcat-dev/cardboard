@@ -1,7 +1,6 @@
 export default defineEventHandler(async (event) => {
 	const { user } = await requireUserSession(event)
-	const data = await readBody(event)
-	const board = await BoardSchema.findById(data.board)
+	const board = await BoardSchema.findById(event.context.params?.id)
 
 	if (!board) {
 		return createError({
@@ -17,9 +16,7 @@ export default defineEventHandler(async (event) => {
 		})
 	}
 
-	const card = (await new CardSchema(data.card).save())
+	const data = await readBody(event)
 
-	await board.updateOne({ $push: { cards: card.id } })
-
-	return card
+	return await board.updateOne(data, { new: true })
 })

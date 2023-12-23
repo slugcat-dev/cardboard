@@ -136,7 +136,7 @@ function onBoardNameUpdate() {
 
 	board.name = name
 
-	$fetch(`/api/boards/${board._id}`, {
+	$fetch(`/api/boards/${board.id}`, {
 		method: 'PUT',
 		body: board
 	})

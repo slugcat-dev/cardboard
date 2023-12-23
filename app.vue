@@ -11,14 +11,14 @@ body {
 	-webkit-tap-highlight-color: transparent;
 }
 
-/* .page-leave-active */
+.page-leave-active,
 .page-enter-active {
   transition: all .2s cubic-bezier(0,0,0,1);
 }
 
 .page-enter-from {
 	opacity: 0;
-	transform: translateY(10px);
+	transform: translateY(150px);
 }
 
 .page-leave-to {

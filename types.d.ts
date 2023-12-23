@@ -4,7 +4,7 @@ type Position = {
 }
 
 type Card = {
-	_id: string
+	id: string
 	type: 'text' | 'link' | 'image' | 'tasklist'
 	created: Date
 	position: Position
@@ -12,19 +12,20 @@ type Card = {
 }
 
 type Board = {
-	_id: string
+	id: string
 	name: string
 	owner: string
 	cards: Card[]
 }
 
 type User = {
-	id: number
+	id: string
 	name: string
 	picture: string
 }
 
-type UserSession = {
-	// TODO:
-	user?: object
+declare module '#auth-utils' {
+	type UserSession = {
+		user: User
+	}
 }

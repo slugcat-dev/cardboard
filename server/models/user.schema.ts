@@ -15,5 +15,6 @@ export const UserSchema = defineMongooseModel({
 			type: Number,
 			required: false
 		}
-	}
+	},
+	options: { toJSON: { virtuals: true } }
 })
