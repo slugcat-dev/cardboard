@@ -7,5 +7,5 @@ export default defineEventHandler(async (event) => {
 		{ cards: { $in: ids } },
 		{ $pull: { cards: { $in: ids } } }
 	)
-	await CardSchema.deleteMany({ id: { $in: ids } })
+	await CardSchema.deleteMany({ _id: { $in: ids } })
 })

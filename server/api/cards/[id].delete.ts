@@ -2,7 +2,7 @@ export default defineEventHandler(async (event) => {
 	await requireUserSession(event)
 
 	const id = event.context.params?.id
-	const card = await CardSchema.findOne({ id: event.context.params?.id })
+	const card = await CardSchema.findById(event.context.params?.id)
 
 	if (!card) {
 		return createError({
