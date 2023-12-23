@@ -48,7 +48,7 @@ main {
 			<div class="signin">
 				<button
 					class="signin-button"
-					@click="navigateTo('/auth/google', { external: true })"
+					@click="navigateTo('/signin/google', { external: true })"
 				>
 					<Icon
 						name="mdi:google"
@@ -58,7 +58,7 @@ main {
 				</button>
 				<button
 					class="signin-button"
-					@click="navigateTo('/auth/github', { external: true })"
+					@click="navigateTo('/signin/github', { external: true })"
 				>
 					<Icon
 						name="mdi:github"

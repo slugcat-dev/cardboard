@@ -28,6 +28,7 @@
 			border-radius: .5rem;
 			filter: blur(20px) contrast(var(--icon-contrast, 1)) saturate(2);
 			clip-path: fill-box;
+			-webkit-touch-callout: none;
 		}
 
 		.icon {
@@ -36,6 +37,7 @@
 			height: 1rem;
 			border-radius: .125rem;
 			filter: drop-shadow(0px 0px 4px var(--color-icon-shadow));
+			-webkit-touch-callout: none;
 		}
 	}
 

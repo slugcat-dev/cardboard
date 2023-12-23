@@ -12,16 +12,16 @@
 	position: relative;
 	top: 2.875rem;
 	height: calc(100vh - 2.875rem);
+	background-image: radial-gradient(circle, var(--grid-color) 1px, transparent 1px);
 	overflow: auto;
 	scroll-behavior: smooth;
 	user-select: none;
 	-webkit-user-select: none;
 
-	.area-spacer-grid {
+	.area-spacer {
 		position: absolute;
 		top: 0;
 		left: 0;
-		background-image: radial-gradient(circle, var(--grid-color) 1px, transparent 1px);
 		z-index: -1;
 	}
 
@@ -47,7 +47,7 @@
 		<div
 			id="canvas"
 			ref="canvasRef"
-			:style="{ cursor: pointerMoved && !selectionVisible ? 'move' : 'default' }"
+			:style="canvasStyle"
 			@pointerdown.left="onPointerDown"
 			@pointermove="onPointerMove"
 			@pointerup="onPointerUp"
@@ -57,7 +57,7 @@
 		>
 			<div
 				v-if="cards.length > 0"
-				class="area-spacer-grid"
+				class="area-spacer"
 				:style="areaSpacerStyle"
 			/>
 			<div
@@ -335,10 +335,14 @@ const areaSpacerStyle = computed(() => {
 
 	return {
 		// Add padding of another times the viewport size to the canvas
-		'width': `calc(100vw + ${areaRect.width}px)`,
-		'height': `calc(100vh + ${areaRect.height}px)`,
+		width: `calc(100vw + ${areaRect.width}px)`,
+		height: `calc(100vh + ${areaRect.height}px)`
+	}
+})
 
-		// Grid background
+const canvasStyle = computed(() => {
+	return {
+		'cursor': pointerMoved.value && !selectionVisible.value ? 'move' : 'default',
 		'background-size': `${settings.grid.size}px ${settings.grid.size}px`,
 		'--grid-color': settings.grid.show ? `var(--color-scrollbar)` : 'transparent'
 	}

@@ -34,7 +34,7 @@ const emit = defineEmits([
 ])
 const { card } = props
 const textRef = ref()
-let shiftKey = false
+let shiftKey: boolean
 
 function activate(event: PointerEvent | MouseEvent) {
 	event.preventDefault()
