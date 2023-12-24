@@ -5,5 +5,5 @@ export default defineEventHandler(async (event) => {
 	return (await new BoardSchema({
 		name: title || 'New Board',
 		owner: user.id
-	}).save()).id
+	}).save())
 })
