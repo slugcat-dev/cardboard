@@ -6,8 +6,8 @@ body {
 
 <template>
 	<div>
-		<!-- TODO -->
-		<Canvas />
+		<BoardHeader />
+		<BoardCanvas />
 	</div>
 </template>
 

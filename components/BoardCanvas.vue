@@ -37,7 +37,6 @@
 </style>
 
 <template>
-	<CanvasHeader />
 	<ClientOnly>
 		<template #fallback>
 			<div class="loading">
@@ -134,7 +133,6 @@ defineShortcuts({
 
 		await $fetch('/api/cards/many', {
 			method: 'DELETE',
-			query: { board: route.params.board },
 			body: selectedCards
 		})
 
@@ -250,24 +248,32 @@ async function onClick(event: MouseEvent) {
 		x: canvasRef.value.scrollLeft + event.clientX - canvasRect.left,
 		y: canvasRef.value.scrollTop + event.clientY - canvasRect.top
 	}
-	const data: Card = shiftKey.value
+	const data: Card = metaKey.value
 		? {
-				id: 'create',
-				type: 'tasklist',
-				created: new Date(),
-				position,
-				content: {
-					title: 'Tasklist',
-					tasks: []
-				}
-			}
-		: {
 				id: 'create',
 				type: 'text',
 				created: new Date(),
 				position,
-				content: ''
+				content: 'New Board'
 			}
+		: shiftKey.value
+			? {
+					id: 'create',
+					type: 'tasklist',
+					created: new Date(),
+					position,
+					content: {
+						title: 'Tasklist',
+						tasks: []
+					}
+				}
+			: {
+					id: 'create',
+					type: 'text',
+					created: new Date(),
+					position,
+					content: ''
+				}
 	const index = cards.value.push(data) - 1
 
 	// Wait until the DOM has updated
@@ -314,12 +320,8 @@ async function onCardUpdate(card: Card) {
 }
 
 async function onCardDelete(id: string) {
-	if (id !== 'create') {
-		await $fetch(`/api/cards/${id}`, {
-			method: 'DELETE',
-			query: { board: route.params.board }
-		})
-	}
+	if (id !== 'create')
+		await $fetch(`/api/cards/${id}`, { method: 'DELETE' })
 
 	cards.value.splice(cards.value.findIndex(card => card.id === id), 1)
 }
