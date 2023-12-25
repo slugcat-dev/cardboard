@@ -24,7 +24,6 @@
 </template>
 
 <script setup lang="ts">
-import { useEventListener } from '@vueuse/core'
 import { convert, getMouseEventCaretRange } from '~/utils'
 
 const props = defineProps(['card'])
@@ -34,11 +33,9 @@ const emit = defineEmits([
 ])
 const { card } = props
 const textRef = ref()
-let shiftKey: boolean
+const { shiftKey } = useKeys()
 
 function activate(event: PointerEvent | MouseEvent) {
-	event.preventDefault()
-
 	textRef.value.contentEditable = true
 
 	textRef.value.focus()
@@ -110,7 +107,7 @@ async function onPaste(event: ClipboardEvent) {
 		return
 	}
 
-	if (!shiftKey && isEmpty()) {
+	if (!shiftKey.value && isEmpty()) {
 		try {
 			new URL(clipboardText || '').toString()
 
@@ -129,9 +126,6 @@ async function onPaste(event: ClipboardEvent) {
 
 	document.execCommand('insertText', false, clipboardText)
 }
-
-useEventListener('keydown', (event: KeyboardEvent) => shiftKey = event.shiftKey)
-useEventListener('keyup', (event: KeyboardEvent) => shiftKey = event.shiftKey)
 
 function selectRange(range: Range | undefined) {
 	if (!range)

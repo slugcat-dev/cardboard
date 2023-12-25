@@ -38,13 +38,12 @@
 		}
 	}
 
-	&.selected,
-	&:has(.card-text:focus-visible) {
-		box-shadow: 0px 0px 0px 2px var(--color-blue-40);
+	&.selected {
+		box-shadow: 0px 0px 0px 2px var(--color-accent-50);
 	}
 
 	&:has(.card-text:focus-visible) {
-		border-color: var(--color-blue);
+		box-shadow: 0px 0px 0px 2px var(--color-accent);
 	}
 
 	&:not(:has(.card-text[contenteditable="true"])),
@@ -52,6 +51,10 @@
 		user-select: none;
 		-webkit-user-select: none;
 	}
+}
+
+.selecting > .card {
+	cursor: default
 }
 </style>
 
@@ -146,7 +149,7 @@ watch(() => props.selection, () => {
 watch(selected, () => emit('cardSelected', card.id, selected.value))
 
 function onPointerDown(event: PointerEvent) {
-	if (isInteractable(event.target) || contentActive.value)
+	if (isInteractable(event.target))
 		return
 
 	pointerType = event.pointerType
@@ -219,12 +222,12 @@ function onTouchMove(event: TouchEvent) {
 }
 
 function onClick(event: MouseEvent) {
-	if (isInteractable(event.target) || contentActive.value)
+	if (isInteractable(event.target))
 		return
 
 	if (useShortcuts().macOS ? event.metaKey : event.ctrlKey)
 		selected.value = !selected.value
-	else
+	else if (card.type !== 'tasklist')
 		activate(event)
 }
 
@@ -232,7 +235,7 @@ function onClick(event: MouseEvent) {
 function onContextMenu(event: MouseEvent) {
 	emit('selectionClear')
 
-	if (isInteractable(event.target) || pointerMoved || contentActive.value)
+	if (isInteractable(event.target) || pointerMoved)
 		return
 
 	event.preventDefault()
@@ -324,7 +327,7 @@ async function updateCard() {
 				board: route.params.board,
 				card
 			}
-		})
+		}) as Card
 
 		card.id = data.id
 	}
@@ -336,16 +339,19 @@ function isInteractable(target: EventTarget | null) {
 	if (!target || !(target as Element).tagName)
 		return false
 
-	return (target as Element).tagName === 'A'
+	return ['A', 'BUTTON', 'INPUT'].includes((target as Element).tagName) || contentActive.value
 }
 
 function activate(event: PointerEvent | MouseEvent) {
+	event.preventDefault()
+
 	emit('selectionClear')
 
 	if (!('activate' in contentRef.value))
 		return
 
-	contentActive.value = true
+	if (card.type !== 'tasklist')
+		contentActive.value = true
 
 	contentRef.value.activate(event)
 }

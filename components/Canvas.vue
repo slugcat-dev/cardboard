@@ -27,11 +27,11 @@
 
 	.selection {
 		position: absolute;
-		background-color: var(--color-blue-40);
-		border: 1px solid var(--color-blue);
-		border-radius: .25rem;
+		background-color: var(--color-accent-25);
+		border: 1px solid var(--color-accent);
 		transition: opacity .2s;
 		pointer-events: none;
+		z-index: 1;
 	}
 }
 </style>
@@ -47,6 +47,7 @@
 		<div
 			id="canvas"
 			ref="canvasRef"
+			:class="{ selecting: metaKey }"
 			:style="canvasStyle"
 			@pointerdown.left="onPointerDown"
 			@pointermove="onPointerMove"
@@ -59,10 +60,6 @@
 				v-if="cards.length > 0"
 				class="area-spacer"
 				:style="areaSpacerStyle"
-			/>
-			<div
-				class="selection"
-				:style="selectionStyle"
 			/>
 			<Card
 				v-for="card in cards"
@@ -77,6 +74,10 @@
 				@card-selected="onCardSelected"
 				@selection-clear="clearSelection"
 			/>
+			<div
+				class="selection"
+				:style="selectionStyle"
+			/>
 		</div>
 	</ClientOnly>
 </template>
@@ -90,6 +91,7 @@ const settings = useSettings()
 const canvasRef = ref()
 const cards: Ref<Card[]> = ref([])
 const cardRefs: Ref<InstanceType<typeof CardComponent>[]> = ref([])
+const { metaKey, shiftKey } = useKeys()
 const selection = ref()
 const selectionVisible = ref(false)
 const pointerMoved = ref(false)
@@ -244,17 +246,29 @@ async function onClick(event: MouseEvent) {
 		return
 
 	const canvasRect = canvasRef.value.getBoundingClientRect()
-
-	const index = cards.value.push({
-		id: 'create',
-		type: 'text',
-		created: new Date(),
-		position: {
-			x: canvasRef.value.scrollLeft + event.clientX - canvasRect.left,
-			y: canvasRef.value.scrollTop + event.clientY - canvasRect.top
-		},
-		content: ''
-	}) - 1
+	const position = {
+		x: canvasRef.value.scrollLeft + event.clientX - canvasRect.left,
+		y: canvasRef.value.scrollTop + event.clientY - canvasRect.top
+	}
+	const data: Card = shiftKey.value
+		? {
+				id: 'create',
+				type: 'tasklist',
+				created: new Date(),
+				position,
+				content: {
+					title: 'Tasklist',
+					tasks: []
+				}
+			}
+		: {
+				id: 'create',
+				type: 'text',
+				created: new Date(),
+				position,
+				content: ''
+			}
+	const index = cards.value.push(data) - 1
 
 	// Wait until the DOM has updated
 	await nextTick()

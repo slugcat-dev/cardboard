@@ -11,8 +11,9 @@ export function useShortcuts() {
 	const metaSymbol = macOS ? '⌘' : 'Ctrl'
 	const usingInput = computed(() => {
 		const activeElement = useActiveElement()
+		const contentEditable = activeElement.value?.contentEditable
 
-		return !!(activeElement.value?.tagName === 'INPUT' || activeElement.value?.tagName === 'TEXTAREA' || activeElement.value?.contentEditable === 'true')
+		return !!(activeElement.value?.tagName === 'INPUT' || activeElement.value?.tagName === 'TEXTAREA' || contentEditable === 'true' || contentEditable === 'plaintext-only')
 	})
 
 	return {
