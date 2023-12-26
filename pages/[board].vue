@@ -7,7 +7,7 @@ body {
 <template>
 	<div>
 		<BoardHeader />
-		<BoardCanvas />
+		<Board />
 	</div>
 </template>
 
