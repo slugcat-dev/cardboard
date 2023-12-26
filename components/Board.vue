@@ -13,6 +13,7 @@
 	top: 2.875rem;
 	height: calc(100vh - 2.875rem);
 	background-image: radial-gradient(circle, var(--grid-color) 1px, transparent 1px);
+	background-attachment: local;
 	overflow: auto;
 	scroll-behavior: smooth;
 	user-select: none;
