@@ -4,7 +4,7 @@ import type { H3Event } from 'h3'
 export default defineEventHandler(async (event) => {
 	return [
 		getRequestProtocol(event, { xForwardedProto: true }),
-		getRequestURL(event, { xForwardedProto: true })
+		getRequestURL(event)
 	]
 })
 
