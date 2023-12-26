@@ -30,10 +30,7 @@
 			content: '';
 			display: block;
 			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100vw;
-			height: 100vh;
+			inset: 0;
 			z-index: -1;
 		}
 	}
@@ -339,7 +336,8 @@ function isInteractable(target: EventTarget | null) {
 	if (!target || !(target as Element).tagName)
 		return false
 
-	return ['A', 'BUTTON', 'INPUT'].includes((target as Element).tagName) || contentActive.value
+	// TODO:
+	return ['A', 'BUTTON', 'INPUT'].includes((target as Element).tagName) || contentActive.value || (target as HTMLDivElement).contentEditable === 'plaintext-only'
 }
 
 function activate(event: PointerEvent | MouseEvent) {

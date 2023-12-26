@@ -2,32 +2,62 @@
 .tasklist {
 	padding: .5rem;
 
-	h2 {
+	.name {
 		margin: 0;
-		font-size: 1.25rem;
+		font-size: 1.125rem;
 	}
 
 	ul {
 		display: flex;
 		flex-direction: column;
+		max-width: 258px;
 		margin: .5rem 0;
 		padding: 0;
 		gap: .25rem;
 		list-style: none;
 
 		li {
-			max-width: 213px;
+			display: flex;
+			align-items: flex-start;
 			padding: .125rem .25rem;
+			gap: .5rem;
+			font-size: .875rem;
 			background-color: #fff1;
 			border-radius: .25rem;
+			word-break: break-word;
 
-			button {
-				float: right;
+			&.done {
+				order: 1;
 			}
+
+			& input {
+				appearance: none;
+				min-width: .875rem;
+				width: .875rem;
+				height: .875rem;
+				margin: 0;
+				margin-top: .125rem;
+				border: 1px solid gray;
+				border-radius: 100%;
+				cursor: pointer;
+
+				&:checked {
+					background-color: var(--color-accent);
+
+					&::after {
+						color: black;
+						font-size: .875em;
+						margin-left: .125rem;
+						content: '✓';
+					}
+				}
+			}
+
 		}
 	}
 
 	input {
+		width: 100%;
 		margin-right: .25rem;
 	}
 }
@@ -35,7 +65,7 @@
 
 <template>
 	<div class="tasklist">
-		<h2>
+		<h2 class="name">
 			<div
 				ref="listNameRef"
 				contenteditable="plaintext-only"
@@ -45,38 +75,32 @@
 			>
 				{{ card.content.title }}
 			</div>
-			<button @click="clearDoneTasks">
-				Clear
-			</button>
 		</h2>
-		<div class="text-secondary">
-			Task list cards are in development
-		</div>
 		<ul>
 			<li
 				v-for="task, index in card.content.tasks"
 				:key="task"
+				:class="{ done: task.done }"
 				:style="{
 					textDecoration: task.done ? 'line-through' : 'none',
 					opacity: task.done ? .5 : 1
 				}"
 			>
+				<input
+					type="checkbox"
+					:value="task.done"
+					@change="toggleTask($event, index)"
+				>
 				{{ task.content }}
-				<button @click="toggleTask(index)">
-					{{ index }}
-				</button>
 			</li>
 		</ul>
 		<input
 			ref="inputRef"
 			v-model="newTodo"
-			placeholder="Add task"
-			@keydown.enter="addTodo"
+			placeholder="+ Add task"
+			@keydown.enter="addTask"
 			@keydown.escape="inputRef.blur"
 		>
-		<button @click="addTodo">
-			+
-		</button>
 	</div>
 </template>
 
@@ -94,7 +118,7 @@ function onListNameUpdate() {
 	emit('contentUpdate', true)
 }
 
-function addTodo() {
+function addTask() {
 	if (newTodo.value.length > 0) {
 		card.content.tasks.push({
 			content: newTodo.value,
@@ -107,13 +131,9 @@ function addTodo() {
 	}
 }
 
-function toggleTask(index: number) {
-	card.content.tasks[index].done = !card.content.tasks[index].done
+function toggleTask(event: Event, index: number) {
+	card.content.tasks[index].done = (event.target as HTMLInputElement).checked
 
-	return emit('contentUpdate', true)
-}
-
-function clearDoneTasks() {
 	card.content.tasks = card.content.tasks.filter((task: { done: boolean }) => task.done === false)
 
 	return emit('contentUpdate', true)

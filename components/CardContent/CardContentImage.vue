@@ -18,10 +18,7 @@
 	&.active {
 		display: flex;
 		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100vw;
-		height: 100vh;
+		inset: 0;
 		padding: 2rem;
 		padding-top: 4.875rem;
 		justify-content: center;

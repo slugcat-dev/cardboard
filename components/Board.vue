@@ -20,8 +20,7 @@
 
 	.area-spacer {
 		position: absolute;
-		top: 0;
-		left: 0;
+		inset: 0;
 		z-index: -1;
 	}
 
