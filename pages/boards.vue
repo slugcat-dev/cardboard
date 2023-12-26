@@ -42,15 +42,20 @@ main {
 					</NuxtLink>
 				</li>
 			</ul>
-			<button @click="createBoard">
-				+ Create Board
-			</button>
-			<button
-				style="color: red"
+			<Btn
+				role="primary"
+				icon="mdi:plus"
+				@click="createBoard"
+			>
+				Create Board
+			</Btn>
+			<Btn
+				role="danger"
+				icon="mdi:logout"
 				@click="logout"
 			>
-				&lt; Log Out
-			</button>
+				Log Out
+			</Btn>
 			<div class="text-secondary">
 				User ID: {{ user.id }}
 			</div>

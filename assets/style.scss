@@ -56,23 +56,34 @@
 		*/
 		--color-text: #cccccc;
 		--color-text-secondary: #ccccccc0;
-		--color-background: #101010;
+		--color-background: #252627;
 
-		/*--color-accent: #99C8FF;*/
-		--color-accent: #dcbdfb;
+		--color-accent: #90c4f9;
 		--color-accent-50: color-mix(in srgb, var(--color-accent) 50%, transparent);
 		--color-accent-25: color-mix(in srgb, var(--color-accent) 25%, transparent);
+
+		--color-good: #6ECF9C;
+		--color-good-50: color-mix(in srgb, var(--color-good) 50%, transparent);
+		--color-good-25: color-mix(in srgb, var(--color-good) 25%, transparent);
+
+		--color-warn: #F7A664;
+		--color-warn-50: color-mix(in srgb, var(--color-warn) 50%, transparent);
+		--color-warn-25: color-mix(in srgb, var(--color-warn) 25%, transparent);
+
+		--color-danger: #FAA3A3;
+		--color-danger-50: color-mix(in srgb, var(--color-danger) 50%, transparent);
+		--color-danger-25: color-mix(in srgb, var(--color-danger) 25%, transparent);
 
 
 		--color-scrollbar: #404040;
 
-		--color-card-background: #202020;
-		--color-card-border: #ffffff08;
+		--color-card-background: #2D2E2F;
+		--color-card-border: #424548;
 		--shadow-card: 2px 2px 4px #00000040;
 
 		--color-blue: #f00;
 		--color-blue-40: #f00;
-		--color-link: #22aaff;
+		--color-link: var(--color-accent);
 		--color-link-40: #22aaff60;
 		--color-teal: #104040;
 		--color-favicon: #404040;
