@@ -19,7 +19,7 @@
 		li {
 			display: flex;
 			align-items: flex-start;
-			padding: .125rem .25rem;
+			padding: .5rem;
 			gap: .5rem;
 			font-size: .875rem;
 			background-color: #fff1;
