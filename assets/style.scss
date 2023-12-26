@@ -22,8 +22,6 @@
 	--color-teal: #80c0c0;
 	--color-favicon: #f3f3f3;
 	--color-icon-shadow: transparent;
-
-	caret-color: var(--color-accent);
 }
 
 /* Dark theme */
@@ -91,6 +89,12 @@
 		--color-favicon: #404040;
 		--color-icon-shadow: #00000060;
 		--icon-contrast: .75;
+	}
+}
+
+@media (pointer: coarse) {
+	body {
+		caret-color: var(--color-accent);
 	}
 }
 
