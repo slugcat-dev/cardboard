@@ -56,7 +56,7 @@
 		*/
 		--color-text: #cccccc;
 		--color-text-secondary: #ccccccc0;
-		--color-background: #252627;
+		--color-background: #151617;
 
 		--color-accent: #90c4f9;
 		--color-accent-50: color-mix(in srgb, var(--color-accent) 50%, transparent);
@@ -77,8 +77,8 @@
 
 		--color-scrollbar: #404040;
 
-		--color-card-background: #2D2E2F;
-		--color-card-border: #424548;
+		--color-card-background: #1D1E1F;
+		--color-card-border: #222528;
 		--shadow-card: 2px 2px 4px #00000040;
 
 		--color-blue: #f00;
@@ -114,8 +114,7 @@ a {
 
 ::selection {
 	color: var(--color-text);
-	background-color: var(--color-blue-40);
-	caret-color: var(--color-blue);
+	background-color: var(--color-accent-25);
 }
 
 ::-webkit-scrollbar {
@@ -146,4 +145,11 @@ a {
 
 .allow-pointer-events {
 	pointer-events: auto;
+}
+
+.nuxt-loading-indicator {
+	height: 2px !important;
+	background: var(--color-accent) !important;
+	transition: transform .2s, height .2s, opacity .2s !important;
+	z-index: 100 !important;
 }

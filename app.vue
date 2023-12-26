@@ -27,6 +27,7 @@ body {
 </style>
 
 <template>
+	<NuxtLoadingIndicator />
 	<NuxtPage />
 </template>
 
