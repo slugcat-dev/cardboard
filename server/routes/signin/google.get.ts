@@ -1,7 +1,6 @@
-import { googleEventHandler } from '~/server/lib/oauth/google'
 import { UserSchema } from '~/server/models/user.schema'
 
-export default googleEventHandler({
+export default oauth.googleEventHandler({
 	async onSuccess(event, { user }) {
 		let userLink = await UserSchema.findOne({ $or: [{ email: user.email }, { google: user.sub }] })
 
