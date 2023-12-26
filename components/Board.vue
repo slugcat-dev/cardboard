@@ -21,7 +21,6 @@
 
 	.area-spacer {
 		position: absolute;
-		inset: 0;
 		z-index: -1;
 	}
 
@@ -248,15 +247,26 @@ async function onClick(event: MouseEvent) {
 		x: canvasRef.value.scrollLeft + event.clientX - canvasRect.left,
 		y: canvasRef.value.scrollTop + event.clientY - canvasRect.top
 	}
-	const data: Card = metaKey.value
-		? {
-				id: 'create',
-				type: 'text',
-				created: new Date(),
-				position,
-				content: 'New Board'
+
+	if (metaKey.value) {
+		const board = await $fetch('/api/boards', { method: 'POST' })
+		const card = await $fetch('/api/cards', {
+			method: 'POST',
+			body: {
+				board: route.params.board,
+				card: {
+					type: 'board',
+					created: new Date(),
+					position,
+					content: board.id
+				}
 			}
-		: shiftKey.value
+		})
+
+		cards.value.push(card)
+	}
+	else {
+		const data: Card = shiftKey.value
 			? {
 					id: 'create',
 					type: 'tasklist',
@@ -274,11 +284,12 @@ async function onClick(event: MouseEvent) {
 					position,
 					content: ''
 				}
-	const index = cards.value.push(data) - 1
+		const index = cards.value.push(data) - 1
 
-	// Wait until the DOM has updated
-	await nextTick()
-	cardRefs.value[index].activate(event)
+		// Wait until the DOM has updated
+		await nextTick()
+		cardRefs.value[index].activate(event)
+	}
 }
 
 function onCardMove(id: string, prevPosition: Position, newPosition: Position) {
@@ -351,8 +362,10 @@ const areaSpacerStyle = computed(() => {
 
 	return {
 		// Add padding of another times the viewport size to the canvas
-		width: `calc(100vw + ${areaRect.width}px)`,
-		height: `calc(100vh + ${areaRect.height}px)`
+		top: `${areaRect.height}px`,
+		left: `${areaRect.width}px`,
+		width: `100vw`,
+		height: `100vh`
 	}
 })
 

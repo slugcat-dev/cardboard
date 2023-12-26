@@ -101,6 +101,9 @@
 					Show grid
 				</label>
 			</ClientOnly>
+			<button @click="deleteBoard">
+				Delete Board
+			</button>
 		</div>
 		<div
 			class="profile allow-pointer-events"
@@ -140,5 +143,15 @@ function onBoardNameUpdate() {
 		method: 'PUT',
 		body: board
 	})
+}
+
+async function deleteBoard() {
+	// eslint-disable-next-line no-alert
+	if (!confirm('Do you REALLY want to delete this board?'))
+		return
+
+	await useFetch(`/api/boards/${route.params.board}`, { method: 'DELETE' })
+
+	navigateTo('/boards')
 }
 </script>

@@ -5,7 +5,7 @@ type Position = {
 
 type Card = {
 	id: string
-	type: 'text' | 'link' | 'image' | 'tasklist'
+	type: 'text' | 'link' | 'image' | 'tasklist' | 'board'
 	created: Date
 	position: Position
 	content: any

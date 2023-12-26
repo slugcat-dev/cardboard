@@ -89,7 +89,7 @@
 
 <script setup lang="ts">
 import { render } from 'vue'
-import { CardContentImage, CardContentLink, CardContentTaskList, CardContentText, ContextMenu } from '#components'
+import { CardContentBoard, CardContentImage, CardContentLink, CardContentTaskList, CardContentText, ContextMenu } from '#components'
 import { convert, suppressNextClick } from '~/utils'
 
 const props = defineProps([
@@ -125,6 +125,7 @@ function getCardComponentType() {
 		case 'image': return CardContentImage
 		case 'link': return CardContentLink
 		case 'tasklist': return CardContentTaskList
+		case 'board': return CardContentBoard
 	}
 }
 
