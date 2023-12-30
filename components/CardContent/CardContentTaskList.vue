@@ -27,10 +27,15 @@
 			word-break: break-word;
 
 			&.done {
-				order: 1;
+				margin-top: calc((var(--height) + .25rem) * -1);
+				opacity: 0;
+				transform: scale(.75);
+				transition: .2s .6s, margin-top .2s .8s;
+				overflow: clip;
 			}
 
 			& input {
+				position: relative;
 				appearance: none;
 				min-width: .875rem;
 				width: .875rem;
@@ -41,14 +46,24 @@
 				border-radius: 100%;
 				cursor: pointer;
 
-				&:checked {
-					background-color: var(--color-accent);
+				&::before {
+					content: '';
+					visibility: hidden;
+					position: absolute;
+					inset: 0;
+					border: 2px dotted var(--color-good);
+					border-radius: 100%;
+				}
 
-					&::after {
-						color: black;
-						font-size: .875em;
-						margin-left: .125rem;
-						content: '✓';
+				&:checked {
+					background-color: var(--color-good);
+					transition: background-color .2s;
+
+					&::before {
+						visibility: visible;
+						inset: -.5rem;
+						opacity: 0;
+						transition: .4s, opacity .2s .2s;
 					}
 				}
 			}
@@ -81,10 +96,6 @@
 				v-for="task, index in card.content.tasks"
 				:key="task"
 				:class="{ done: task.done }"
-				:style="{
-					textDecoration: task.done ? 'line-through' : 'none',
-					opacity: task.done ? .5 : 1
-				}"
 			>
 				<input
 					type="checkbox"
@@ -132,11 +143,15 @@ function addTask() {
 }
 
 function toggleTask(event: Event, index: number) {
+	event.target.parentElement.style.setProperty('--height', `${event.target.parentElement.clientHeight}px`)
+
 	card.content.tasks[index].done = (event.target as HTMLInputElement).checked
 
-	card.content.tasks = card.content.tasks.filter((task: { done: boolean }) => task.done === false)
+	setTimeout(() => {
+		card.content.tasks = card.content.tasks.filter((task: { done: boolean }) => task.done === false)
 
-	return emit('contentUpdate', true)
+		emit('contentUpdate', true)
+	}, 1000)
 }
 
 function activate() {
