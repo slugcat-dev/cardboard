@@ -48,6 +48,12 @@
 		user-select: none;
 		-webkit-user-select: none;
 	}
+
+	&.delete {
+		transform: scale(.75);
+		opacity: 0;
+		transition: .1s;
+	}
 }
 
 .selecting > .card {
@@ -355,8 +361,10 @@ function activate(event: PointerEvent | MouseEvent) {
 	contentRef.value.activate(event)
 }
 
-function deleteCard() {
-	emit('cardDelete', card.id)
+async function deleteCard() {
+	await nextTick()
+	cardRef.value.classList.add('delete')
+	setTimeout(() => emit('cardDelete', card.id), 200)
 }
 
 function getSizeRect() {
