@@ -26,7 +26,8 @@ export default antfu(
 			'no-console': 'warn',
 			'node/prefer-global/process': ['error', 'always'],
 			'style/comma-dangle': ['error', 'never'],
-			'ts/consistent-type-definitions': ['error', 'type']
+			'ts/consistent-type-definitions': ['error', 'type'],
+			'eslintstyle/no-floating-decimal': 'error'
 		}
 	}
 )

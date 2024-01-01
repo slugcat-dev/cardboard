@@ -53,6 +53,7 @@
 			@pointerleave="onPointerUp"
 			@pointercancel="onPointerUp"
 			@click="onClick"
+			@wheel="onWheel"
 		>
 			<div
 				v-if="cards.length > 0"
@@ -66,6 +67,7 @@
 				:card="card"
 				:canvas-ref="canvasRef"
 				:selection="selection"
+				:zoom="zoom"
 				@card-move="onCardMove"
 				@card-update="onCardUpdate"
 				@card-delete="onCardDelete"
@@ -93,12 +95,14 @@ const { metaKey, shiftKey } = useKeys()
 const selection = ref()
 const selectionVisible = ref(false)
 const pointerMoved = ref(false)
+const zoom = ref(1)
 let selectedCards: string[] = []
 let pointerType: string
 let pointerClickPos: Position
 let prevScroll: Position
 let prevActiveElement: Element | null
 let pointerDown: boolean
+
 
 defineShortcuts({
 	home: () => canvasRef.value.scrollTo({
@@ -290,6 +294,16 @@ async function onClick(event: MouseEvent) {
 		await nextTick()
 		cardRefs.value[index].activate(event)
 	}
+}
+
+function onWheel(event: WheelEvent) {
+	if (!(useShortcuts().macOS ? event.metaKey : event.ctrlKey))
+		return
+
+	event.preventDefault()
+
+	zoom.value += Math.max(Math.min(event.deltaY, 1), -1) * -.1
+	zoom.value = Math.max(Math.min(zoom.value, 2), .25)
 }
 
 function onCardMove(id: string, prevPosition: Position, newPosition: Position) {

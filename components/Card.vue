@@ -6,6 +6,7 @@
 	border: 1px solid var(--color-card-border);
 	border-radius: .25rem;
 	box-shadow: var(--shadow-card);
+	transform-origin: top left;
 	touch-action: none;
 	cursor: grab;
 
@@ -30,7 +31,7 @@
 			content: '';
 			display: block;
 			position: fixed;
-			inset: 0;
+			inset: -50vh -50vw;
 			z-index: -1;
 		}
 	}
@@ -71,8 +72,9 @@
 			'pointer-down': pointerDown
 		}"
 		:style="{
-			top: `${card.position.y}px`,
-			left: `${card.position.x}px`
+			top: `${card.position.y * zoom}px`,
+			left: `${card.position.x * zoom}px`,
+			scale: zoom
 		}"
 		@pointerdown.left="onPointerDown"
 		@pointermove="onPointerMove"
@@ -102,7 +104,8 @@ const props = defineProps([
 	'card',
 	'canvasRef',
 	'gridSize',
-	'selection'
+	'selection',
+	'zoom'
 ])
 const emit = defineEmits([
 	'cardMove',
@@ -111,6 +114,7 @@ const emit = defineEmits([
 	'cardSelected',
 	'selectionClear'
 ])
+
 const {	card } = props
 const route = useRoute()
 const settings = useSettings()
@@ -197,8 +201,8 @@ function onPointerMove(event: PointerEvent) {
 	const prevPosition = card.position
 
 	card.position = {
-		x: Math.max(props.canvasRef.scrollLeft + event.clientX - pointerOffset.x, 0),
-		y: Math.max(props.canvasRef.scrollTop + event.clientY - pointerOffset.y, 0)
+		x: Math.max((props.canvasRef.scrollLeft + event.clientX - pointerOffset.x) / props.zoom, 0),
+		y: Math.max((props.canvasRef.scrollTop + event.clientY - pointerOffset.y) / props.zoom, 0)
 	}
 
 	emit('cardMove', card.id, prevPosition, card.position)
