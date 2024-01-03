@@ -26,7 +26,7 @@
 			border-radius: .25rem;
 			word-break: break-word;
 
-			&.done {
+			&.done:not(:only-child) {
 				margin-top: calc((var(--height) + .25rem) * -1);
 				opacity: 0;
 				transform: scale(.75);
@@ -146,12 +146,14 @@ function toggleTask(event: Event, index: number) {
 	event.target.parentElement.style.setProperty('--height', `${event.target.parentElement.clientHeight}px`)
 
 	card.content.tasks[index].done = (event.target as HTMLInputElement).checked
+	const empty = card.content.tasks.length - 1 === 0
 
 	setTimeout(() => {
-		card.content.tasks = card.content.tasks.filter((task: { done: boolean }) => task.done === false)
+		if (!empty)
+			card.content.tasks = card.content.tasks.filter((task: { done: boolean }) => task.done === false)
 
-		emit('contentUpdate', true)
-	}, 1000)
+		emit('contentUpdate', true, empty)
+	}, empty ? 600 : 1000)
 }
 
 function activate() {
