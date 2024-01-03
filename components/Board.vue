@@ -292,6 +292,7 @@ async function onClick(event: MouseEvent) {
 
 		// Wait until the DOM has updated
 		await nextTick()
+		cardRefs.value[index].alignToGrid()
 		cardRefs.value[index].activate(event)
 	}
 }
@@ -304,6 +305,15 @@ function onWheel(event: WheelEvent) {
 
 	zoom.value += Math.max(Math.min(event.deltaY, 1), -1) * -.1
 	zoom.value = Math.max(Math.min(zoom.value, 2), .25)
+
+	// TODO
+	canvasRef.value.scrollTo({
+		top: canvasRef.value.scrollTop / 2 + event.clientY / 2,
+		left: canvasRef.value.scrollLeft / 2 + event.clientX / 2,
+		behavior: 'instant'
+	})
+
+	console.log(event)
 }
 
 function onCardMove(id: string, prevPosition: Position, newPosition: Position) {

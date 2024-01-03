@@ -93,7 +93,6 @@
 			ref="contentRef"
 			:card="card"
 			@content-update="onContentUpdate"
-			@content-update-converted-t-o-d-o-rename="theCrackedThing"
 		/>
 	</div>
 </template>
@@ -299,14 +298,7 @@ function onContentUpdate(fetch?: boolean, empty?: boolean) {
 		return deleteCard()
 
 	if (fetch)
-		updateCard()
-}
-
-function theCrackedThing(converted: any) {
-	card.type = converted.type
-	card.content = converted.content
-
-	updateCard()
+		updateCard(true)
 }
 
 function startLongPress(event: PointerEvent) {
@@ -330,28 +322,21 @@ function cancleLongPress() {
 	clearTimeout(longPressTimer)
 }
 
-async function updateCard() {
-	if (card.type === 'text' && /^(?!.*<br>)https?:\/\/.+?\.\S+$/gi.test(card.content)) {
-		const origContent = card.content
+async function updateCard(contentChanged: boolean = false) {
+	if (contentChanged) {
+		if (card.type === 'text' && /^(?!.*<br>)https?:\/\/.+?\.\S+$/gi.test(card.content)) {
+			const origContent = card.content
 
-		card.content = '<span class="text-secondary">One sec...</span>'
+			card.content = '<span class="text-secondary">One sec...</span>'
 
-		const converted = await convert({ ...card, content: origContent })
+			const converted = await convert({ ...card, content: origContent })
 
-		card.type = converted.type
-		card.content = converted.content
+			card.type = converted.type
+			card.content = converted.content
+		}
 	}
 
-	// Align to grid
-	const gridSize = settings.grid.snap ? settings.grid.size : 1
-	const prevPosition = card.position
-
-	card.position = {
-		x: Math.round(card.position.x / gridSize) * gridSize,
-		y: Math.round(card.position.y / gridSize) * gridSize
-	}
-
-	emit('cardMove', card.id, prevPosition, card.position)
+	alignToGrid()
 
 	// Create or update card
 	if (card.id === 'create') {
@@ -399,6 +384,18 @@ async function deleteCard() {
 	setTimeout(() => emit('cardDelete', card.id), 200)
 }
 
+function alignToGrid() {
+	const gridSize = settings.grid.snap ? settings.grid.size : 1
+	const prevPosition = card.position
+
+	card.position = {
+		x: Math.round(card.position.x / gridSize) * gridSize,
+		y: Math.round(card.position.y / gridSize) * gridSize
+	}
+	
+	emit('cardMove', card.id, prevPosition, card.position)
+}
+
 function getSizeRect() {
 	const cardRect = cardRef.value.getBoundingClientRect()
 
@@ -408,5 +405,5 @@ function getSizeRect() {
 	return cardRect
 }
 
-defineExpose({ activate, getSizeRect })
+defineExpose({ activate, alignToGrid, getSizeRect })
 </script>

@@ -27,10 +27,7 @@
 import { convert, getMouseEventCaretRange } from '~/utils'
 
 const props = defineProps(['card'])
-const emit = defineEmits([
-	'contentUpdate',
-	'contentUpdateConvertedTODORename'
-])
+const emit = defineEmits(['contentUpdate'])
 const { card } = props
 const textRef = ref()
 const { shiftKey } = useKeys()
@@ -108,16 +105,12 @@ async function onPaste(event: ClipboardEvent) {
 	}
 
 	if (!shiftKey.value && isEmpty()) {
+		document.execCommand('insertText', false, clipboardText)
+
 		try {
 			new URL(clipboardText || '').toString()
 
-			textRef.value.innerHTML = '<span class="text-secondary">One sec...</span>'
-
 			textRef.value.blur()
-
-			const converted = await convert({ ...card, content: clipboardText })
-
-			emit('contentUpdateConvertedTODORename', converted)
 
 			return
 		}
