@@ -12,7 +12,6 @@
 	position: relative;
 	top: 2.875rem;
 	height: calc(100vh - 2.875rem);
-	background-image: radial-gradient(circle, var(--grid-color) 1px, transparent 1px);
 	background-attachment: local;
 	overflow: auto;
 	scroll-behavior: smooth;
@@ -246,11 +245,7 @@ async function onClick(event: MouseEvent) {
 	if (prevActiveElement?.className === 'card-text' || (pointerType === 'mouse' && event.detail < 2))
 		return
 
-	const canvasRect = canvasRef.value.getBoundingClientRect()
-	const position = {
-		x: canvasRef.value.scrollLeft + event.clientX - canvasRect.left,
-		y: canvasRef.value.scrollTop + event.clientY - canvasRect.top
-	}
+	const position = getMousePos(event)
 
 	if (metaKey.value) {
 		const board = await $fetch('/api/boards', { method: 'POST' })
@@ -303,17 +298,20 @@ function onWheel(event: WheelEvent) {
 
 	event.preventDefault()
 
+	const prevMousePos = getMousePos(event)
+
 	zoom.value += Math.max(Math.min(event.deltaY, 1), -1) * -.1
 	zoom.value = Math.max(Math.min(zoom.value, 2), .25)
 
-	// TODO
+	const mousePos = getMousePos(event)
+	const dX = prevMousePos.x - mousePos.x
+	const dY = prevMousePos.y - mousePos.y
+
 	canvasRef.value.scrollTo({
-		top: canvasRef.value.scrollTop / 2 + event.clientY / 2,
-		left: canvasRef.value.scrollLeft / 2 + event.clientX / 2,
+		top: canvasRef.value.scrollTop + dY * zoom.value,
+		left: canvasRef.value.scrollLeft + dX * zoom.value,
 		behavior: 'instant'
 	})
-
-	console.log(event)
 }
 
 function onCardMove(id: string, prevPosition: Position, newPosition: Position) {
@@ -373,6 +371,15 @@ function clearSelection() {
 	selectedCards = []
 }
 
+function getMousePos(event: MouseEvent | WheelEvent) {
+	const canvasRect = canvasRef.value.getBoundingClientRect()
+
+	return {
+		x: (canvasRef.value.scrollLeft + event.clientX - canvasRect.left) / zoom.value,
+		y: (canvasRef.value.scrollTop + event.clientY - canvasRect.top) / zoom.value
+	}
+}
+
 const areaSpacerStyle = computed(() => {
 	const areaRect = new DOMRect()
 
@@ -386,18 +393,21 @@ const areaSpacerStyle = computed(() => {
 
 	return {
 		// Add padding of another times the viewport size to the canvas
-		top: `${areaRect.height}px`,
-		left: `${areaRect.width}px`,
-		width: `100vw`,
-		height: `100vh`
+		top: `${areaRect.height * zoom.value}px`,
+		left: `${areaRect.width * zoom.value}px`,
+		width: `${100}vw`,
+		height: `${100}vh`
 	}
 })
 
 const canvasStyle = computed(() => {
+	const visualGridSize = settings.grid.size * zoom.value
+
 	return {
-		'cursor': pointerMoved.value && !selectionVisible.value ? 'move' : 'default',
-		'background-size': `${settings.grid.size}px ${settings.grid.size}px`,
-		'--grid-color': settings.grid.show ? `var(--color-scrollbar)` : 'transparent'
+		'--grid-color': settings.grid.show && zoom.value > .75 ? `var(--color-scrollbar)` : 'transparent',
+		'background-image': `radial-gradient(circle, var(--grid-color) ${Math.max(1, zoom.value)}px, transparent ${Math.max(1, zoom.value)}px)`,
+		'background-size': `${visualGridSize}px ${visualGridSize}px`,
+		'cursor': pointerMoved.value && !selectionVisible.value ? 'move' : 'default'
 	}
 })
 

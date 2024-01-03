@@ -53,7 +53,8 @@
 	}
 
 	&.delete {
-		transform: scale(.75);
+		/* Can't use transform-origin: center here */
+		transform: scale(.75) translate(calc(25% / 2), calc(25% / 2));
 		opacity: 0;
 		transition: .1s;
 	}
