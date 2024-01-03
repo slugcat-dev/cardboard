@@ -1,28 +1,3 @@
-<style>
-.card-text {
-	font-size: .875rem;
-	padding: calc(.5rem - 1px);
-	min-height: 2.125rem;
-	outline: none;
-}
-</style>
-
-<template>
-	<div
-		ref="textRef"
-		class="card-text"
-		contenteditable="false"
-		spellcheck="false"
-		@keydown.enter.exact="textRef.blur"
-		@keydown.escape="textRef.blur"
-		@keydown.delete="() => { if (isEmpty()) textRef.blur() }"
-		@input="onInput"
-		@blur="onBlur"
-		@paste="onPaste"
-		v-html="card.content"
-	/>
-</template>
-
 <script setup lang="ts">
 import { convert, getMouseEventCaretRange } from '~/utils'
 
@@ -149,3 +124,28 @@ function blobToBase64(blob: Blob | null) {
 
 defineExpose({ activate })
 </script>
+
+<template>
+	<div
+		ref="textRef"
+		class="card-text"
+		contenteditable="false"
+		spellcheck="false"
+		@keydown.enter.exact="textRef.blur"
+		@keydown.escape="textRef.blur"
+		@keydown.delete="() => { if (isEmpty()) textRef.blur() }"
+		@input="onInput"
+		@blur="onBlur"
+		@paste="onPaste"
+		v-html="card.content"
+	/>
+</template>
+
+<style>
+.card-text {
+	font-size: .875rem;
+	padding: calc(.5rem - 1px);
+	min-height: 2.125rem;
+	outline: none;
+}
+</style>

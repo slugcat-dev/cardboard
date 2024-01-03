@@ -1,3 +1,88 @@
+<script setup lang="ts">
+const props = defineProps(['card'])
+const emit = defineEmits(['contentUpdate'])
+const { card } = props
+const listNameRef = ref()
+const inputRef = ref()
+const newTodo = ref()
+
+function onListNameUpdate() {
+	card.content.title = listNameRef.value.textContent
+
+	emit('contentUpdate', true)
+}
+
+function addTask() {
+	if (newTodo.value.length > 0) {
+		card.content.tasks.push({
+			content: newTodo.value,
+			done: false
+		})
+
+		newTodo.value = ''
+
+		return emit('contentUpdate', true)
+	}
+}
+
+function toggleTask(event: Event, index: number) {
+	event.target.parentElement.style.setProperty('--height', `${event.target.parentElement.clientHeight}px`)
+
+	card.content.tasks[index].done = (event.target as HTMLInputElement).checked
+	const empty = card.content.tasks.length - 1 === 0
+
+	setTimeout(() => {
+		if (!empty)
+			card.content.tasks = card.content.tasks.filter((task: { done: boolean }) => task.done === false)
+
+		emit('contentUpdate', true, empty)
+	}, empty ? 600 : 1000)
+}
+
+function activate() {
+	inputRef.value.focus()
+}
+
+defineExpose({ activate })
+</script>
+
+<template>
+	<div class="tasklist">
+		<h2 class="name">
+			<div
+				ref="listNameRef"
+				contenteditable="plaintext-only"
+				@blur="onListNameUpdate"
+				@keydown.enter="listNameRef.blur"
+				@keydown.escape="listNameRef.blur"
+			>
+				{{ card.content.title }}
+			</div>
+		</h2>
+		<ul>
+			<li
+				v-for="task, index in card.content.tasks"
+				:key="task"
+				:class="{ done: task.done }"
+			>
+				<input
+					type="checkbox"
+					:value="task.done"
+					@change="toggleTask($event, index)"
+				>
+				{{ task.content }}
+			</li>
+		</ul>
+		<input
+			ref="inputRef"
+			v-model="newTodo"
+			placeholder="+ Add task"
+			@keydown.enter="addTask"
+			@keydown.escape="inputRef.blur"
+		>
+	</div>
+</template>
+
 <style lang="scss">
 .tasklist {
 	padding: .5rem;
@@ -77,88 +162,3 @@
 	}
 }
 </style>
-
-<template>
-	<div class="tasklist">
-		<h2 class="name">
-			<div
-				ref="listNameRef"
-				contenteditable="plaintext-only"
-				@blur="onListNameUpdate"
-				@keydown.enter="listNameRef.blur"
-				@keydown.escape="listNameRef.blur"
-			>
-				{{ card.content.title }}
-			</div>
-		</h2>
-		<ul>
-			<li
-				v-for="task, index in card.content.tasks"
-				:key="task"
-				:class="{ done: task.done }"
-			>
-				<input
-					type="checkbox"
-					:value="task.done"
-					@change="toggleTask($event, index)"
-				>
-				{{ task.content }}
-			</li>
-		</ul>
-		<input
-			ref="inputRef"
-			v-model="newTodo"
-			placeholder="+ Add task"
-			@keydown.enter="addTask"
-			@keydown.escape="inputRef.blur"
-		>
-	</div>
-</template>
-
-<script setup lang="ts">
-const props = defineProps(['card'])
-const emit = defineEmits(['contentUpdate'])
-const { card } = props
-const listNameRef = ref()
-const inputRef = ref()
-const newTodo = ref()
-
-function onListNameUpdate() {
-	card.content.title = listNameRef.value.textContent
-
-	emit('contentUpdate', true)
-}
-
-function addTask() {
-	if (newTodo.value.length > 0) {
-		card.content.tasks.push({
-			content: newTodo.value,
-			done: false
-		})
-
-		newTodo.value = ''
-
-		return emit('contentUpdate', true)
-	}
-}
-
-function toggleTask(event: Event, index: number) {
-	event.target.parentElement.style.setProperty('--height', `${event.target.parentElement.clientHeight}px`)
-
-	card.content.tasks[index].done = (event.target as HTMLInputElement).checked
-	const empty = card.content.tasks.length - 1 === 0
-
-	setTimeout(() => {
-		if (!empty)
-			card.content.tasks = card.content.tasks.filter((task: { done: boolean }) => task.done === false)
-
-		emit('contentUpdate', true, empty)
-	}, empty ? 600 : 1000)
-}
-
-function activate() {
-	inputRef.value.focus()
-}
-
-defineExpose({ activate })
-</script>

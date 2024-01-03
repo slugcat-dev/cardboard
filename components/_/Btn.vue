@@ -1,3 +1,23 @@
+<script setup lang="ts">
+defineProps({
+	role: { type: String, default: 'default' },
+	icon: { type: String, default: null }
+})
+</script>
+
+<template>
+	<button
+		class="btn"
+		:class="role"
+	>
+		<Icon
+			v-if="icon"
+			:name="icon"
+		/>
+		<slot />
+	</button>
+</template>
+
 <style lang="scss">
 .btn {
 	display: inline-flex;
@@ -23,23 +43,3 @@
 	}
 }
 </style>
-
-<template>
-	<button
-		class="btn"
-		:class="role"
-	>
-		<Icon
-			v-if="icon"
-			:name="icon"
-		/>
-		<slot />
-	</button>
-</template>
-
-<script setup lang="ts">
-defineProps({
-	role: { type: String, default: 'default' },
-	icon: { type: String, default: null }
-})
-</script>

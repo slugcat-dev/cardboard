@@ -1,3 +1,40 @@
+<script setup lang="ts">
+defineProps(['card'])
+
+const emit = defineEmits(['contentUpdate'])
+const active = ref(false)
+
+function activate() {
+	active.value = true
+}
+
+function onClick(event: MouseEvent) {
+	if (!active.value)
+		return
+
+	active.value = false
+
+	event.stopPropagation()
+	emit('contentUpdate')
+}
+
+defineExpose({ activate })
+</script>
+
+<template>
+	<div
+		class="card-image"
+		:class="{ active }"
+		@click.left="onClick"
+	>
+		<img
+			:src="card.content"
+			:draggable="active"
+			loading="lazy"
+		>
+	</div>
+</template>
+
 <style lang="scss">
 .card-image {
 	&:not(.active) {
@@ -34,40 +71,3 @@
 	}
 }
 </style>
-
-<template>
-	<div
-		class="card-image"
-		:class="{ active }"
-		@click.left="onClick"
-	>
-		<img
-			:src="card.content"
-			:draggable="active"
-			loading="lazy"
-		>
-	</div>
-</template>
-
-<script setup lang="ts">
-defineProps(['card'])
-
-const emit = defineEmits(['contentUpdate'])
-const active = ref(false)
-
-function activate() {
-	active.value = true
-}
-
-function onClick(event: MouseEvent) {
-	if (!active.value)
-		return
-
-	active.value = false
-
-	event.stopPropagation()
-	emit('contentUpdate')
-}
-
-defineExpose({ activate })
-</script>

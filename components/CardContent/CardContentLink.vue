@@ -1,3 +1,54 @@
+<script setup lang="ts">
+const props = defineProps(['card'])
+const { card } = props
+
+const title = computed(() => {
+	return `${card.content.siteName && !card.content.title.includes(card.content.siteName) ? `${card.content.siteName} - ` : ''}${card.content.title || card.content.domain}`
+})
+
+const description = computed(() => {
+	return card.content.description || (card.content.title ? card.content.domain : card.content.url)
+})
+</script>
+
+<template>
+	<div class="card-link-embed">
+		<div class="image-container">
+			<img
+				v-if="card.content.favicon"
+				class="icon-glow"
+				:src="card.content.favicon"
+				draggable="false"
+				loading="lazy"
+			>
+			<img
+				v-if="card.content.favicon"
+				class="icon"
+				:src="card.content.favicon"
+				draggable="false"
+				loading="lazy"
+			>
+			<Icon
+				v-else
+				name="mdi:earth"
+				class="icon missing"
+			/>
+		</div>
+		<div class="text-content">
+			<NuxtLink
+				class="title text-strong"
+				:to="card.content.url"
+				target="_blank"
+			>
+				{{ title }}
+			</NuxtLink>
+			<div class="description text-secondary">
+				{{ description }}
+			</div>
+		</div>
+	</div>
+</template>
+
 <style lang="scss">
 .card-link-embed {
 	display: flex;
@@ -67,54 +118,3 @@
 	}
 }
 </style>
-
-<template>
-	<div class="card-link-embed">
-		<div class="image-container">
-			<img
-				v-if="card.content.favicon"
-				class="icon-glow"
-				:src="card.content.favicon"
-				draggable="false"
-				loading="lazy"
-			>
-			<img
-				v-if="card.content.favicon"
-				class="icon"
-				:src="card.content.favicon"
-				draggable="false"
-				loading="lazy"
-			>
-			<Icon
-				v-else
-				name="mdi:earth"
-				class="icon missing"
-			/>
-		</div>
-		<div class="text-content">
-			<NuxtLink
-				class="title text-strong"
-				:to="card.content.url"
-				target="_blank"
-			>
-				{{ title }}
-			</NuxtLink>
-			<div class="description text-secondary">
-				{{ description }}
-			</div>
-		</div>
-	</div>
-</template>
-
-<script setup lang="ts">
-const props = defineProps(['card'])
-const { card } = props
-
-const title = computed(() => {
-	return `${card.content.siteName && !card.content.title.includes(card.content.siteName) ? `${card.content.siteName} - ` : ''}${card.content.title || card.content.domain}`
-})
-
-const description = computed(() => {
-	return card.content.description || (card.content.title ? card.content.domain : card.content.url)
-})
-</script>

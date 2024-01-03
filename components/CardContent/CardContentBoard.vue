@@ -1,6 +1,6 @@
-<style lang="scss">
-
-</style>
+<script setup lang="ts">
+defineProps(['card'])
+</script>
 
 <template>
 	<NuxtLink :to="card.content">
@@ -8,6 +8,6 @@
 	</NuxtLink>
 </template>
 
-<script setup lang="ts">
-defineProps(['card'])
-</script>
+<style lang="scss">
+
+</style>

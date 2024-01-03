@@ -1,90 +1,3 @@
-<style lang="scss">
-.loading {
-	display: flex;
-	height: 100vh;
-	justify-content: center;
-	align-items: center;
-	gap: 2rem;
-	font-size: 2rem;
-}
-
-#canvas {
-	position: relative;
-	top: 2.875rem;
-	height: calc(100vh - 2.875rem);
-	background-attachment: local;
-	overflow: auto;
-	scroll-behavior: smooth;
-	user-select: none;
-	-webkit-user-select: none;
-
-	.area-spacer {
-		position: absolute;
-		z-index: -1;
-	}
-
-	.selection {
-		position: absolute;
-		background-color: var(--color-accent-25);
-		border: 1px solid var(--color-accent);
-		transition: opacity .2s;
-		pointer-events: none;
-		z-index: 1;
-	}
-}
-</style>
-
-<template>
-	<ClientOnly>
-		<template #fallback>
-			<div class="loading">
-				Loading...
-			</div>
-		</template>
-		<div
-			id="canvas"
-			ref="canvasRef"
-			:class="{ selecting: metaKey }"
-			:style="canvasStyle"
-			@pointerdown.left="onPointerDown"
-			@pointermove="onPointerMove"
-			@pointerup="onPointerUp"
-			@pointerleave="onPointerUp"
-			@pointercancel="onPointerUp"
-			@touchstart="onTouchStart"
-			@touchmove="onTouchMove"
-			@touchend="onTouchEnd"
-			@touchcancel="onTouchCancle"
-			@click="onClick"
-			@wheel="onWheel"
-		>
-			<div
-				v-if="cards.length > 0"
-				class="area-spacer"
-				:style="areaSpacerStyle"
-			/>
-			<Card
-				v-for="card in cards"
-				ref="cardRefs"
-				:key="card.created.toString()"
-				:card="card"
-				:canvas-ref="canvasRef"
-				:selection="selection"
-				:zoom="zoom"
-				@card-move="onCardMove"
-				@card-update="onCardUpdate"
-				@card-delete="onCardDelete"
-				@card-selected="onCardSelected"
-				@selection-clear="clearSelection"
-			/>
-			<div
-				class="selection"
-				:style="selectionStyle"
-			/>
-		</div>
-	</ClientOnly>
-</template>
-
 <script setup lang="ts">
 import type CardComponent from './Card.vue'
 import { suppressNextClick } from '~/utils'
@@ -105,7 +18,6 @@ let pointerClickPos: Position
 let prevScroll: Position
 let prevActiveElement: Element | null
 let pointerDown: boolean
-
 
 defineShortcuts({
 	'home': () => canvasRef.value.scrollTo({
@@ -263,6 +175,11 @@ function onTouchStart(event: TouchEvent) {
 }
 
 function onTouchMove(event: TouchEvent) {
+	if (!gesture)
+		return
+
+	event.preventDefault()
+
 	const initialMidpoint = midpoint(initialTouches)
 	const currentMidpoint = midpoint(event.touches)
 	const transform = {
@@ -276,7 +193,7 @@ function onTouchMove(event: TouchEvent) {
 
 	zoomF(initialZoom * transform.scale, {
 		clientX: transform.origin.x + transform.translation.x,
-		clientY: transform.origin.y + transform.translation.y,
+		clientY: transform.origin.y + transform.translation.y
 	})
 }
 
@@ -290,7 +207,7 @@ function onTouchCancle(event: TouchEvent) {
 
 function midpoint(touches: TouchList) {
 	return {
-		x: (touches[0].clientX + touches[1].clientX) / 2, 
+		x: (touches[0].clientX + touches[1].clientX) / 2,
 		y: (touches[0].clientY + touches[1].clientY) / 2
 	}
 }
@@ -437,9 +354,9 @@ function getMousePos(event: { clientX: number, clientY: number }) {
 	}
 }
 
-function zoomF(v: number, event: { clientX: number, clientY: number }) {	
+function zoomF(v: number, event: { clientX: number, clientY: number }) {
 	const prevMousePos = getMousePos(event)
-	
+
 	zoom.value = v
 	zoom.value = Math.max(Math.min(zoom.value, 2), .25)
 
@@ -469,8 +386,8 @@ const areaSpacerStyle = computed(() => {
 		// Add padding of another times the viewport size to the canvas
 		top: `${areaRect.height * zoom.value}px`,
 		left: `${areaRect.width * zoom.value}px`,
-		width: `${100 * zoom.value}vw`,
-		height: `${100 * zoom.value}vh`
+		width: '100vw',
+		height: '100vh'
 	}
 })
 
@@ -498,3 +415,90 @@ const selectionStyle = computed(() => {
 	}
 })
 </script>
+
+<template>
+	<ClientOnly>
+		<template #fallback>
+			<div class="loading">
+				Loading...
+			</div>
+		</template>
+		<div
+			id="canvas"
+			ref="canvasRef"
+			:class="{ selecting: metaKey }"
+			:style="canvasStyle"
+			@pointerdown.left="onPointerDown"
+			@pointermove="onPointerMove"
+			@pointerup="onPointerUp"
+			@pointerleave="onPointerUp"
+			@pointercancel="onPointerUp"
+			@touchstart="onTouchStart"
+			@touchmove="onTouchMove"
+			@touchend="onTouchEnd"
+			@touchcancel="onTouchCancle"
+			@click="onClick"
+			@wheel="onWheel"
+		>
+			<div
+				v-if="cards.length > 0"
+				class="area-spacer"
+				:style="areaSpacerStyle"
+			/>
+			<Card
+				v-for="card in cards"
+				ref="cardRefs"
+				:key="card.created.toString()"
+				:card="card"
+				:canvas-ref="canvasRef"
+				:selection="selection"
+				:zoom="zoom"
+				@card-move="onCardMove"
+				@card-update="onCardUpdate"
+				@card-delete="onCardDelete"
+				@card-selected="onCardSelected"
+				@selection-clear="clearSelection"
+			/>
+			<div
+				class="selection"
+				:style="selectionStyle"
+			/>
+		</div>
+	</ClientOnly>
+</template>
+
+<style lang="scss">
+.loading {
+	display: flex;
+	height: 100vh;
+	justify-content: center;
+	align-items: center;
+	gap: 2rem;
+	font-size: 2rem;
+}
+
+#canvas {
+	position: relative;
+	top: 2.875rem;
+	height: calc(100vh - 2.875rem);
+	background-attachment: local;
+	overflow: auto;
+	scroll-behavior: smooth;
+	user-select: none;
+	-webkit-user-select: none;
+
+	.area-spacer {
+		position: absolute;
+		z-index: -1;
+	}
+
+	.selection {
+		position: absolute;
+		background-color: var(--color-accent-25);
+		border: 1px solid var(--color-accent);
+		transition: opacity .2s;
+		pointer-events: none;
+		z-index: 1;
+	}
+}
+</style>

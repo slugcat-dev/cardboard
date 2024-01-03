@@ -1,16 +1,3 @@
-<style>
-body {
-	overflow: hidden;
-}
-</style>
-
-<template>
-	<div>
-		<BoardHeader />
-		<Board />
-	</div>
-</template>
-
 <script setup lang="ts">
 definePageMeta({
 	middleware: 'auth'
@@ -20,3 +7,17 @@ useSeoMeta({
 	title: useRoute().params.board.toString()
 })
 </script>
+
+<template>
+	<div>
+		<BoardHeader />
+		<Board />
+		<ContextMenu />
+	</div>
+</template>
+
+<style>
+body {
+	overflow: hidden;
+}
+</style>

@@ -1,103 +1,5 @@
-<style lang="scss">
-.card {
-	position: absolute;
-	width: max-content;
-	background-color: var(--color-card-background);
-	border: 1px solid var(--color-card-border);
-	border-radius: .25rem;
-	box-shadow: var(--shadow-card);
-	transform-origin: top left;
-	touch-action: none;
-	cursor: grab;
-
-	&.content-active {
-		cursor: auto;
-	}
-
-	&:hover,
-	&.selected {
-		z-index: 1;
-	}
-
-	&.pointer-down,
-	&:has(.card-text:focus-visible) {
-		z-index: 2;
-	}
-
-	&.pointer-down {
-		cursor: grabbing;
-
-		&::before {
-			content: '';
-			display: block;
-			position: fixed;
-			inset: -50vh -50vw;
-		}
-	}
-
-	&.selected {
-		box-shadow: 0px 0px 0px 2px var(--color-accent-50);
-	}
-
-	&:has(.card-text:focus-visible) {
-		box-shadow: 0px 0px 0px 2px var(--color-accent);
-	}
-
-	&:not(:has(.card-text[contenteditable="true"])),
-	& :not(.card-text[contenteditable="true"]) {
-		user-select: none;
-		-webkit-user-select: none;
-	}
-
-	&.delete {
-		/* Can't use transform-origin: center here */
-		transform: scale(.75) translate(calc(25% / 2), calc(25% / 2));
-		opacity: 0;
-		transition: .1s;
-	}
-}
-
-.selecting > .card {
-	cursor: default
-}
-</style>
-
-<template>
-	<div
-		ref="cardRef"
-		class="card"
-		:class="{
-			selected,
-			'content-active': contentActive,
-			'pointer-down': pointerDown
-		}"
-		:style="{
-			top: `${card.position.y * zoom}px`,
-			left: `${card.position.x * zoom}px`,
-			scale: zoom
-		}"
-		@pointerdown.left="onPointerDown"
-		@pointermove="onPointerMove"
-		@pointerup="onPointerUp"
-		@pointerleave="onPointerUp"
-		@pointercancel="onPointerUp"
-		@touchmove="onTouchMove"
-		@click="onClick"
-		@contextmenu="onContextMenu"
-		@wheel="onWheel"
-	>
-		<component
-			:is="getCardComponentType()"
-			ref="contentRef"
-			:card="card"
-			@content-update="onContentUpdate"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
-import { render } from 'vue'
-import { CardContentBoard, CardContentImage, CardContentLink, CardContentTaskList, CardContentText, ContextMenu } from '#components'
+import { CardContentBoard, CardContentImage, CardContentLink, CardContentTaskList, CardContentText } from '#components'
 import { convert, suppressNextClick } from '~/utils'
 
 const props = defineProps([
@@ -186,7 +88,7 @@ function onPointerMove(event: PointerEvent | WheelEvent) {
 	if (!pointerDown.value)
 		return
 
-		cachedPointerEvent = event
+	cachedPointerEvent = event
 
 	const dX = Math.abs(pointerClickPos.x - event.clientX)
 	const dY = Math.abs(pointerClickPos.y - event.clientY)
@@ -252,20 +154,36 @@ function onContextMenu(event: MouseEvent) {
 
 	event.preventDefault()
 
-	return deleteCard()
-
-	// TODO:
-	const contextMenu = h(ContextMenu, {
-		x: event.clientX,
-		y: event.clientY
+	useContextMenu().show({
+		position: {
+			x: event.clientX,
+			y: event.clientY
+		},
+		entries: [
+			{
+				name: 'Dummy',
+				handler: () => console.log('hello')
+			},
+			{
+				name: 'Color',
+				handler: () => console.log('hello')
+			},
+			{
+				name: 'Copy Content',
+				handler: () => console.log('hello')
+			},
+			{
+				name: 'Connect',
+				handler: () => console.log('hello')
+			},
+			{
+				name: 'Delete',
+				handler: deleteCard
+			}
+		]
 	})
 
-	render(contextMenu, document.body)
-
-	// add elm
-	//  set top left to client mouse pos
-	//  with ::before as overlay
-	// how to handle viewport edges?
+	cardRef.value.style.zIndex = '20'
 }
 
 // Move cards while scrolling the canvas
@@ -282,7 +200,7 @@ function onWheel(event: WheelEvent) {
 	props.canvasRef.addEventListener('scroll', updPos)
 	props.canvasRef.addEventListener('scrollend', () => {
 		props.canvasRef.removeEventListener('scroll', updPos)
-		
+
 		canvasListenerAdded = false
 	}, { once: true })
 
@@ -390,7 +308,7 @@ function alignToGrid() {
 		x: Math.round(card.position.x / gridSize) * gridSize,
 		y: Math.round(card.position.y / gridSize) * gridSize
 	}
-	
+
 	emit('cardMove', card.id, prevPosition, card.position)
 }
 
@@ -405,3 +323,100 @@ function getSizeRect() {
 
 defineExpose({ activate, alignToGrid, getSizeRect })
 </script>
+
+<template>
+	<div
+		ref="cardRef"
+		class="card"
+		:class="{
+			selected,
+			'content-active': contentActive,
+			'pointer-down': pointerDown,
+		}"
+		:style="{
+			top: `${card.position.y * zoom}px`,
+			left: `${card.position.x * zoom}px`,
+			scale: zoom,
+		}"
+		@pointerdown.left="onPointerDown"
+		@pointermove="onPointerMove"
+		@pointerup="onPointerUp"
+		@pointerleave="onPointerUp"
+		@pointercancel="onPointerUp"
+		@touchmove="onTouchMove"
+		@click="onClick"
+		@contextmenu="onContextMenu"
+		@wheel="onWheel"
+	>
+		<component
+			:is="getCardComponentType()"
+			ref="contentRef"
+			:card="card"
+			@content-update="onContentUpdate"
+		/>
+	</div>
+</template>
+
+<style lang="scss">
+.card {
+	position: absolute;
+	width: max-content;
+	background-color: var(--color-card-background);
+	border: 1px solid var(--color-card-border);
+	border-radius: .25rem;
+	box-shadow: var(--shadow-card);
+	transform-origin: top left;
+	touch-action: none;
+	cursor: grab;
+
+	&.content-active {
+		cursor: auto;
+	}
+
+	&:hover,
+	&.selected {
+		z-index: 1;
+	}
+
+	&.pointer-down,
+	&:has(.card-text:focus-visible) {
+		z-index: 2;
+	}
+
+	&.pointer-down {
+		cursor: grabbing;
+
+		&::before {
+			content: '';
+			display: block;
+			position: fixed;
+			inset: -50vh -50vw;
+		}
+	}
+
+	&.selected {
+		box-shadow: 0px 0px 0px 2px var(--color-accent-50);
+	}
+
+	&:has(.card-text:focus-visible) {
+		box-shadow: 0px 0px 0px 2px var(--color-accent);
+	}
+
+	&:not(:has(.card-text[contenteditable="true"])),
+	& :not(.card-text[contenteditable="true"]) {
+		user-select: none;
+		-webkit-user-select: none;
+	}
+
+	&.delete {
+		/* Can't use transform-origin: center here */
+		transform: scale(.75) translate(calc(25% / 2), calc(25% / 2));
+		opacity: 0;
+		transition: .1s;
+	}
+}
+
+.selecting > .card {
+	cursor: default
+}
+</style>
