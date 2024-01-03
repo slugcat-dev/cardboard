@@ -272,8 +272,8 @@ function onTouchMove(event: TouchEvent) {
 	}
 
 	zoomF(initialZoom * transform.scale, {
-		clientX: transform.origin.x,
-		clientY: transform.origin.y,
+		clientX: transform.origin.x + transform.translation.x,
+		clientY: transform.origin.y + transform.translation.y,
 	})
 }
 
