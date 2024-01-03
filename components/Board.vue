@@ -271,7 +271,7 @@ function onTouchMove(event: TouchEvent) {
 		origin: initialMidpoint
 	}
 
-	zoomF(initialZoom - transform.scale, {
+	zoomF((initialZoom - transform.scale) * -1, {
 		clientX: transform.origin.x,
 		clientY: transform.origin.y
 	})
