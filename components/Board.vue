@@ -51,6 +51,10 @@
 			@pointerup="onPointerUp"
 			@pointerleave="onPointerUp"
 			@pointercancel="onPointerUp"
+			@touchstart="onTouchStart"
+			@touchmove="onTouchMove"
+			@touchend="onTouchEnd"
+			@touchcancel="onTouchCancle"
 			@click="onClick"
 			@wheel="onWheel"
 		>
@@ -104,18 +108,18 @@ let pointerDown: boolean
 
 
 defineShortcuts({
-	home: () => canvasRef.value.scrollTo({
+	'home': () => canvasRef.value.scrollTo({
 		top: 0,
 		left: 0
 	}),
-	end: () => {
+	'end': () => {
 		canvasRef.value.scrollTo({
 			top: canvasRef.value.scrollHeight - 2 * window.innerHeight,
 			left: canvasRef.value.scrollWidth - 2 * window.innerWidth
 		})
 	},
 	// Select all cards
-	meta_a: () => {
+	'meta_a': () => {
 		selection.value = new DOMRect(
 			0,
 			0,
@@ -124,7 +128,7 @@ defineShortcuts({
 		)
 	},
 	// Delete all selected cards
-	shift_delete: async () => {
+	'shift_delete': async () => {
 		if (selectedCards.length === 0)
 			return
 
@@ -143,7 +147,16 @@ defineShortcuts({
 		)
 
 		selectedCards = []
-	}
+	},
+	// Zoom
+	'meta_+': () => zoomF(1, {
+		clientX: window.innerWidth / 2,
+		clientY: window.innerHeight / 2
+	}),
+	'meta_-': () => zoomF(-1, {
+		clientX: window.innerWidth / 2,
+		clientY: window.innerHeight / 2
+	})
 })
 
 // Fetch cards
@@ -235,6 +248,59 @@ function onPointerUp() {
 	pointerDown = false
 }
 
+// Zoom on touch enabled devices
+let gesture = false
+let initialTouches: TouchList
+let initialZoom = 1
+
+function onTouchStart(event: TouchEvent) {
+	gesture = event.touches.length === 2
+	initialTouches = event.touches
+	initialZoom = zoom.value
+}
+
+function onTouchMove(event: TouchEvent) {
+	const initialMidpoint = midpoint(initialTouches)
+	const currentMidpoint = midpoint(event.touches)
+	const transform = {
+		scale: distance(event.touches) / distance(initialTouches),
+		translation: {
+			x: currentMidpoint.x - initialMidpoint.x,
+			y: currentMidpoint.y - initialMidpoint.y
+		},
+		origin: initialMidpoint
+	}
+
+	zoomF(initialZoom - transform.scale, {
+		clientX: transform.origin.x,
+		clientY: transform.origin.y
+	})
+}
+
+function onTouchEnd(event: TouchEvent) {
+	gesture = event.touches.length === 2
+}
+
+function onTouchCancle(event: TouchEvent) {
+	gesture = event.touches.length === 2
+}
+
+function midpoint(touches: TouchList) {
+	return {
+		x: (touches[0].clientX + touches[1].clientX) / 2, 
+		y: (touches[0].clientY + touches[1].clientY) / 2
+	}
+}
+
+function distance(touches: TouchList) {
+	return Math.hypot(
+		touches[1].clientX - touches[0].clientX,
+		touches[1].clientY - touches[0].clientY
+	)
+}
+
+//
+
 // Create a new text card when you doubleclick or tap the canvas
 async function onClick(event: MouseEvent) {
 	if (event.target !== canvasRef.value)
@@ -292,26 +358,14 @@ async function onClick(event: MouseEvent) {
 	}
 }
 
+// Zoom using the mouse wheel
 function onWheel(event: WheelEvent) {
 	if (!(useShortcuts().macOS ? event.metaKey : event.ctrlKey))
 		return
 
 	event.preventDefault()
 
-	const prevMousePos = getMousePos(event)
-
-	zoom.value += Math.max(Math.min(event.deltaY, 1), -1) * -.1
-	zoom.value = Math.max(Math.min(zoom.value, 2), .25)
-
-	const mousePos = getMousePos(event)
-	const dX = prevMousePos.x - mousePos.x
-	const dY = prevMousePos.y - mousePos.y
-
-	canvasRef.value.scrollTo({
-		top: canvasRef.value.scrollTop + dY * zoom.value,
-		left: canvasRef.value.scrollLeft + dX * zoom.value,
-		behavior: 'instant'
-	})
+	zoomF(Math.sign(event.deltaY) * -1, event)
 }
 
 function onCardMove(id: string, prevPosition: Position, newPosition: Position) {
@@ -371,13 +425,30 @@ function clearSelection() {
 	selectedCards = []
 }
 
-function getMousePos(event: MouseEvent | WheelEvent) {
+function getMousePos(event: { clientX: number, clientY: number }) {
 	const canvasRect = canvasRef.value.getBoundingClientRect()
 
 	return {
 		x: (canvasRef.value.scrollLeft + event.clientX - canvasRect.left) / zoom.value,
 		y: (canvasRef.value.scrollTop + event.clientY - canvasRect.top) / zoom.value
 	}
+}
+
+function zoomF(v: number, event: { clientX: number, clientY: number }) {
+	const prevMousePos = getMousePos(event)
+	
+	zoom.value += v * .1
+	zoom.value = Math.max(Math.min(zoom.value, 2), .25)
+
+	const mousePos = getMousePos(event)
+	const dX = prevMousePos.x - mousePos.x
+	const dY = prevMousePos.y - mousePos.y
+
+	canvasRef.value.scrollTo({
+		top: canvasRef.value.scrollTop + dY * zoom.value,
+		left: canvasRef.value.scrollLeft + dX * zoom.value,
+		behavior: 'instant'
+	})
 }
 
 const areaSpacerStyle = computed(() => {
@@ -395,8 +466,8 @@ const areaSpacerStyle = computed(() => {
 		// Add padding of another times the viewport size to the canvas
 		top: `${areaRect.height * zoom.value}px`,
 		left: `${areaRect.width * zoom.value}px`,
-		width: `${100}vw`,
-		height: `${100}vh`
+		width: `${100 * zoom.value}vw`,
+		height: `${100 * zoom.value}vh`
 	}
 })
 
@@ -424,3 +495,4 @@ const selectionStyle = computed(() => {
 	}
 })
 </script>
+

@@ -121,13 +121,13 @@ export function defineShortcuts(config: ShortcutsConfig, options: ShortcutsOptio
 		// Parse key and modifiers
 		let shortcut: Partial<Shortcut>
 
-		if (key.includes('-') && key !== '-' && !key.match(chainedShortcutRegex)?.length)
+		if (key.includes('-') && key !== '-' && !key.match(chainedShortcutRegex)?.length && !key.endsWith('-'))
 			console.trace(`[Shortcut] Invalid key: "${key}"`)
 
 		if (key.includes('_') && key !== '_' && !key.match(combinedShortcutRegex)?.length)
 			console.trace(`[Shortcut] Invalid key: "${key}"`)
 
-		const chained = key.includes('-') && key !== '-'
+		const chained = key.includes('-') && key !== '-' && !key.endsWith('-')
 		if (chained) {
 			shortcut = {
 				key: key.toLowerCase(),

@@ -2,9 +2,7 @@
 .card {
 	position: absolute;
 	width: max-content;
-	-background-color: var(--color-card-background);
-	background-color: #242424c0;
-	backdrop-filter: blur(8px);
+	background-color: var(--color-card-background);
 	border: 1px solid var(--color-card-border);
 	border-radius: .25rem;
 	box-shadow: var(--shadow-card);
@@ -34,7 +32,6 @@
 			display: block;
 			position: fixed;
 			inset: -50vh -50vw;
-			z-index: -1;
 		}
 	}
 
