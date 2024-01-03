@@ -2,7 +2,9 @@
 .card {
 	position: absolute;
 	width: max-content;
-	background-color: var(--color-card-background);
+	-background-color: var(--color-card-background);
+	background-color: #242424c0;
+	backdrop-filter: blur(8px);
 	border: 1px solid var(--color-card-border);
 	border-radius: .25rem;
 	box-shadow: var(--shadow-card);
@@ -84,6 +86,7 @@
 		@touchmove="onTouchMove"
 		@click="onClick"
 		@contextmenu="onContextMenu"
+		@wheel="onWheel"
 	>
 		<component
 			:is="getCardComponentType()"
@@ -126,7 +129,9 @@ const pointerDown = ref(false)
 let pointerType: string
 let pointerClickPos: Position
 let pointerOffset: Position
+let cachedPointerEvent: PointerEvent | WheelEvent
 let pointerMoved: boolean
+let canvasListenerAdded = false
 let longPressTimer: ReturnType<typeof setTimeout>
 
 function getCardComponentType() {
@@ -180,9 +185,11 @@ function onPointerDown(event: PointerEvent) {
 	pointerDown.value = true
 }
 
-function onPointerMove(event: PointerEvent) {
+function onPointerMove(event: PointerEvent | WheelEvent) {
 	if (!pointerDown.value)
 		return
+
+		cachedPointerEvent = event
 
 	const dX = Math.abs(pointerClickPos.x - event.clientX)
 	const dY = Math.abs(pointerClickPos.y - event.clientY)
@@ -262,6 +269,27 @@ function onContextMenu(event: MouseEvent) {
 	//  set top left to client mouse pos
 	//  with ::before as overlay
 	// how to handle viewport edges?
+}
+
+// Move cards while scrolling the canvas
+function onWheel(event: WheelEvent) {
+	cachedPointerEvent = event
+
+	if (canvasListenerAdded)
+		return
+
+	// Updating the card position only when the wheel event is fired is not enough
+	// because browsers usually implement smooth scrolling
+	const updPos = () => onPointerMove(cachedPointerEvent)
+
+	props.canvasRef.addEventListener('scroll', updPos)
+	props.canvasRef.addEventListener('scrollend', () => {
+		props.canvasRef.removeEventListener('scroll', updPos)
+		
+		canvasListenerAdded = false
+	}, { once: true })
+
+	canvasListenerAdded = true
 }
 
 function onContentUpdate(fetch?: boolean, empty?: boolean) {
