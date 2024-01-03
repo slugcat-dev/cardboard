@@ -57,7 +57,7 @@ export function isBase64(string: string) {
 }
 
 export async function getLinkPreview(url: string) {
-	if (/^(?!.*<br>)https?:\/\/.+?\.\S+$/gi.test(url)) {
+	if (/^(?!.*<br>)https?:\/\/\S+?\.\S+$/gi.test(url)) {
 		try {
 			return await $fetch('/api/link-preview', { query: { url: new URL(url).toString() } })
 		}
@@ -77,17 +77,15 @@ export function suppressNextClick() {
 }
 
 export async function convert(card: Card) {
-	if (card.type === 'text') {
-		// Convert text cards to image cards or link embeds
-		const linkPreview = await getLinkPreview(card.content)
+	// Convert text cards to image cards or link embeds
+	const linkPreview = await getLinkPreview(card.content)
 
-		if (linkPreview) {
-			if ('isImage' in linkPreview && linkPreview.isImage)
-				card.type = 'image'
-			else {
-				card.type = 'link'
-				card.content = linkPreview
-			}
+	if (linkPreview) {
+		if ('isImage' in linkPreview && linkPreview.isImage)
+			card.type = 'image'
+		else {
+			card.type = 'link'
+			card.content = linkPreview
 		}
 	}
 

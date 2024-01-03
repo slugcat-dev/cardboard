@@ -104,7 +104,7 @@ async function onPaste(event: ClipboardEvent) {
 		return
 	}
 
-	if (!shiftKey.value && isEmpty()) {
+	if (!shiftKey.value && isEmpty() && /^https?:\/\/\S+?\.\S+$/gi.test(clipboardText || '')) {
 		document.execCommand('insertText', false, clipboardText)
 
 		try {

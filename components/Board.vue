@@ -257,6 +257,9 @@ function onTouchStart(event: TouchEvent) {
 	gesture = event.touches.length === 2
 	initialTouches = event.touches
 	initialZoom = zoom.value
+
+	if (gesture)
+		event.preventDefault()
 }
 
 function onTouchMove(event: TouchEvent) {
@@ -449,8 +452,6 @@ function zoomF(v: number, event: { clientX: number, clientY: number }) {
 		left: canvasRef.value.scrollLeft + dX * zoom.value,
 		behavior: 'instant'
 	})
-
-	console.log(zoom.value)
 }
 
 const areaSpacerStyle = computed(() => {
@@ -497,4 +498,3 @@ const selectionStyle = computed(() => {
 	}
 })
 </script>
-
