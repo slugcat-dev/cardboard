@@ -149,11 +149,11 @@ defineShortcuts({
 		selectedCards = []
 	},
 	// Zoom
-	'meta_+': () => zoomF(1, {
+	'meta_+': () => zoomF(zoom.value * 1.2, {
 		clientX: window.innerWidth / 2,
 		clientY: window.innerHeight / 2
 	}),
-	'meta_-': () => zoomF(-1, {
+	'meta_-': () => zoomF(zoom.value * .8, {
 		clientX: window.innerWidth / 2,
 		clientY: window.innerHeight / 2
 	})
@@ -271,7 +271,10 @@ function onTouchMove(event: TouchEvent) {
 		origin: initialMidpoint
 	}
 
-	zoom.value = transform.scale
+	zoomF(initialZoom * transform.scale, {
+		clientX: transform.origin.x,
+		clientY: transform.origin.y,
+	})
 }
 
 function onTouchEnd(event: TouchEvent) {
@@ -362,7 +365,7 @@ function onWheel(event: WheelEvent) {
 
 	event.preventDefault()
 
-	zoomF(Math.sign(event.deltaY) * -1, event)
+	zoomF(zoom.value + zoom.value * Math.sign(event.deltaY) * -.1, event)
 }
 
 function onCardMove(id: string, prevPosition: Position, newPosition: Position) {
@@ -431,10 +434,10 @@ function getMousePos(event: { clientX: number, clientY: number }) {
 	}
 }
 
-function zoomF(v: number, event: { clientX: number, clientY: number }) {
+function zoomF(v: number, event: { clientX: number, clientY: number }) {	
 	const prevMousePos = getMousePos(event)
 	
-	zoom.value += v * .1
+	zoom.value = v
 	zoom.value = Math.max(Math.min(zoom.value, 2), .25)
 
 	const mousePos = getMousePos(event)
@@ -446,6 +449,8 @@ function zoomF(v: number, event: { clientX: number, clientY: number }) {
 		left: canvasRef.value.scrollLeft + dX * zoom.value,
 		behavior: 'instant'
 	})
+
+	console.log(zoom.value)
 }
 
 const areaSpacerStyle = computed(() => {
