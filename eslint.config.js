@@ -8,17 +8,7 @@ export default antfu(
 		},
 		typescript: true,
 		vue: true,
-		overrides: {
-			vue: {
-				'vue/comma-dangle': ['error', 'never'],
-				'vue/component-tags-order': ['error', {
-					order: ['style', 'template', 'script']
-				}],
-				'vue/block-order': ['error', {
-					order: ['style', 'template', 'script']
-				}]
-			}
-		}
+		overrides: { vue: { 'vue/comma-dangle': ['error', 'never'] } }
 	},
 	{
 		rules: {

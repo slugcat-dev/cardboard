@@ -146,10 +146,3 @@ a {
 .allow-pointer-events {
 	pointer-events: auto;
 }
-
-.nuxt-loading-indicator {
-	height: 2px !important;
-	background: var(--color-accent) !important;
-	transition: transform .2s, height .2s, opacity .2s !important;
-	z-index: 100 !important;
-}

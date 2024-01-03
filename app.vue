@@ -18,7 +18,7 @@ body {
 
 .page-enter-from {
 	opacity: 0;
-	transform: translateY(150px);
+	transform: translateY(2vh);
 }
 
 .page-leave-to {
@@ -27,7 +27,7 @@ body {
 </style>
 
 <template>
-	<NuxtLoadingIndicator />
+	<LoadingIndicator />
 	<NuxtPage />
 </template>
 
