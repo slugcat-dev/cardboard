@@ -357,19 +357,19 @@ function getMousePos(event: { clientX: number, clientY: number }) {
 }
 
 // TODO: rename
-function zoomF(v: number, event: { clientX: number, clientY: number }, transition: Position = { x: 0, y: 0 }) {
+function zoomF(v: number, event: { clientX: number, clientY: number }, translation: Position = { x: 0, y: 0 }) {
 	const prevMousePos = getMousePos(event)
 
 	zoom.value = v
 	zoom.value = Math.max(Math.min(zoom.value, 2), .25)
 
 	const mousePos = getMousePos(event)
-	const dX = prevMousePos.x - mousePos.x
-	const dY = prevMousePos.y - mousePos.y
+	const dX = (prevMousePos.x - mousePos.x) * zoom.value
+	const dY = (prevMousePos.y - mousePos.y) * zoom.value
 
 	canvasRef.value.scrollTo({
-		top: canvasRef.value.scrollTop + dY * zoom.value - transition.y,
-		left: canvasRef.value.scrollLeft + dX * zoom.value - transition.x,
+		top: canvasRef.value.scrollTop + dY - translation.y / zoom.value,
+		left: canvasRef.value.scrollLeft + dX - translation.x / zoom.value,
 		behavior: 'instant'
 	})
 }
