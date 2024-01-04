@@ -219,22 +219,21 @@ function onContentUpdate(fetch?: boolean, empty?: boolean) {
 		updateCard(true)
 }
 
+// Workaround for the contextmenu event which is not implemented in iOS Safari
 function startLongPress(event: PointerEvent) {
 	cancleLongPress()
 
-	longPressTimer = setTimeout(() => {
-		// Workaround for the contextmenu event which is not implemented in iOS Safari
-		if (navigator.vendor.includes('Apple') && 'ontouchstart' in window) {
-			event.target?.dispatchEvent(new MouseEvent('contextmenu', {
-				bubbles: true,
-				cancelable: true,
-				view: window,
-				clientX: event.clientX,
-				clientY: event.clientY
-			}))
+	if (!(navigator.vendor.includes('Apple') && 'ontouchstart' in window))
+		return
 
-			suppressNextClick()
-		}
+	longPressTimer = setTimeout(() => {
+		event.target?.dispatchEvent(new MouseEvent('contextmenu', {
+			bubbles: true,
+			cancelable: true,
+			view: window,
+			clientX: event.clientX,
+			clientY: event.clientY
+		}))
 	}, 500)
 }
 
