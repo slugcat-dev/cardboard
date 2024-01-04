@@ -145,7 +145,6 @@ function onClick(event: MouseEvent) {
 		activate(event)
 }
 
-// Delete card on right click
 function onContextMenu(event: MouseEvent) {
 	emit('selectionClear')
 
@@ -153,6 +152,9 @@ function onContextMenu(event: MouseEvent) {
 		return
 
 	event.preventDefault()
+
+	if (event.shiftKey)
+		return deleteCard()
 
 	useContextMenu().show({
 		position: {
