@@ -164,11 +164,13 @@ function onPointerUp() {
 let gesture = false
 let initialTouches: TouchList
 let initialZoom = 1
+let prevTranslation: Position
 
 function onTouchStart(event: TouchEvent) {
 	gesture = event.touches.length === 2
 	initialTouches = event.touches
 	initialZoom = zoom.value
+	prevTranslation = { x: 0, y: 0 }
 
 	if (gesture)
 		event.preventDefault()
@@ -190,11 +192,17 @@ function onTouchMove(event: TouchEvent) {
 		},
 		origin: initialMidpoint
 	}
+	const translationDelta = {
+		x: transform.translation.x - prevTranslation.x,
+		y: transform.translation.y - prevTranslation.y
+	}
 
 	zoomF(initialZoom * transform.scale, {
 		clientX: transform.origin.x + transform.translation.x,
 		clientY: transform.origin.y + transform.translation.y
-	}, transform.translation)
+	}, translationDelta)
+
+	prevTranslation = transform.translation
 }
 
 function onTouchEnd(event: TouchEvent) {
@@ -368,8 +376,8 @@ function zoomF(v: number, event: { clientX: number, clientY: number }, translati
 	const dY = (prevMousePos.y - mousePos.y) * zoom.value
 
 	canvasRef.value.scrollTo({
-		top: canvasRef.value.scrollTop + dY - translation.y * zoom.value,
-		left: canvasRef.value.scrollLeft + dX - translation.x * zoom.value,
+		top: canvasRef.value.scrollTop + dY - translation.y,
+		left: canvasRef.value.scrollLeft + dX - translation.x,
 		behavior: 'instant'
 	})
 }
