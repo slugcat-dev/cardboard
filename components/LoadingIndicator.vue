@@ -5,7 +5,7 @@ const { progress, isLoading } = useLoadingIndicator()
 <template>
 	<div
 		class="loading-indicator"
-		:style="{ height: isLoading ? '2.75rem' : 0 }"
+		:style="{ height: isLoading ? '2px' : 0 }"
 	>
 		<div :style="{ width: `${progress}%` }" />
 	</div>
@@ -14,13 +14,9 @@ const { progress, isLoading } = useLoadingIndicator()
 <style lang="scss">
 .loading-indicator {
   position: fixed;
-  top: 0;
-  left: 0;
   z-index: 15;
-  width: calc(100vw - .5rem);
-	margin: .25rem;
-  background-color: var(--color-accent-25);
-  border-radius: .375rem;
+  width: 100vw;
+  background-color: var(--color-background-secondary);
 	transition: .2s;
 
   div {

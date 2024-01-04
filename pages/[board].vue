@@ -9,15 +9,28 @@ useSeoMeta({
 </script>
 
 <template>
-	<div>
-		<BoardHeader />
+	<div id="board">
 		<BoardSidebar />
-		<BoardCanvas />
+		<div class="board-main">
+			<BoardHeader />
+			<BoardCanvas />
+		</div>
 	</div>
 </template>
 
 <style>
 body {
 	overflow: hidden;
+}
+
+#board {
+	display: flex;
+	height: 100vh;
+
+	.board-main {
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
+	}
 }
 </style>

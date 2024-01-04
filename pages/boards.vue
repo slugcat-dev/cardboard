@@ -66,22 +66,22 @@ async function logout() {
 <style>
 main {
 	display: flex;
-	height: 100vh;
-	justify-content: center;
 	align-items: center;
+	justify-content: center;
+	height: 100vh;
 }
 
 .welcome {
 	display: flex;
-	align-items: center;
 	gap: .5ch;
+	align-items: center;
 	font-size: 2.5rem;
 }
 
 .profile-picture {
 	width: 1em;
 	height: 1em;
-	border-radius: 100%;
 	background-color: var(--color-background-secondary);
+	border-radius: 100%;
 }
 </style>

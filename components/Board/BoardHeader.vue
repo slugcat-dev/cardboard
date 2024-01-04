@@ -4,8 +4,6 @@ const settings = useSettings()
 const boardNameRef = ref()
 const { data } = await useFetch(`/api/boards/${route.params.board}`, { method: 'GET' })
 const board = data.value as Board
-const session = useUserSession()
-const { user } = session
 
 function onBoardNameUpdate() {
 	const name = boardNameRef.value.textContent
@@ -75,35 +73,18 @@ async function deleteBoard() {
 				Delete Board
 			</button>
 		</div>
-		<div
-			class="profile allow-pointer-events"
-			@click="session.clear()"
-		>
-			<img
-				class="profile-picture"
-				:src="user.picture"
-				draggable="false"
-			>
-			{{ user.name }}
-		</div>
 	</header>
 </template>
 
 <style lang="scss">
 #header {
-	position: fixed;
-	top: 0;
-	left: 0;
 	z-index: 10;
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
-	width: calc(100vw - .5rem);
-	margin: .25rem;
 	padding: .5rem 1rem;
 	background-color: var(--color-background-secondary);
-	border: 1px solid var(--color-border);
-	border-radius: .5rem;
+	border-bottom: 1px solid var(--color-border);
 	box-shadow: var(--shadow-card);
 	user-select: none;
 	pointer-events: none;
@@ -133,21 +114,6 @@ async function deleteBoard() {
 		.option,
 		.option > input[type="checkbox"] {
 			cursor: pointer;
-		}
-	}
-
-	.profile {
-		display: flex;
-		gap: .5rem;
-		align-items: center;
-		font-weight: bold;
-		cursor: pointer;
-
-		.profile-picture {
-			width: 1.5rem;
-			height: 1.5rem;
-			background-color: var(--color-scrollbar);
-			border-radius: 100%;
 		}
 	}
 }

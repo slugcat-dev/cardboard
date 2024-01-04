@@ -51,9 +51,9 @@ function login(provider: string) {
 <style lang="scss">
 main {
 	display: flex;
-	height: 100vh;
-	justify-content: center;
 	align-items: center;
+	justify-content: center;
+	height: 100vh;
 }
 
 .signin {
@@ -64,24 +64,24 @@ main {
 
 	.signin-button {
 		display: flex;
-		width: 250px;
-		justify-content: center;
-		align-items: center;
 		gap: .75rem;
+		align-items: center;
+		justify-content: center;
+		width: 250px;
 		padding: .75rem;
-		font-size: 1rem;
-		font-weight: bold;
 		color: currentcolor;
+		font-weight: bold;
+		font-size: 1rem;
 		background-color: transparent;
 		border: 1px solid gray;
 		border-radius: .375rem;
 		box-shadow: var(--color-scrollbar) 0 1px;
-		transition: box-shadow .2s;
 		cursor: pointer;
+		transition: box-shadow .2s;
 
 		&:disabled {
-			opacity: .75;
 			cursor: not-allowed;
+			opacity: .75;
 		}
 
 		&:hover:not(:disabled) {

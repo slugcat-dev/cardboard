@@ -470,6 +470,7 @@ const selectionStyle = computed(() => {
 </template>
 
 <style lang="scss">
+/* TODO */
 .loading {
 	display: flex;
 	gap: 2rem;
@@ -481,8 +482,7 @@ const selectionStyle = computed(() => {
 
 #canvas {
 	position: relative;
-	top: 2.875rem;
-	height: calc(100vh - 2.875rem);
+	flex-grow: 1;
 	overflow: auto;
 	background-attachment: local;
 	user-select: none;
