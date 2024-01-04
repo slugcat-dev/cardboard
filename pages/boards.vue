@@ -1,25 +1,25 @@
-<style>
-main {
-	display: flex;
-	height: 100vh;
-	justify-content: center;
-	align-items: center;
+<script setup lang="ts">
+// https://github.com/Atinux/nuxt-todos-edge/blob/main/pages/todos.vue
+
+definePageMeta({
+	middleware: 'auth'
+})
+
+const session = useUserSession()
+const { user } = session
+const boards = (await useFetch('/api/boards', { method: 'GET' })).data.value as any
+
+async function createBoard() {
+	await $fetch('/api/boards', { method: 'POST' })
+
+	// eslint-disable-next-line no-self-assign
+	window.location.href = window.location.href
 }
 
-.welcome {
-	display: flex;
-	align-items: center;
-	gap: .5ch;
-	font-size: 2.5rem;
+async function logout() {
+	await session.clear()
 }
-
-.profile-picture {
-	width: 1em;
-	height: 1em;
-	border-radius: 100%;
-	background-color: var(--color-card-background);
-}
-</style>
+</script>
 
 <template>
 	<main>
@@ -63,25 +63,25 @@ main {
 	</main>
 </template>
 
-<script setup lang="ts">
-// https://github.com/Atinux/nuxt-todos-edge/blob/main/pages/todos.vue
-
-definePageMeta({
-	middleware: 'auth'
-})
-
-const session = useUserSession()
-const { user } = session
-const boards = (await useFetch('/api/boards', { method: 'GET' })).data.value as any
-
-async function createBoard() {
-	await $fetch('/api/boards', { method: 'POST' })
-
-	// eslint-disable-next-line no-self-assign
-	window.location.href = window.location.href
+<style>
+main {
+	display: flex;
+	height: 100vh;
+	justify-content: center;
+	align-items: center;
 }
 
-async function logout() {
-	await session.clear()
+.welcome {
+	display: flex;
+	align-items: center;
+	gap: .5ch;
+	font-size: 2.5rem;
 }
-</script>
+
+.profile-picture {
+	width: 1em;
+	height: 1em;
+	border-radius: 100%;
+	background-color: var(--color-background-secondary);
+}
+</style>

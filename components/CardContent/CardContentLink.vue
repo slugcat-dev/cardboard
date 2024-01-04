@@ -67,7 +67,7 @@ const description = computed(() => {
 		box-shadow: 0px 0px 4px var(--color-icon-shadow);
 
 		&:has(.missing) {
-			background-color: var(--color-link-40);
+			background-color: var(--color-primary-50);
 		}
 
 		.icon-glow {

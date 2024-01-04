@@ -5,87 +5,74 @@
 /* Default (light) theme */
 :root {
 	color-scheme: light dark;
+	--color-text: oklch(0% 0 0);
+	--color-text-secondary: oklch(70% 0 0);
 
-	--color-text: #000000;
-	--color-text-secondary: #000000c0;
-	--color-background: #f3f3f3;
-	--color-scrollbar: #a0a0a0;
+	--color-background: oklch(96% 0 0);
+	--color-background-secondary: oklch(100% 0 0);
+	--color-background-tertiary: oklch(94% 0 0);
 
-	--color-card-background: #ffffff;
-	--color-card-border: #00000020;
+	--color-accent: oklch(60% .2 250);
+	--color-accent-50: oklch(60% .2 250 / 50%);
+	--color-accent-25: oklch(60% .2 250 / 25%);
+
+	--color-good: oklch(70% .2 160);
+	--color-good-50: oklch(70% .2 160 / 50%);
+	--color-good-25: oklch(70% .2 160 / 25%);
+
+	--color-warn: oklch(70% .2 60);
+	--color-warn-50: oklch(70% .2 60 / 50%);
+	--color-warn-25: oklch(70% .2 60 / 25%);
+
+	--color-danger: oklch(70% .2 20);
+	--color-danger-50: oklch(70% .2 20 / 50%);
+	--color-danger-25: oklch(70% .2 20 / 25%);
+
+	--color-border: #0002;
+	--color-scrollbar: oklch(60% 0 0);
+
+
+
+	/* TODO */
 	--shadow-card: 2px 2px 6px #00000010;
-
-	--color-blue: #eb5e99;
-	--color-blue-40: #eb5e9940;
-	--color-link: #0088ff;
-	--color-link-40: #0088ff40;
-	--color-teal: #80c0c0;
 	--color-favicon: #f3f3f3;
 	--color-icon-shadow: transparent;
+	--icon-contrast: .75;
 }
 
 /* Dark theme */
 @media (prefers-color-scheme: dark) {
 	:root {
-		/*
-		text
-		text-secondary
+		--color-text: oklch(80% 0 0);
+		--color-text-secondary: oklch(70% 0 0);
 
-		bg
-		bg-secondary
-		bg-tertiary
+		--color-background: oklch(20% 0 0);
+		--color-background-secondary: oklch(25% 0 0);
+		--color-background-tertiary: oklch(30% 0 0);
 
-		accent
-		success
-		attention
-		danger
+		--color-accent: oklch(80% .125 250);
+		--color-accent-50: oklch(80% .125 250 / 50%);
+		--color-accent-25: oklch(80% .125 250 / 25%);
 
-		accent
-		accent-secondary
-		accent-tertiary
+		--color-good: oklch(80% .125 160);
+		--color-good-50: oklch(80% .125 160 / 50%);
+		--color-good-25: oklch(80% .125 160 / 25%);
 
-		error
-		error-secondary
-		error-tertiary
+		--color-warn: oklch(80% .125 60);
+		--color-warn-50: oklch(80% .125 60 / 50%);
+		--color-warn-25: oklch(80% .125 60 / 25%);
 
-		warning
-		warning-secondary
-		warning-tertiary
+		--color-danger: oklch(80% .125 20);
+		--color-danger-50: oklch(80% .125 20 / 50%);
+		--color-danger-25: oklch(80% .125 20 / 25%);
 
-		link
-		*/
-		--color-text: #cccccc;
-		--color-text-secondary: #ccccccc0;
-		--color-background: #151617;
-
-		--color-accent: #90c4f9;
-		--color-accent-50: color-mix(in srgb, var(--color-accent) 50%, transparent);
-		--color-accent-25: color-mix(in srgb, var(--color-accent) 25%, transparent);
-
-		--color-good: #6ECF9C;
-		--color-good-50: color-mix(in srgb, var(--color-good) 50%, transparent);
-		--color-good-25: color-mix(in srgb, var(--color-good) 25%, transparent);
-
-		--color-warn: #F7A664;
-		--color-warn-50: color-mix(in srgb, var(--color-warn) 50%, transparent);
-		--color-warn-25: color-mix(in srgb, var(--color-warn) 25%, transparent);
-
-		--color-danger: #FAA3A3;
-		--color-danger-50: color-mix(in srgb, var(--color-danger) 50%, transparent);
-		--color-danger-25: color-mix(in srgb, var(--color-danger) 25%, transparent);
+		--color-border: #8881;
+		--color-scrollbar: oklch(40% 0 0);
 
 
-		--color-scrollbar: #404040;
 
-		--color-card-background: #1D1E1F;
-		--color-card-border: #222528;
+		/* TODO */
 		--shadow-card: 2px 2px 4px #00000040;
-
-		--color-blue: #f00;
-		--color-blue-40: #f00;
-		--color-link: var(--color-accent);
-		--color-link-40: #22aaff60;
-		--color-teal: #104040;
 		--color-favicon: #404040;
 		--color-icon-shadow: #00000060;
 		--icon-contrast: .75;
@@ -103,7 +90,7 @@
 }
 
 a {
-	color: var(--color-link);
+	color: var(--color-accent);
 	text-decoration: none;
 
 	&:hover,

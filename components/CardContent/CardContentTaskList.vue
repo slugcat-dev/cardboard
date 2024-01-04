@@ -107,7 +107,7 @@ defineExpose({ activate })
 			padding: .5rem;
 			gap: .5rem;
 			font-size: .875rem;
-			background-color: #fff1;
+			background-color: var(--color-background-tertiary);
 			border-radius: .25rem;
 			word-break: break-word;
 

@@ -66,8 +66,8 @@ const menuStyle = computed(() => {
 
 	position: fixed;
 	padding: .25rem;
-	background-color: var(--color-card-background);
-	border: 1px solid var(--color-card-border);
+	background-color: var(--color-background-secondary);
+	border: 1px solid var(--color-border);
 	border-radius: .25rem;
 	box-shadow: var(--shadow-card);
 	z-index: 30;

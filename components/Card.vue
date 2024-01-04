@@ -92,7 +92,7 @@ function onPointerMove(event: PointerEvent | WheelEvent) {
 
 	const dX = Math.abs(pointerClickPos.x - event.clientX)
 	const dY = Math.abs(pointerClickPos.y - event.clientY)
-	const pointerMoveThreshold = pointerType === 'touch' ? 10 : 4
+	const pointerMoveThreshold = window.matchMedia('(pointer: coarse)').matches ? 10 : 4
 
 	if (!(dX > pointerMoveThreshold || dY > pointerMoveThreshold || pointerMoved))
 		return
@@ -364,8 +364,8 @@ defineExpose({ activate, alignToGrid, getSizeRect })
 .card {
 	position: absolute;
 	width: max-content;
-	background-color: var(--color-card-background);
-	border: 1px solid var(--color-card-border);
+	background-color: var(--color-background-secondary);
+	border: 1px solid var(--color-border);
 	border-radius: .25rem;
 	box-shadow: var(--shadow-card);
 	transform-origin: top left;

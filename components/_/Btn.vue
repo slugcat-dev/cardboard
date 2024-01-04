@@ -25,8 +25,8 @@ defineProps({
 	gap: .25rem;
 	font-size: .75rem;
 	align-items: center;
-	background-color: var(--color-card-background);
-	border: 1px solid var(--color-card-border);
+	background-color: var(--color-background-secondary);
+	border: 1px solid var(--color-border);
 	border-bottom-width: 2px;
 	border-radius: .375rem;
 	cursor: pointer;

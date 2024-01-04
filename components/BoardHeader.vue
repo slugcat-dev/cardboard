@@ -100,8 +100,8 @@ async function deleteBoard() {
 	padding: .5rem 1rem;
 	justify-content: space-between;
 	align-items: flex-start;
-	background-color: var(--color-card-background);
-	border: 1px solid var(--color-card-border);
+	background-color: var(--color-background-secondary);
+	border: 1px solid var(--color-border);
 	border-radius: .5rem;
 	box-shadow: var(--shadow-card);
 	z-index: 10;
@@ -112,16 +112,14 @@ async function deleteBoard() {
 	.board-name {
 		margin-left: -.25rem;
 		padding: .125rem .25rem;
-		border: 1px solid transparent;
 
 		&:hover:not(:focus-visible) {
 			text-decoration: underline;
 		}
 
 		&:focus-visible {
-			border: 1px solid var(--color-blue);
 			border-radius: .25rem;
-			box-shadow: 0px 0px 0px 2px var(--color-blue-40);
+			box-shadow: 0px 0px 0px 2px var(--color-accent);
 			outline: none;
 		}
 	}
