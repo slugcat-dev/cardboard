@@ -228,7 +228,9 @@ function startLongPress(event: PointerEvent) {
 			event.target?.dispatchEvent(new MouseEvent('contextmenu', {
 				bubbles: true,
 				cancelable: true,
-				view: window
+				view: window,
+				clientX: event.clientX,
+				clientY: event.clientY
 			}))
 
 			suppressNextClick()
