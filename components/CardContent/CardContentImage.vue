@@ -44,8 +44,8 @@ defineExpose({ activate })
 		& > img {
 			display: block;
 			width: auto;
-			height: auto;
 			max-width: 334px;
+			height: auto;
 			max-height: 334px;
 			border-radius: .25rem;
 			-webkit-touch-callout: none;
@@ -53,15 +53,15 @@ defineExpose({ activate })
 	}
 
 	&.active {
-		display: flex;
 		position: fixed;
-		inset: 0;
+		z-index: 5;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		padding: 2rem;
 		padding-top: 4.875rem;
-		justify-content: center;
-		align-items: center;
 		background-color: black;
-		z-index: 5;
+		inset: 0;
 
 		& > img {
 			width: auto;

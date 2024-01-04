@@ -21,10 +21,10 @@ defineProps({
 <style lang="scss">
 .btn {
 	display: inline-flex;
-	padding: .5rem .75rem;
 	gap: .25rem;
-	font-size: .75rem;
 	align-items: center;
+	padding: .5rem .75rem;
+	font-size: .75rem;
 	background-color: var(--color-background-tertiary);
 	border: 1px solid var(--color-border);
 	border-bottom-width: 2px;

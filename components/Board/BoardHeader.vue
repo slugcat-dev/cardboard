@@ -91,20 +91,20 @@ async function deleteBoard() {
 
 <style lang="scss">
 #header {
-	display: flex;
 	position: fixed;
 	top: 0;
 	left: 0;
+	z-index: 10;
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
 	width: calc(100vw - .5rem);
 	margin: .25rem;
 	padding: .5rem 1rem;
-	justify-content: space-between;
-	align-items: flex-start;
 	background-color: var(--color-background-secondary);
 	border: 1px solid var(--color-border);
 	border-radius: .5rem;
 	box-shadow: var(--shadow-card);
-	z-index: 10;
 	user-select: none;
 	pointer-events: none;
 
@@ -114,8 +114,8 @@ async function deleteBoard() {
 
 		&:focus-visible {
 			border-radius: .25rem;
-			box-shadow: 0 0 0 2px var(--color-accent);
 			outline: none;
+			box-shadow: 0 0 0 2px var(--color-accent);
 		}
 
 		&:hover:not(:focus-visible) {
@@ -127,8 +127,8 @@ async function deleteBoard() {
 		display: flex;
 		gap: 1rem;
 		align-items: center;
-		font-size: .875rem;
 		font-weight: 500;
+		font-size: .875rem;
 
 		.option,
 		.option > input[type="checkbox"] {
@@ -138,8 +138,8 @@ async function deleteBoard() {
 
 	.profile {
 		display: flex;
-		align-items: center;
 		gap: .5rem;
+		align-items: center;
 		font-weight: bold;
 		cursor: pointer;
 

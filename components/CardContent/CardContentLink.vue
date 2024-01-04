@@ -52,10 +52,10 @@ const description = computed(() => {
 <style lang="scss">
 .card-link-embed {
 	display: flex;
-	width: 274px;
-	padding: calc(.5rem - 1px);
 	gap: .5rem;
 	align-items: center;
+	width: 274px;
+	padding: calc(.5rem - 1px);
 
 	.image-container {
 		position: relative;
@@ -64,7 +64,7 @@ const description = computed(() => {
 		padding: .375rem;
 		background-color: var(--color-favicon);
 		border-radius: .5rem;
-		box-shadow: 0px 0px 4px var(--color-icon-shadow);
+		box-shadow: 0 0 4px var(--color-icon-shadow);
 
 		&:has(.missing) {
 			background-color: var(--color-accent-25);
@@ -87,15 +87,15 @@ const description = computed(() => {
 			width: 1rem;
 			height: 1rem;
 			border-radius: .125rem;
-			filter: drop-shadow(0px 0px 4px var(--color-icon-shadow));
+			filter: drop-shadow(0 0 4px var(--color-icon-shadow));
 			-webkit-touch-callout: none;
 		}
 	}
 
 	.text-content {
 		display: flex;
-		width: calc(100% - 2.5rem);
 		flex-direction: column;
+		width: calc(100% - 2.5rem);
 		font-size: .875rem;
 
 		.title,

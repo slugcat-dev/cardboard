@@ -143,9 +143,9 @@ defineExpose({ activate })
 
 <style>
 .card-text {
-	font-size: .875rem;
-	padding: calc(.5rem - 1px);
 	min-height: 2.125rem;
+	padding: calc(.5rem - 1px);
+	font-size: .875rem;
 	outline: none;
 }
 </style>

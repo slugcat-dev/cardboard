@@ -57,22 +57,22 @@ const menuStyle = computed(() => {
 <style>
 .wrapper {
 	position: fixed;
-	inset: 0;
-	background-color: #0008;
 	z-index: 18;
+	background-color: #0008;
 	isolation: isolate;
+	inset: 0;
 }
 
 .context-menu {
+	position: fixed;
+	z-index: 30;
 	display: flex;
 	flex-direction: column;
 	gap: .25rem;
-	position: fixed;
 	padding: .25rem;
 	background-color: var(--color-background-secondary);
 	border: 1px solid var(--color-border);
 	border-radius: .25rem;
 	box-shadow: var(--shadow-card);
-	z-index: 30;
 }
 </style>

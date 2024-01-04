@@ -100,49 +100,49 @@ defineExpose({ activate })
 	ul {
 		display: flex;
 		flex-direction: column;
+		gap: .25rem;
 		max-width: 258px;
 		margin: .5rem 0;
 		padding: 0;
-		gap: .25rem;
 		list-style: none;
 
 		li {
 			display: flex;
+			gap: .5rem;
 			align-items: flex-start;
 			padding: .5rem;
-			gap: .5rem;
 			font-size: .875rem;
+			word-break: break-word;
 			background-color: var(--color-background-tertiary);
 			border-radius: .25rem;
-			word-break: break-word;
 
 			&.done:not(:only-child) {
 				margin-top: calc((var(--height) + .25rem) * -1);
-				opacity: 0;
-				transform: scale(.75);
-				transition: .2s .6s, margin-top .2s .8s;
 				overflow: clip;
+				transform: scale(.75);
+				opacity: 0;
+				transition: .2s .6s, margin-top .2s .8s;
 			}
 
 			& input {
 				position: relative;
-				appearance: none;
-				min-width: .875rem;
 				width: .875rem;
+				min-width: .875rem;
 				height: .875rem;
 				margin: 0;
 				margin-top: .125rem;
 				border: 1px solid gray;
 				border-radius: 100%;
 				cursor: pointer;
+				appearance: none;
 
 				&::before {
-					content: '';
-					visibility: hidden;
 					position: absolute;
-					inset: 0;
 					border: 2px dotted var(--color-good);
 					border-radius: 100%;
+					visibility: hidden;
+					content: '';
+					inset: 0;
 				}
 
 				&:checked {
@@ -151,9 +151,9 @@ defineExpose({ activate })
 
 					&::before {
 						visibility: visible;
-						inset: -.5rem;
 						opacity: 0;
 						transition: .4s, opacity .2s .2s;
+						inset: -.5rem;
 					}
 				}
 			}

@@ -369,8 +369,8 @@ defineExpose({ activate, alignToGrid, getSizeRect })
 	border-radius: .25rem;
 	box-shadow: var(--shadow-card);
 	transform-origin: top left;
-	touch-action: none;
 	cursor: grab;
+	touch-action: none;
 
 	&.content-active {
 		cursor: auto;
@@ -390,9 +390,9 @@ defineExpose({ activate, alignToGrid, getSizeRect })
 		cursor: grabbing;
 
 		&::before {
-			content: '';
-			display: block;
 			position: fixed;
+			display: block;
+			content: '';
 			inset: -50vh -50vw;
 		}
 	}

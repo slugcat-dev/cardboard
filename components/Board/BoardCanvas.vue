@@ -472,10 +472,10 @@ const selectionStyle = computed(() => {
 <style lang="scss">
 .loading {
 	display: flex;
-	height: 100vh;
-	justify-content: center;
-	align-items: center;
 	gap: 2rem;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
 	font-size: 2rem;
 }
 
@@ -483,10 +483,10 @@ const selectionStyle = computed(() => {
 	position: relative;
 	top: 2.875rem;
 	height: calc(100vh - 2.875rem);
-	background-attachment: local;
 	overflow: auto;
-	scroll-behavior: smooth;
+	background-attachment: local;
 	user-select: none;
+	scroll-behavior: smooth;
 
 	.area-spacer {
 		position: absolute;
@@ -495,11 +495,11 @@ const selectionStyle = computed(() => {
 
 	.selection {
 		position: absolute;
+		z-index: 1;
 		background-color: var(--color-accent-25);
 		border: 1px solid var(--color-accent);
 		transition: opacity .2s;
 		pointer-events: none;
-		z-index: 1;
 	}
 }
 </style>

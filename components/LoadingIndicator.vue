@@ -16,12 +16,12 @@ const { progress, isLoading } = useLoadingIndicator()
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 15;
   width: calc(100vw - .5rem);
 	margin: .25rem;
   background-color: var(--color-accent-25);
   border-radius: .375rem;
 	transition: .2s;
-  z-index: 15;
 
   div {
     height: inherit;

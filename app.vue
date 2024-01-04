@@ -49,9 +49,9 @@ body {
 	height: 100vh;
 	margin: 0;
 	padding: 0;
+	color: var(--color-text);
 	font-family: Roboto, system-ui, sans-serif;
 	line-height: 1.25em;
-	color: var(--color-text);
 	background-color: var(--color-background);
 	-webkit-tap-highlight-color: transparent;
 }
@@ -62,8 +62,8 @@ body {
 }
 
 .page-enter-from {
-	opacity: 0;
 	transform: translateY(2vh);
+	opacity: 0;
 }
 
 .page-leave-to {
