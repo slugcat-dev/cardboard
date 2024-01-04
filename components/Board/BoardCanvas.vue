@@ -496,6 +496,7 @@ const selectionStyle = computed(() => {
 	background-attachment: local;
 	user-select: none;
 	scroll-behavior: smooth;
+	touch-action: pan-x pan-y;
 
 	.area-spacer {
 		position: absolute;
