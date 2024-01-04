@@ -1,4 +1,5 @@
 // TODO: nuxt-ui useColorMode
+// TODO: vuseuse useStorage
 export const useSettings = createSharedComposable(() => {
 	const settings = reactive({
 		grid: {

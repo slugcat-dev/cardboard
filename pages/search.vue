@@ -11,6 +11,7 @@ const board = data.value as Board
 
 cards.value = board.cards as Card[]
 
+// TODO: vueuse useFuse
 const fuse = new Fuse(cards.value, {
 	includeScore: true,
 	ignoreLocation: true,

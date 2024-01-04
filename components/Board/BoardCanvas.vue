@@ -194,7 +194,7 @@ function onTouchMove(event: TouchEvent) {
 	zoomF(initialZoom * transform.scale, {
 		clientX: transform.origin.x + transform.translation.x,
 		clientY: transform.origin.y + transform.translation.y
-	})
+	}, transform.translation)
 }
 
 function onTouchEnd(event: TouchEvent) {
@@ -356,7 +356,8 @@ function getMousePos(event: { clientX: number, clientY: number }) {
 	}
 }
 
-function zoomF(v: number, event: { clientX: number, clientY: number }) {
+// TODO: rename
+function zoomF(v: number, event: { clientX: number, clientY: number }, transition: Position = { x: 0, y: 0 }) {
 	const prevMousePos = getMousePos(event)
 
 	zoom.value = v
@@ -367,8 +368,8 @@ function zoomF(v: number, event: { clientX: number, clientY: number }) {
 	const dY = prevMousePos.y - mousePos.y
 
 	canvasRef.value.scrollTo({
-		top: canvasRef.value.scrollTop + dY * zoom.value,
-		left: canvasRef.value.scrollLeft + dX * zoom.value,
+		top: canvasRef.value.scrollTop + dY * zoom.value + transition.y,
+		left: canvasRef.value.scrollLeft + dX * zoom.value + transition.x,
 		behavior: 'instant'
 	})
 }

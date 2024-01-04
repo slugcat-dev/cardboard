@@ -4,6 +4,7 @@ definePageMeta({
 })
 
 useSeoMeta({
+	// TODO: vueuse useRouteParams
 	title: useRoute().params.board.toString()
 })
 </script>
