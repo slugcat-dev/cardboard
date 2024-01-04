@@ -1,5 +1,3 @@
-import { createSharedComposable, useEventListener } from '@vueuse/core'
-
 export const useKeys = createSharedComposable(() => {
 	const macOS = process.client && navigator.userAgent.includes('Macintosh')
 	const metaKey = ref(false)

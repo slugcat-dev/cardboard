@@ -67,7 +67,7 @@ const description = computed(() => {
 		box-shadow: 0px 0px 4px var(--color-icon-shadow);
 
 		&:has(.missing) {
-			background-color: var(--color-primary-50);
+			background-color: var(--color-accent-25);
 		}
 
 		.icon-glow {
@@ -77,7 +77,7 @@ const description = computed(() => {
 			width: 1.75rem;
 			height: 1.75rem;
 			border-radius: .5rem;
-			filter: blur(20px) contrast(var(--icon-contrast, 1)) saturate(2);
+			filter: blur(16px) contrast(var(--icon-contrast, 1)) saturate(2);
 			clip-path: fill-box;
 			-webkit-touch-callout: none;
 		}

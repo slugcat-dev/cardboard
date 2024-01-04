@@ -1,13 +1,12 @@
 <script setup lang="ts">
-defineProps(['card'])
+const { card } = defineProps(['card'])
+
+const { data } = await useFetch(`/api/boards/${card.content}`, { method: 'GET' })
+const board = data.value as Board
 </script>
 
 <template>
 	<NuxtLink :to="card.content">
-		{{ card.content }}
+		{{ board.name || 'loading' }}
 	</NuxtLink>
 </template>
-
-<style lang="scss">
-
-</style>

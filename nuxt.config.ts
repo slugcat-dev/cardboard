@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
 	devtools: { enabled: true },
 	modules: [
+		'@vueuse/nuxt',
 		'nuxt-auth-utils',
 		'nuxt-icon',
 		'nuxt-mongoose'

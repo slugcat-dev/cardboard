@@ -1,3 +1,53 @@
+<script setup lang="ts">
+const { loggedIn } = useUserSession()
+const signinButtonGoogle = ref()
+const signinButtonGithub = ref()
+
+function login(provider: string) {
+	signinButtonGoogle.value.disabled = true
+	signinButtonGithub.value.disabled = true
+
+	navigateTo(`/signin/${provider}`, { external: true })
+}
+</script>
+
+<template>
+	<main>
+		<div v-if="loggedIn">
+			<NuxtLink to="/boards">
+				Dashboard
+			</NuxtLink>
+		</div>
+		<div v-else>
+			<h1>Sign In</h1>
+			<div class="signin">
+				<button
+					ref="signinButtonGoogle"
+					class="signin-button"
+					@click="login('google')"
+				>
+					<Icon
+						name="mdi:google"
+						size="1.5rem"
+					/>
+					Google
+				</button>
+				<button
+					ref="signinButtonGithub"
+					class="signin-button"
+					@click="login('github')"
+				>
+					<Icon
+						name="mdi:github"
+						size="1.5rem"
+					/>
+					GitHub
+				</button>
+			</div>
+		</div>
+	</main>
+</template>
+
 <style lang="scss">
 main {
 	display: flex;
@@ -21,56 +71,22 @@ main {
 		padding: .75rem;
 		font-size: 1rem;
 		font-weight: bold;
-		color: currentColor;
+		color: currentcolor;
 		background-color: transparent;
 		border: 1px solid gray;
 		border-radius: .375rem;
-		box-shadow: var(--color-scrollbar) 0px 1px;
+		box-shadow: var(--color-scrollbar) 0 1px;
 		transition: box-shadow .2s;
 		cursor: pointer;
 
-		&:hover {
-			box-shadow: var(--color-scrollbar) 0px 0px 0px 2px;
+		&:disabled {
+			opacity: .75;
+			cursor: not-allowed;
+		}
+
+		&:hover:not(:disabled) {
+			box-shadow: var(--color-scrollbar) 0 0 0 2px;
 		}
 	}
 }
 </style>
-
-<template>
-	<main>
-		<div v-if="loggedIn">
-			<NuxtLink to="/boards">
-				Dashboard
-			</NuxtLink>
-		</div>
-		<div v-else>
-			<h1>Sign In</h1>
-			<div class="signin">
-				<button
-					class="signin-button"
-					@click="navigateTo('/signin/google', { external: true })"
-				>
-					<Icon
-						name="mdi:google"
-						size="1.5rem"
-					/>
-					Google
-				</button>
-				<button
-					class="signin-button"
-					@click="navigateTo('/signin/github', { external: true })"
-				>
-					<Icon
-						name="mdi:github"
-						size="1.5rem"
-					/>
-					GitHub
-				</button>
-			</div>
-		</div>
-	</main>
-</template>
-
-<script setup lang="ts">
-const { loggedIn } = useUserSession()
-</script>

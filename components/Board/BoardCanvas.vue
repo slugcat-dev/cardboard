@@ -228,6 +228,8 @@ async function onClick(event: MouseEvent) {
 
 	clearSelection()
 
+	// TODO: pointerType can be undefined
+	// TODO: intercept click on android when tasklist is focused
 	if (prevActiveElement?.className === 'card-text' || (pointerType === 'mouse' && event.detail < 2))
 		return
 
@@ -485,7 +487,6 @@ const selectionStyle = computed(() => {
 	overflow: auto;
 	scroll-behavior: smooth;
 	user-select: none;
-	-webkit-user-select: none;
 
 	.area-spacer {
 		position: absolute;

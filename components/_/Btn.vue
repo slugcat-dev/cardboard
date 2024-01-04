@@ -25,7 +25,7 @@ defineProps({
 	gap: .25rem;
 	font-size: .75rem;
 	align-items: center;
-	background-color: var(--color-background-secondary);
+	background-color: var(--color-background-tertiary);
 	border: 1px solid var(--color-border);
 	border-bottom-width: 2px;
 	border-radius: .375rem;
@@ -38,7 +38,7 @@ defineProps({
 		transition: box-shadow .1s;
 
 		&:hover {
-			box-shadow: 0px 0px 0px 2px var(--color-danger-50);
+			box-shadow: 0 0 0 2px var(--color-danger-50);
 		}
 	}
 }

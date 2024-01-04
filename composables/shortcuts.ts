@@ -1,7 +1,5 @@
 // https://github.com/nuxt/ui/blob/dev/src/runtime/composables/defineShortcuts.ts
 
-import { logicAnd, logicNot } from '@vueuse/math'
-import { useActiveElement, useDebounceFn, useEventListener } from '@vueuse/core'
 import type { WatchSource } from 'vue'
 
 // https://github.com/nuxt/ui/blob/dev/src/runtime/composables/useShortcuts.ts

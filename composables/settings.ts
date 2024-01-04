@@ -1,5 +1,3 @@
-import { createSharedComposable } from '@vueuse/core'
-
 // TODO: nuxt-ui useColorMode
 export const useSettings = createSharedComposable(() => {
 	const settings = reactive({

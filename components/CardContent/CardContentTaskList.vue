@@ -92,6 +92,11 @@ defineExpose({ activate })
 		font-size: 1.125rem;
 	}
 
+	input {
+		width: 100%;
+		margin-right: .25rem;
+	}
+
 	ul {
 		display: flex;
 		flex-direction: column;
@@ -154,11 +159,6 @@ defineExpose({ activate })
 			}
 
 		}
-	}
-
-	input {
-		width: 100%;
-		margin-right: .25rem;
 	}
 }
 </style>

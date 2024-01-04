@@ -11,8 +11,8 @@ useSeoMeta({
 <template>
 	<div>
 		<BoardHeader />
+		<BoardSidebar />
 		<BoardCanvas />
-		<ContextMenu />
 	</div>
 </template>
 

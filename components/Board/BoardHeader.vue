@@ -106,21 +106,20 @@ async function deleteBoard() {
 	box-shadow: var(--shadow-card);
 	z-index: 10;
 	user-select: none;
-	-webkit-user-select: none;
 	pointer-events: none;
 
 	.board-name {
 		margin-left: -.25rem;
 		padding: .125rem .25rem;
 
-		&:hover:not(:focus-visible) {
-			text-decoration: underline;
-		}
-
 		&:focus-visible {
 			border-radius: .25rem;
-			box-shadow: 0px 0px 0px 2px var(--color-accent);
+			box-shadow: 0 0 0 2px var(--color-accent);
 			outline: none;
+		}
+
+		&:hover:not(:focus-visible) {
+			text-decoration: underline;
 		}
 	}
 

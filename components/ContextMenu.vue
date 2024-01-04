@@ -30,24 +30,28 @@ const menuStyle = computed(() => {
 </script>
 
 <template>
-	<div
-		v-if="contextMenu.options"
-		class="wrapper"
-		@click="onClose"
-	/>
-	<div
-		v-if="contextMenu.options"
-		class="context-menu"
-		:style="menuStyle"
-	>
-		<button
-			v-for="entry, index in contextMenu.options.entries"
-			:key="index"
-			@click="fhandler(entry.handler)"
+	<Transition name="page">
+		<div
+			v-if="contextMenu.options"
+			class="wrapper"
+			@mousedown.prevent="onClose"
+		/>
+	</Transition>
+	<Transition name="page">
+		<div
+			v-if="contextMenu.options"
+			class="context-menu"
+			:style="menuStyle"
 		>
-			{{ entry.name }}
-		</button>
-	</div>
+			<button
+				v-for="entry, index in contextMenu.options.entries"
+				:key="index"
+				@click="fhandler(entry.handler)"
+			>
+				{{ entry.name }}
+			</button>
+		</div>
+	</Transition>
 </template>
 
 <style>
@@ -63,7 +67,6 @@ const menuStyle = computed(() => {
 	display: flex;
 	flex-direction: column;
 	gap: .25rem;
-
 	position: fixed;
 	padding: .25rem;
 	background-color: var(--color-background-secondary);

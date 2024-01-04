@@ -398,17 +398,16 @@ defineExpose({ activate, alignToGrid, getSizeRect })
 	}
 
 	&.selected {
-		box-shadow: 0px 0px 0px 2px var(--color-accent-50);
+		box-shadow: 0 0 0 2px var(--color-accent-50);
 	}
 
 	&:has(.card-text:focus-visible) {
-		box-shadow: 0px 0px 0px 2px var(--color-accent);
+		box-shadow: 0 0 0 2px var(--color-accent);
 	}
 
 	&:not(:has(.card-text[contenteditable="true"])),
 	& :not(.card-text[contenteditable="true"]) {
 		user-select: none;
-		-webkit-user-select: none;
 	}
 
 	&.delete {
