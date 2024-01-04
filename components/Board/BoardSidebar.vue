@@ -46,7 +46,7 @@ async function createBoard() {
 
 <style lang="scss">
 #sidebar {
-	width: 200px;
+	width: 220px;
 	height: 100%;
 	padding: .5rem;
 	background-color: var(--color-background-secondary);

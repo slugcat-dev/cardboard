@@ -44,6 +44,8 @@ function login(provider: string) {
 					GitHub
 				</button>
 			</div>
+			<br>
+			If you can not sign in, ask to join<br>by <a href="mailto:join@doublekekse.dev?subject=Request%20to%20join&body=Hey%2C%20I'd%20love%20to%20join%20the%20private%20beta%0A">sending an e-mail</a>
 		</div>
 	</main>
 </template>
