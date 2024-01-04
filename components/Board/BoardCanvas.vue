@@ -368,8 +368,8 @@ function zoomF(v: number, event: { clientX: number, clientY: number }, transitio
 	const dY = prevMousePos.y - mousePos.y
 
 	canvasRef.value.scrollTo({
-		top: canvasRef.value.scrollTop + dY * zoom.value + transition.y,
-		left: canvasRef.value.scrollLeft + dX * zoom.value + transition.x,
+		top: canvasRef.value.scrollTop + dY * zoom.value - transition.y,
+		left: canvasRef.value.scrollLeft + dX * zoom.value - transition.x,
 		behavior: 'instant'
 	})
 }
