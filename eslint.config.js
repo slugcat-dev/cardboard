@@ -6,8 +6,6 @@ export default antfu(
 			indent: 'tab',
 			quotes: 'single'
 		},
-		typescript: true,
-		vue: true,
 		overrides: { vue: { 'vue/comma-dangle': ['error', 'never'] } }
 	},
 	{
