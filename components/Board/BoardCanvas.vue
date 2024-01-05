@@ -205,12 +205,8 @@ function onTouchMove(event: TouchEvent) {
 	prevTranslation = transform.translation
 }
 
-function onTouchEnd(event: TouchEvent) {
-	gesture = event.touches.length === 2
-}
-
-function onTouchCancle(event: TouchEvent) {
-	gesture = event.touches.length === 2
+function onTouchEnd() {
+	gesture = false
 }
 
 function midpoint(touches: TouchList) {
@@ -458,7 +454,7 @@ const selectionStyle = computed(() => {
 			@touchstart="onTouchStart"
 			@touchmove="onTouchMove"
 			@touchend="onTouchEnd"
-			@touchcancel="onTouchCancle"
+			@touchcancel="onTouchEnd"
 			@click="onClick"
 			@wheel="onWheel"
 		>

@@ -137,7 +137,7 @@ function onTouchMove(event: TouchEvent) {
 */
 
 function onClick(event: MouseEvent) {
-	if (isInteractable(event.target))
+	if (isInteractable(event.target) || pointerMoved)
 		return
 
 	if (useShortcuts().macOS ? event.metaKey : event.ctrlKey)
