@@ -33,7 +33,7 @@ const menuStyle = computed(() => {
 	<Transition name="page">
 		<div
 			v-if="contextMenu.options"
-			class="wrapper"
+			class="context-menu-overlay"
 			@mousedown.prevent="onClose"
 		/>
 	</Transition>
@@ -55,12 +55,13 @@ const menuStyle = computed(() => {
 </template>
 
 <style>
-.wrapper {
+.context-menu-overlay {
 	position: fixed;
 	z-index: 18;
 	background-color: #0008;
 	isolation: isolate;
 	inset: 0;
+	user-select: none;
 }
 
 .context-menu {
@@ -74,5 +75,6 @@ const menuStyle = computed(() => {
 	border: 1px solid var(--color-border);
 	border-radius: .25rem;
 	box-shadow: var(--shadow-card);
+	user-select: none;
 }
 </style>

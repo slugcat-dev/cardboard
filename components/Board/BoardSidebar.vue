@@ -72,6 +72,7 @@ function onToggleSidebar() {
 	background-color: var(--color-background-secondary);
 	border-right: 1px solid var(--color-border);
 	transition: margin-left .2s;
+	user-select: none;
 
 	&.hidden{
 		margin-left: -220px;

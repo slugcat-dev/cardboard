@@ -35,7 +35,7 @@ async function deleteBoard() {
 
 <template>
 	<header id="header">
-		<div class="toolbar allow-pointer-events">
+		<div class="toolbar">
 			<NuxtLink to="/boards">
 				<Icon name="mdi:chevron-left" size="1.5rem" />
 			</NuxtLink>
@@ -87,7 +87,6 @@ async function deleteBoard() {
 	border-bottom: 1px solid var(--color-border);
 	box-shadow: var(--shadow-card);
 	user-select: none;
-	pointer-events: none;
 
 	.board-name {
 		margin-left: -.25rem;
