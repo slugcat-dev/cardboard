@@ -10,13 +10,14 @@ const { user } = session
 const boards = (await useFetch('/api/boards', { method: 'GET' })).data.value as any
 
 async function createBoard() {
-	if (boards.length !== 0)
-		await $fetch('/api/boards/welcome', { method: 'POST' })
-	else
-		await $fetch('/api/boards', { method: 'POST' })
+	let data: Board
 
-	// eslint-disable-next-line no-self-assign
-	window.location.href = window.location.href
+	if (boards.length !== 0)
+		data = await $fetch('/api/boards/welcome', { method: 'POST' })
+	else
+		data = await $fetch('/api/boards', { method: 'POST' })
+
+	window.location.href = `/${data.id}`
 }
 
 async function logout() {

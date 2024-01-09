@@ -365,7 +365,9 @@ function zoomF(v: number, event: { clientX: number, clientY: number }, translati
 	const prevMousePos = getMousePos(event)
 
 	zoom.value = v
-	zoom.value = Math.max(Math.min(zoom.value, 2), .25)
+	zoom.value = Math.max(Math.min(zoom.value, 2), .2)
+
+	console.log(zoom.value)
 
 	const mousePos = getMousePos(event)
 	const dX = (prevMousePos.x - mousePos.x) * zoom.value
@@ -427,18 +429,7 @@ const selectionStyle = computed(() => {
 	<ClientOnly>
 		<template #fallback>
 			<div class="loading">
-				<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-					<circle cx="4" cy="12" r="3" fill="currentColor">
-						<animate id="svgSpinners3DotsScale0" attributeName="r" begin="0;svgSpinners3DotsScale1.end-0.25s" dur="0.75s" values="3;1.5;3" />
-					</circle>
-					<circle cx="12" cy="12" r="3" fill="currentColor">
-						<animate attributeName="r" begin="svgSpinners3DotsScale0.end-0.6s" dur="0.75s" values="3;1.5;3" />
-					</circle>
-					<circle cx="20" cy="12" r="3" fill="currentColor">
-						<animate id="svgSpinners3DotsScale1" attributeName="r" begin="svgSpinners3DotsScale0.end-0.45s" dur="0.75s" values="3;1.5;3" />
-					</circle>
-				</svg>
-				<strong>LOADING</strong>
+				LOADING...
 			</div>
 		</template>
 		<div
@@ -481,6 +472,7 @@ const selectionStyle = computed(() => {
 				class="selection"
 				:style="selectionStyle"
 			/>
+			<ContextMenu />
 		</div>
 	</ClientOnly>
 </template>
@@ -488,10 +480,9 @@ const selectionStyle = computed(() => {
 <style lang="scss">
 .loading {
 	display: flex;
-	gap: .5em;
 	align-items: center;
 	margin: auto;
-	font-size: 1.5rem;
+	font-weight: bold;
 }
 
 #canvas {
@@ -500,8 +491,8 @@ const selectionStyle = computed(() => {
 	overflow: auto;
 	background-attachment: local;
 	user-select: none;
-	scroll-behavior: smooth;
 	touch-action: pan-x pan-y;
+	scroll-behavior: smooth;
 
 	.area-spacer {
 		position: absolute;

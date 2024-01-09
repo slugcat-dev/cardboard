@@ -129,13 +129,6 @@ function onPointerUp() {
 	}
 }
 
-/* TODO: Prevent scrolling when dragging the card
-function onTouchMove(event: TouchEvent) {
-	if (!contentActive.value)
-		return event.preventDefault()
-}
-*/
-
 function onClick(event: MouseEvent) {
 	if (isInteractable(event.target) || pointerMoved)
 		return
@@ -347,7 +340,6 @@ defineExpose({ activate, alignToGrid, getSizeRect })
 		@pointerup="onPointerUp"
 		@pointerleave="onPointerUp"
 		@pointercancel="onPointerUp"
-		@touchmove="onTouchMove"
 		@click="onClick"
 		@contextmenu="onContextMenu"
 		@wheel="onWheel"

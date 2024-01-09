@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import '~/assets/style.scss'
-
 const { loggedIn } = useUserSession()
 
 watch(loggedIn, () => {
@@ -40,7 +38,6 @@ useHead({
 <template>
 	<LoadingIndicator />
 	<NuxtPage />
-	<ContextMenu />
 </template>
 
 <style>

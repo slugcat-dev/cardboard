@@ -2,7 +2,7 @@
 const { contextMenu } = useContextMenu()
 
 function onClose(event: MouseEvent) {
-	if (!event.target.classList.contains('wrapper'))
+	if (!event.target.classList.contains('context-menu-overlay'))
 		return
 
 	contextMenu.options = undefined
@@ -56,7 +56,7 @@ const menuStyle = computed(() => {
 
 <style>
 .context-menu-overlay {
-	position: fixed;
+	position: absolute;
 	z-index: 18;
 	background-color: #0008;
 	isolation: isolate;

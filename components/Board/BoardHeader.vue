@@ -78,14 +78,15 @@ async function deleteBoard() {
 
 <style lang="scss">
 #header {
-	z-index: 10;
+	z-index: 15;
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
 	padding: .5rem 1rem;
 	background-color: var(--color-background-secondary);
 	border-bottom: 1px solid var(--color-border);
-	box-shadow: var(--shadow-card);
+	box-shadow: 0 2px 4px #00000040;
+  clip-path: inset(0 0 -6px 0);
 	user-select: none;
 
 	.board-name {

@@ -5,10 +5,9 @@ const boards = (await useFetch('/api/boards', { method: 'GET' })).data.value as 
 const hidden = ref(false)
 
 async function createBoard() {
-	await $fetch('/api/boards', { method: 'POST' })
+	const data = await $fetch('/api/boards', { method: 'POST' })
 
-	// eslint-disable-next-line no-self-assign
-	window.location.href = window.location.href
+	window.location.href = `/${data.id}`
 }
 /*
 function match() {
@@ -30,7 +29,7 @@ function onToggleSidebar() {
 			class="sidebar-toggle"
 			@click="onToggleSidebar"
 		>
-			#
+			Toggle Sidebar
 		</button>
 		<div
 			class="profile"
@@ -65,17 +64,20 @@ function onToggleSidebar() {
 
 <style lang="scss">
 #sidebar {
+	z-index: 10;
 	min-width: 220px;
 	height: 100%;
 	margin-left: 0;
 	padding: .5rem;
 	background-color: var(--color-background-secondary);
 	border-right: 1px solid var(--color-border);
-	transition: margin-left .2s;
+	box-shadow: 2px 0 4px #00000040;
+	transition: margin-left .2s, box-shadow .2s;
 	user-select: none;
 
 	&.hidden{
 		margin-left: -220px;
+		box-shadow: none;
 	}
 
 	.sidebar-toggle {
