@@ -16,6 +16,6 @@ export default defineEventHandler(async (event) => {
 		})
 	}
 
-	await CardSchema.deleteMany({ _id: { $in: board.cards } })
+	await CardSchema.deleteMany({ _id: { $in: board.cards }, content: board.id })
 	await board.deleteOne()
 })
