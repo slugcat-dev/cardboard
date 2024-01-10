@@ -42,7 +42,7 @@ useEventListener('focusout', () => {
 			left: 0,
 			behavior: 'smooth'
 		})
-	}, 400)
+	}, 500)
 })
 </script>
 
