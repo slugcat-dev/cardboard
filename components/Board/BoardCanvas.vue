@@ -486,6 +486,7 @@ const selectionStyle = computed(() => {
 	user-select: none;
 	touch-action: pan-x pan-y;
 	scroll-behavior: smooth;
+	overscroll-behavior: contain;
 
 	.area-spacer {
 		position: absolute;
