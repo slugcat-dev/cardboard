@@ -33,17 +33,6 @@ useHead({
 		href: 'manifest.json'
 	}]
 })
-
-// Fix overscroll issue when unfocusing an input element on iOS
-useEventListener('focusout', () => {
-	setTimeout(() => {
-		document.body.scrollTo({
-			top: 0,
-			left: 0,
-			behavior: 'instant'
-		})
-	}, 1000)
-})
 </script>
 
 <template>
@@ -52,10 +41,6 @@ useEventListener('focusout', () => {
 </template>
 
 <style>
-html, body {
-	overscroll-behavior: none;
-}
-
 body {
 	width: 100vw;
 	height: 100vh;
