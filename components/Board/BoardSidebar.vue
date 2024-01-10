@@ -1,14 +1,9 @@
 <script setup lang="ts">
 const session = useUserSession()
 const { user } = session
-const boards = (await useFetch('/api/boards', { method: 'GET' })).data.value as any
+const { boards, createBoard } = await useBoards()
 const hidden = ref(false)
 
-async function createBoard() {
-	const data = await $fetch('/api/boards', { method: 'POST' })
-
-	window.location.href = `/${data.id}`
-}
 /*
 function match() {
 	return window.matchMedia('(width <= 480px)').matches

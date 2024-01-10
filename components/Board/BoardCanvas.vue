@@ -2,10 +2,9 @@
 import type CardComponent from './Card.vue'
 import { suppressNextClick } from '~/utils'
 
-const route = useRoute()
 const settings = useSettings()
 const canvasRef = ref()
-const cards: Ref<Card[]> = ref([])
+const { board, createBoard } = await useBoards()
 const cardRefs: Ref<InstanceType<typeof CardComponent>[]> = ref([])
 const { metaKey, shiftKey } = useKeys()
 const selection = ref()
@@ -46,7 +45,7 @@ defineShortcuts({
 
 		// TODO: This is a bad idea, I can smell it
 		// eslint-disable-next-line no-alert
-		if (selectedCards.length === cards.value.length && !confirm('Are you sure you want to delete ALL cards on this board?'))
+		if (selectedCards.length === board.cards.length && !confirm('Are you sure you want to delete ALL cards on this board?'))
 			return
 
 		await $fetch('/api/cards/many', {
@@ -55,7 +54,7 @@ defineShortcuts({
 		})
 
 		selectedCards.forEach(id =>
-			cards.value.splice(cards.value.findIndex(card => card.id === id), 1)
+			board.cards.splice(board.cards.findIndex(card => card.id === id), 1)
 		)
 
 		selectedCards = []
@@ -70,12 +69,6 @@ defineShortcuts({
 		clientY: window.innerHeight / 2
 	})
 })
-
-// Fetch cards
-const { data } = await useFetch(`/api/boards/${route.params.board}`, { method: 'GET' })
-const board = data.value as Board
-
-cards.value = board.cards as Card[]
 
 function onPointerDown(event: PointerEvent) {
 	// Save event data for following input events
@@ -240,21 +233,21 @@ async function onClick(event: MouseEvent) {
 	const position = getMousePos(event)
 
 	if (metaKey.value) {
-		const board = await $fetch('/api/boards', { method: 'POST' })
+		const newBoard = await createBoard()
 		const card = await $fetch('/api/cards', {
 			method: 'POST',
 			body: {
-				board: route.params.board,
+				board: board.id,
 				card: {
 					type: 'board',
 					created: new Date(),
 					position,
-					content: board.id
+					content: newBoard.id
 				}
 			}
 		})
 
-		cards.value.push(card)
+		board.cards.push(card)
 	}
 	else {
 		const data: Card = shiftKey.value
@@ -275,7 +268,7 @@ async function onClick(event: MouseEvent) {
 					position,
 					content: ''
 				}
-		const index = cards.value.push(data) - 1
+		const index = board.cards.push(data) - 1
 
 		// Wait until the DOM has updated
 		await nextTick()
@@ -302,11 +295,11 @@ function onCardMove(id: string, prevPosition: Position, newPosition: Position) {
 	const dY = newPosition.y - prevPosition.y
 
 	selectedCards.filter(selected => selected !== id).forEach((selected) => {
-		const index = cards.value.findIndex(card => card.id === selected)
+		const index = board.cards.findIndex(card => card.id === selected)
 
-		cards.value[index].position = {
-			x: cards.value[index].position.x + dX,
-			y: cards.value[index].position.y + dY
+		board.cards[index].position = {
+			x: board.cards[index].position.x + dX,
+			y: board.cards[index].position.y + dY
 		}
 	})
 }
@@ -321,7 +314,7 @@ async function onCardUpdate(card: Card) {
 
 	await $fetch(`/api/cards/many`, {
 		method: 'PUT',
-		body: cards.value
+		body: board.cards
 			.filter(card => selectedCards.includes(card.id))
 			.map((card) => {
 				return {
@@ -336,7 +329,7 @@ async function onCardDelete(id: string) {
 	if (id !== 'create')
 		await $fetch(`/api/cards/${id}`, { method: 'DELETE' })
 
-	cards.value.splice(cards.value.findIndex(card => card.id === id), 1)
+	board.cards.splice(board.cards.findIndex(card => card.id === id), 1)
 }
 
 function onCardSelected(id: string, selected: boolean) {
@@ -450,12 +443,12 @@ const selectionStyle = computed(() => {
 			@wheel="onWheel"
 		>
 			<div
-				v-if="cards.length > 0"
+				v-if="board.cards.length > 0"
 				class="area-spacer"
 				:style="areaSpacerStyle"
 			/>
 			<Card
-				v-for="card in cards"
+				v-for="card in board.cards"
 				ref="cardRefs"
 				:key="card.created.toString()"
 				:card="card"

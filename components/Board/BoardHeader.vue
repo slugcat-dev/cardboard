@@ -1,9 +1,7 @@
 <script setup lang="ts">
-const route = useRoute()
 const settings = useSettings()
 const boardNameRef = ref()
-const { data } = await useFetch(`/api/boards/${route.params.board}`, { method: 'GET' })
-const board = data.value as Board
+const { board, deleteBoard } = await useBoards()
 
 function onBoardNameUpdate() {
 	const name = boardNameRef.value.textContent
@@ -20,16 +18,6 @@ function onBoardNameUpdate() {
 		method: 'PUT',
 		body: board
 	})
-}
-
-async function deleteBoard() {
-	// eslint-disable-next-line no-alert
-	if (!confirm('Do you REALLY want to delete this board?'))
-		return
-
-	await useFetch(`/api/boards/${route.params.board}`, { method: 'DELETE' })
-
-	navigateTo('/boards')
 }
 </script>
 
@@ -69,7 +57,7 @@ async function deleteBoard() {
 					Show grid
 				</label>
 			</ClientOnly>
-			<button @click="deleteBoard">
+			<button @click="deleteBoard(board.id)">
 				Delete Board
 			</button>
 		</div>

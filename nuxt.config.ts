@@ -27,5 +27,8 @@ export default defineNuxtConfig({
 	app: {
 		pageTransition: { name: 'page', mode: 'out-in' }
 	},
-	css: ['~/assets/style.scss']
+	css: ['~/assets/style.scss'],
+	experimental: {
+		asyncContext: true
+	}
 })
