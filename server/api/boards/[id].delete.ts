@@ -1,6 +1,7 @@
 export default defineEventHandler(async (event) => {
 	const { user } = await requireUserSession(event)
-	const board = await BoardSchema.findById(event.context.params?.id)
+	const id = event.context.params?.id
+	const board = await BoardSchema.findById(id)
 
 	if (!board) {
 		return createError({
@@ -16,6 +17,7 @@ export default defineEventHandler(async (event) => {
 		})
 	}
 
-	await CardSchema.deleteMany({ _id: { $in: board.cards }, content: board.id })
+	await CardSchema.deleteMany({ _id: { $in: board.cards } })
+	await CardSchema.deleteMany({ content: id })
 	await board.deleteOne()
 })
