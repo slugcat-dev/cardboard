@@ -51,6 +51,7 @@ body {
 	line-height: 1.25em;
 	background-color: var(--color-background);
 	-webkit-tap-highlight-color: transparent;
+	overscroll-behavior: none;
 }
 
 .page-leave-active,
