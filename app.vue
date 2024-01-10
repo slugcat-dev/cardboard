@@ -40,9 +40,9 @@ useEventListener('focusout', () => {
 		document.body.scrollTo({
 			top: 0,
 			left: 0,
-			behavior: 'smooth'
+			behavior: 'instant'
 		})
-	}, 500)
+	}, 1000)
 })
 </script>
 
