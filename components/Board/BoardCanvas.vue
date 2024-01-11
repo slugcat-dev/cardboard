@@ -445,7 +445,7 @@ const selectionStyle = computed(() => {
 		<ClientOnly>
 			<template #fallback>
 				<div class="loading">
-					TODO LOADING...
+					<Icon name="svg-spinners:ring-resize" /> LOADING...
 				</div>
 			</template>
 			<Card
@@ -474,8 +474,11 @@ const selectionStyle = computed(() => {
 <style lang="scss">
 .loading {
 	display: flex;
+	gap: .5rem;
 	align-items: center;
-	margin: auto;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
 	font-weight: bold;
 }
 

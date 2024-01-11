@@ -74,7 +74,7 @@ body {
 }
 
 .drill-enter-from {
-	transform: scale(0);
+	transform: scale(.5);
 	opacity: 0;
 }
 
@@ -89,7 +89,7 @@ body {
 }
 
 .undrill-leave-to {
-	transform: scale(0);
+	transform: scale(.5);
 	opacity: 0;
 }
 </style>

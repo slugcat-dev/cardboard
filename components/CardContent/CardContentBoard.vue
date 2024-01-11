@@ -34,6 +34,7 @@ async function onNavigate() {
 		display: block;
 		width: 200px;
 		border-radius: 0 0 .25rem .25rem;
+		filter: brightness(1.5);
 	}
 }
 </style>
