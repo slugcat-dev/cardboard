@@ -25,7 +25,8 @@ export default defineNuxtConfig({
 		uri: 'mongodb+srv://dev:5BwxpBE7RH0pOltF@dev.ndafsw1.mongodb.net/?retryWrites=true&w=majority'
 	},
 	app: {
-		pageTransition: { name: 'page', mode: 'out-in' }
+		pageTransition: { name: 'slide' },
+		layoutTransition: { name: 'slide' }
 	},
 	css: ['~/assets/style.scss'],
 	experimental: {

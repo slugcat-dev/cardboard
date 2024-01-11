@@ -36,11 +36,12 @@ useHead({
 </script>
 
 <template>
-	<LoadingIndicator />
-	<NuxtPage />
+	<NuxtLayout>
+		<NuxtPage />
+	</NuxtLayout>
 </template>
 
-<style>
+<style lang="scss">
 body {
 	width: 100vw;
 	height: 100vh;
@@ -53,17 +54,42 @@ body {
 	-webkit-tap-highlight-color: transparent;
 }
 
-.page-leave-active,
-.page-enter-active {
+.slide-leave-active,
+.slide-enter-active,
+.drill-leave-active,
+.drill-enter-active,
+.undrill-leave-active,
+.undrill-enter-active {
+	overflow: hidden !important;
   transition: all .2s cubic-bezier(0, 0, 0, 1);
 }
 
-.page-enter-from {
+.slide-enter-from {
 	transform: translateY(2vh);
 	opacity: 0;
 }
 
-.page-leave-to {
+.slide-leave-to {
+	opacity: 0;
+}
+
+.drill-enter-from {
+	transform: scale(0);
+	opacity: 0;
+}
+
+.drill-leave-to {
+	transform: scale(2);
+	opacity: 0;
+}
+
+.undrill-enter-from {
+	transform: scale(2);
+	opacity: 0;
+}
+
+.undrill-leave-to {
+	transform: scale(0);
 	opacity: 0;
 }
 </style>

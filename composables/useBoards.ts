@@ -1,4 +1,4 @@
-const boardState = createGlobalState(async () => {
+export const useBoardState = createGlobalState(async () => {
 	const {
 		data: boards,
 		execute: fetchBoards
@@ -6,23 +6,29 @@ const boardState = createGlobalState(async () => {
 
 	await fetchBoards()
 
-	return ref<Board[]>(boards.value ?? [])
+	return {
+		boards,
+		fetchBoards
+	}
 })
 
 export async function useBoards() {
-	const { params } = useRoute()
-	const boards = await boardState()
-	const board = findBoard(params.board)
+	const params = toRef(useRoute(), 'params')
+	const { boards, fetchBoards } = await useBoardState()
+	const board = computed(() => findBoard(params.value.board as string))
 
 	function findBoard(id: string) {
-		// TODO: handle board not found
-		return boards.value.find(board => board.id === id)
+		const board = boards.value?.find(board => board.id === id)
+
+		// TODO: this is pretty ugly.
+		// route should never have board as undefined when navigating to a board
+		return board || { id: '', name: '', owner: '', cards: [] }
 	}
 
 	async function createBoard() {
 		const board = await $fetch<Board>('/api/boards', { method: 'POST' })
 
-		boards.value.push(board)
+		boards.value?.push(board)
 
 		return board
 	}
@@ -33,8 +39,7 @@ export async function useBoards() {
 			return
 
 		await $fetch(`/api/boards/${id}`, { method: 'DELETE' })
-
-		boards.value = boards.value.filter(board => board.id !== id) ?? []
+		await fetchBoards()
 	}
 
 	return {

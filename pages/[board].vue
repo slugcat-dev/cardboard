@@ -1,37 +1,17 @@
 <script setup lang="ts">
-definePageMeta({
-	middleware: 'auth'
-})
+const { board } = await useBoards()
 
+definePageMeta({
+	middleware: ['auth', 'breadcrumbs'],
+	pageTransition: { name: 'slide' },
+	layout: 'board'
+})
 useSeoMeta({
 	// TODO: vueuse useRouteParams
-	title: useRoute().params.board.toString()
+	title: board.value.name
 })
 </script>
 
 <template>
-	<div id="board">
-		<BoardSidebar />
-		<div class="board-main">
-			<BoardHeader />
-			<BoardCanvas />
-		</div>
-	</div>
+	<BoardCanvas />
 </template>
-
-<style>
-body {
-	overflow: hidden;
-}
-
-#board {
-	display: flex;
-	height: 100vh;
-
-	.board-main {
-		display: flex;
-		flex-direction: column;
-		flex-grow: 1;
-	}
-}
-</style>

@@ -7,18 +7,7 @@ definePageMeta({
 
 const session = useUserSession()
 const { user } = session
-const boards = (await useFetch('/api/boards', { method: 'GET' })).data.value as any
-
-async function createBoard() {
-	let data: Board
-
-	if (boards.length !== 0)
-		data = await $fetch('/api/boards/welcome', { method: 'POST' })
-	else
-		data = await $fetch('/api/boards', { method: 'POST' })
-
-	window.location.href = `/${data.id}`
-}
+const { boards, createBoard } = await useBoards()
 
 async function logout() {
 	await session.clear()

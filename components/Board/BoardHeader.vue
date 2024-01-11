@@ -2,42 +2,59 @@
 const settings = useSettings()
 const boardNameRef = ref()
 const { board, deleteBoard } = await useBoards()
+const { breadcrumbs, unshift } = await useBreadcrumbs()
 
 function onBoardNameUpdate() {
 	const name = boardNameRef.value.textContent
 
 	if (name.length === 0) {
-		boardNameRef.value.textContent = board.name
+		boardNameRef.value.textContent = board.value.name
 
 		return
 	}
 
-	board.name = name
+	board.value.name = name
 
-	$fetch(`/api/boards/${board.id}`, {
+	$fetch(`/api/boards/${board.value.id}`, {
 		method: 'PUT',
-		body: board
+		body: { name }
 	})
+}
+
+function onNavigate() {
+	if (breadcrumbs.value.length === 0)
+		return navigateTo('/boards')
+
+	unshift.value = true
+
+	navigateTo(`/${breadcrumbs.value[breadcrumbs.value.length - 1].id}`)
 }
 </script>
 
 <template>
 	<header id="header">
 		<div class="toolbar">
-			<NuxtLink to="/boards">
+			<a @click="onNavigate">
 				<Icon name="mdi:chevron-left" size="1.5rem" />
-			</NuxtLink>
-			<span>Workspace</span>
-			<span style="opacity: .5;">/</span>
-			<div
-				ref="boardNameRef"
-				class="board-name"
-				contenteditable="plaintext-only"
-				@blur="onBoardNameUpdate"
-				@keydown.enter="boardNameRef.blur"
-				@keydown.escape="boardNameRef.blur"
-			>
-				{{ board.name }}
+			</a>
+			<div style="display: flex;">
+				<div
+					v-for="bread in breadcrumbs"
+					:key="bread.id"
+				>
+					{{ bread.name }}
+					<span style="opacity: .5;">/</span>
+				</div>
+				<div
+					ref="boardNameRef"
+					class="board-name"
+					contenteditable="plaintext-only"
+					@blur="onBoardNameUpdate"
+					@keydown.enter="boardNameRef.blur"
+					@keydown.escape="boardNameRef.blur"
+				>
+					{{ board.name }}
+				</div>
 			</div>
 			<ClientOnly>
 				<label class="option">
@@ -78,9 +95,6 @@ function onBoardNameUpdate() {
 	user-select: none;
 
 	.board-name {
-		margin-left: -.25rem;
-		padding: .125rem .25rem;
-
 		&:focus-visible {
 			border-radius: .25rem;
 			outline: none;

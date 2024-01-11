@@ -45,7 +45,7 @@ defineShortcuts({
 
 		// TODO: This is a bad idea, I can smell it
 		// eslint-disable-next-line no-alert
-		if (selectedCards.length === board.cards.length && !confirm('Are you sure you want to delete ALL cards on this board?'))
+		if (selectedCards.length === board.value.cards.length && !confirm('Are you sure you want to delete ALL cards on this board?'))
 			return
 
 		await $fetch('/api/cards/many', {
@@ -54,7 +54,7 @@ defineShortcuts({
 		})
 
 		selectedCards.forEach(id =>
-			board.cards.splice(board.cards.findIndex(card => card.id === id), 1)
+			board.value.cards.splice(board.value.cards.findIndex(card => card.id === id), 1)
 		)
 
 		selectedCards = []
@@ -234,10 +234,10 @@ async function onClick(event: MouseEvent) {
 
 	if (metaKey.value) {
 		const newBoard = await createBoard()
-		const card = await $fetch('/api/cards', {
+		const card = await $fetch<Card>('/api/cards', {
 			method: 'POST',
 			body: {
-				board: board.id,
+				board: board.value.id,
 				card: {
 					type: 'board',
 					created: new Date(),
@@ -247,7 +247,7 @@ async function onClick(event: MouseEvent) {
 			}
 		})
 
-		board.cards.push(card)
+		board.value.cards.push(card)
 	}
 	else {
 		const data: Card = shiftKey.value
@@ -268,7 +268,7 @@ async function onClick(event: MouseEvent) {
 					position,
 					content: ''
 				}
-		const index = board.cards.push(data) - 1
+		const index = board.value.cards.push(data) - 1
 
 		// Wait until the DOM has updated
 		await nextTick()
@@ -295,11 +295,11 @@ function onCardMove(id: string, prevPosition: Position, newPosition: Position) {
 	const dY = newPosition.y - prevPosition.y
 
 	selectedCards.filter(selected => selected !== id).forEach((selected) => {
-		const index = board.cards.findIndex(card => card.id === selected)
+		const index = board.value.cards.findIndex(card => card.id === selected)
 
-		board.cards[index].position = {
-			x: board.cards[index].position.x + dX,
-			y: board.cards[index].position.y + dY
+		board.value.cards[index].position = {
+			x: board.value.cards[index].position.x + dX,
+			y: board.value.cards[index].position.y + dY
 		}
 	})
 }
@@ -314,7 +314,7 @@ async function onCardUpdate(card: Card) {
 
 	await $fetch(`/api/cards/many`, {
 		method: 'PUT',
-		body: board.cards
+		body: board.value.cards
 			.filter(card => selectedCards.includes(card.id))
 			.map((card) => {
 				return {
@@ -329,7 +329,7 @@ async function onCardDelete(id: string) {
 	if (id !== 'create')
 		await $fetch(`/api/cards/${id}`, { method: 'DELETE' })
 
-	board.cards.splice(board.cards.findIndex(card => card.id === id), 1)
+	board.value.cards.splice(board.value.cards.findIndex(card => card.id === id), 1)
 }
 
 function onCardSelected(id: string, selected: boolean) {
@@ -360,8 +360,6 @@ function zoomF(v: number, event: { clientX: number, clientY: number }, translati
 	zoom.value = v
 	zoom.value = Math.max(Math.min(zoom.value, 2), .2)
 
-	console.log(zoom.value)
-
 	const mousePos = getMousePos(event)
 	const dX = (prevMousePos.x - mousePos.x) * zoom.value
 	const dY = (prevMousePos.y - mousePos.y) * zoom.value
@@ -374,6 +372,9 @@ function zoomF(v: number, event: { clientX: number, clientY: number }, translati
 }
 
 const areaSpacerStyle = computed(() => {
+	if (!process.client)
+		return
+
 	const areaRect = new DOMRect()
 
 	// Find the bottom-righ corner of the bottom-right-most card
@@ -419,34 +420,34 @@ const selectionStyle = computed(() => {
 </script>
 
 <template>
-	<ClientOnly>
-		<template #fallback>
-			<div class="loading">
-				LOADING...
-			</div>
-		</template>
+	<div
+		id="canvas"
+		ref="canvasRef"
+		:class="{ selecting: metaKey }"
+		:style="canvasStyle"
+		@pointerdown.left="onPointerDown"
+		@pointermove="onPointerMove"
+		@pointerup="onPointerUp"
+		@pointerleave="onPointerUp"
+		@pointercancel="onPointerUp"
+		@touchstart="onTouchStart"
+		@touchmove="onTouchMove"
+		@touchend="onTouchEnd"
+		@touchcancel="onTouchEnd"
+		@click="onClick"
+		@wheel="onWheel"
+	>
 		<div
-			id="canvas"
-			ref="canvasRef"
-			:class="{ selecting: metaKey }"
-			:style="canvasStyle"
-			@pointerdown.left="onPointerDown"
-			@pointermove="onPointerMove"
-			@pointerup="onPointerUp"
-			@pointerleave="onPointerUp"
-			@pointercancel="onPointerUp"
-			@touchstart="onTouchStart"
-			@touchmove="onTouchMove"
-			@touchend="onTouchEnd"
-			@touchcancel="onTouchEnd"
-			@click="onClick"
-			@wheel="onWheel"
-		>
-			<div
-				v-if="board.cards.length > 0"
-				class="area-spacer"
-				:style="areaSpacerStyle"
-			/>
+			v-if="board.cards.length > 0"
+			class="area-spacer"
+			:style="areaSpacerStyle"
+		/>
+		<ClientOnly>
+			<template #fallback>
+				<div class="loading">
+					TODO LOADING...
+				</div>
+			</template>
 			<Card
 				v-for="card in board.cards"
 				ref="cardRefs"
@@ -461,13 +462,13 @@ const selectionStyle = computed(() => {
 				@card-selected="onCardSelected"
 				@selection-clear="clearSelection"
 			/>
-			<div
-				class="selection"
-				:style="selectionStyle"
-			/>
-			<ContextMenu />
-		</div>
-	</ClientOnly>
+		</ClientOnly>
+		<div
+			class="selection"
+			:style="selectionStyle"
+		/>
+		<ContextMenu />
+	</div>
 </template>
 
 <style lang="scss">
@@ -479,8 +480,9 @@ const selectionStyle = computed(() => {
 }
 
 #canvas {
-	position: relative;
-	flex-grow: 1;
+	position: absolute;
+	width: 100%;
+	height: 100%;
 	overflow: auto;
 	background-attachment: local;
 	user-select: none;

@@ -34,5 +34,5 @@ export default defineEventHandler(async (event) => {
 			'6596d0a1fc9ab60fac4872a8',
 			'6596d0e1fc9ab60fac4872bb'
 		]
-	}).save())
+	}).save()).populate('cards')
 })

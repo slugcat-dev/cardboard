@@ -2,25 +2,38 @@
 const { card } = defineProps(['card'])
 const { findBoard } = await useBoards()
 const board = findBoard(card.content)
+
+async function onNavigate() {
+	const { shift } = await useBreadcrumbs()
+
+	shift.value = true
+
+	return navigateTo(`/${card.content}`)
+}
 </script>
 
 <template>
 	<div class="card-board">
-		<h2>{{ board.name }}</h2>
-		<NuxtLink :to="card.content">
-			Go To
-		</NuxtLink>
+		<a @click="onNavigate">
+			{{ board.name }}
+		</a>
+		<img src="~/assets/images/miniboard.png">
 	</div>
 </template>
 
 <style lang="scss">
 .card-board {
-	padding: .5rem;
-
-	h2 {
+	a {
+		display: block;
 		margin: 0;
-		margin-bottom: .25rem;
+		padding: .5rem;
 		font-size: 1.125rem;
+	}
+
+	img {
+		display: block;
+		width: 200px;
+		border-radius: 0 0 .25rem .25rem;
 	}
 }
 </style>

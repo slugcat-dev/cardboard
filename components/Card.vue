@@ -255,13 +255,13 @@ async function updateCard(contentChanged: boolean = false) {
 	if (card.id === 'create') {
 		delete card.id
 
-		const data = await $fetch('/api/cards', {
+		const data = await $fetch<Card>('/api/cards', {
 			method: 'POST',
 			body: {
 				board: route.params.board,
 				card
 			}
-		}) as Card
+		})
 
 		card.id = data.id
 	}
@@ -328,12 +328,12 @@ defineExpose({ activate, alignToGrid, getSizeRect })
 		:class="{
 			selected,
 			'content-active': contentActive,
-			'pointer-down': pointerDown,
+			'pointer-down': pointerDown
 		}"
 		:style="{
 			top: `${card.position.y * zoom}px`,
 			left: `${card.position.x * zoom}px`,
-			scale: zoom,
+			scale: zoom
 		}"
 		@pointerdown.left="onPointerDown"
 		@pointermove="onPointerMove"
