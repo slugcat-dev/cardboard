@@ -4,9 +4,9 @@ const { findBoard } = await useBoards()
 const board = findBoard(card.content)
 
 async function onNavigate() {
-	const breadcrumbs = await useBreadcrumbs()
+	const { shift } = await useBreadcrumbs()
 
-	breadcrumbs.value.shift = 'down'
+	shift.value = 'down'
 
 	return navigateTo(`/${card.content}`)
 }

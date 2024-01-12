@@ -2,7 +2,7 @@
 const settings = useSettings()
 const boardNameRef = ref()
 const { board, deleteBoard } = await useBoards()
-const breadcrumbs = await useBreadcrumbs()
+const { breadcrumbs, shift } = await useBreadcrumbs()
 
 function onBoardNameUpdate() {
 	const name = boardNameRef.value.textContent
@@ -21,33 +21,42 @@ function onBoardNameUpdate() {
 	})
 }
 
-function onNavigate(id?: string) {
-	breadcrumbs.value.shift = 'up'
+function navegateBack(id?: string) {
+	shift.value = 'up'
 
 	if (id)
 		return navigateTo(`/${id}`)
 
-	if (breadcrumbs.value.bread.length === 0)
+	if (breadcrumbs.value.length === 0)
 		return navigateTo('/boards')
 
-	return navigateTo(`/${breadcrumbs.value.bread[breadcrumbs.value.bread.length - 1].path}`)
+	// TODO:
+	return navigateTo(`/${breadcrumbs.value.slice(-1)[0].path}`)
 }
 </script>
 
 <template>
 	<header id="header">
 		<div class="toolbar">
-			<a @click="onNavigate()">
-				<Icon name="mdi:chevron-left" size="1.5rem" />
-			</a>
-			<div style="display: flex;">
-				<div
-					v-for="bread in breadcrumbs.bread"
-					:key="bread.path"
+			<div class="breadcrumbs">
+				<a
+					class="bread nav-button"
+					@click="navegateBack()"
 				>
-					<a @click="onNavigate(bread.path)">{{ bread.name }}</a>
-					<span style="opacity: .5;">/</span>
-				</div>
+					<Icon name="mdi:chevron-left" size="1.5rem" />
+				</a>
+				<a
+					class="bread nav-button"
+					@click="navegateBack()"
+				>
+					<Icon name="mdi:chevron-right" size="1.5rem" />
+				</a>
+				<a
+					v-for="bread in breadcrumbs"
+					:key="bread.path"
+					class="bread"
+					@click="navegateBack(bread.path)"
+				>{{ bread.name }}</a>
 				<div
 					ref="boardNameRef"
 					class="board-name"
@@ -97,15 +106,40 @@ function onNavigate(id?: string) {
   clip-path: inset(0 0 -6px 0);
 	user-select: none;
 
-	.board-name {
-		&:focus-visible {
-			border-radius: .25rem;
-			outline: none;
-			box-shadow: 0 0 0 2px var(--color-accent);
+	.breadcrumbs {
+		display: flex;
+		align-items: center;
+		font-weight: bold;
+
+		.bread {
+			color: var(--color-warn);
+			text-decoration: none;
+
+			&:not(.nav-button) {
+				padding: 0 .25rem;
+			}
+
+			&:nth-child(2) {
+				margin-right: .75rem;
+				color: var(--color-text-secondary);
+			}
+
+			&:not(.nav-button)::after {
+				margin-left: .5rem;
+				overflow: hidden;
+				color: var(--color-text-tertiary);
+				content: '/';
+			}
 		}
 
-		&:hover:not(:focus-visible) {
-			text-decoration: underline;
+		.board-name {
+			padding: .125rem .25rem;
+
+			&:focus-visible {
+				border-radius: .25rem;
+				outline: none;
+				box-shadow: 0 0 0 2px var(--color-accent);
+			}
 		}
 	}
 

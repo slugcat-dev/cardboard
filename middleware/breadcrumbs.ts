@@ -1,19 +1,19 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
-	const breadcrumbs = await useBreadcrumbs()
+	const { breadcrumbs, shift } = await useBreadcrumbs()
 	const { route } = await useBoardState()
 	const { findBoard } = await useBoards()
 
 	route.value = to
 
 	if (!from.params.board)
-		breadcrumbs.value.shift = false
+		shift.value = false
 
 	const transitionName = (() => {
-		switch (breadcrumbs.value.shift) {
+		switch (shift.value) {
 			case 'down': {
 				const fromBoard = findBoard(from.params.board as string)
 
-				breadcrumbs.value.bread.push({
+				breadcrumbs.value.push({
 					path: fromBoard.id,
 					name: fromBoard.name
 				})
@@ -23,15 +23,15 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
 			case 'up': {
 				const toBoardId = to.params.board
-				const index = breadcrumbs.value.bread.findIndex(bread => bread.path === toBoardId)
+				const index = breadcrumbs.value.findIndex(bread => bread.path === toBoardId)
 
-				breadcrumbs.value.bread.splice(index)
+				breadcrumbs.value.splice(index)
 
 				return 'undrill'
 			}
 
 			default: {
-				breadcrumbs.value.bread = []
+				breadcrumbs.value = []
 
 				return 'slide'
 			}
@@ -41,5 +41,5 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 	if (typeof to.meta.pageTransition === 'object')
 		to.meta.pageTransition.name = transitionName
 
-	breadcrumbs.value.shift = false
+	shift.value = false
 })

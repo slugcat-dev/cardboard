@@ -6,7 +6,8 @@
 	color-scheme: light dark;
 
 	--color-text: oklch(0% 0 0deg);
-	--color-text-secondary: oklch(70% 0 0deg);
+	--color-text-secondary: oklch(40% 0 0deg);
+	--color-text-tertiary: oklch(60% 0 0deg);
 	--color-background: oklch(96% 0 0deg);
 	--color-background-secondary: oklch(100% 0 0deg);
 	--color-background-tertiary: oklch(94% 0 0deg);
@@ -37,6 +38,7 @@
 	:root {
 		--color-text: oklch(85% 0 0deg);
 		--color-text-secondary: oklch(75% 0 0deg);
+		--color-text-tertiary: oklch(65% 0 0deg);
 		--color-background: oklch(20% 0 0deg);
 		--color-background-secondary: oklch(25% 0 0deg);
 		--color-background-tertiary: oklch(30% 0 0deg);
