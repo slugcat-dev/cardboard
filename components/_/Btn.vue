@@ -31,15 +31,15 @@ defineProps({
 	border-radius: .375rem;
 	cursor: pointer;
 
+	&.slim {
+		padding: .25rem .5rem;
+	}
+
 	&.danger {
 		color: black;
 		background-color: var(--color-danger);
 		border-color: var(--color-danger);
 		transition: box-shadow .1s;
-
-		&:hover {
-			box-shadow: 0 0 0 2px var(--color-danger-50);
-		}
 	}
 }
 </style>

@@ -174,12 +174,11 @@ function onContextMenu(event: MouseEvent) {
 			},
 			{
 				name: 'Delete',
+				danger: true,
 				handler: deleteCard
 			}
 		]
 	})
-
-	cardRef.value.style.zIndex = '20'
 }
 
 // Move cards while scrolling the canvas

@@ -46,6 +46,8 @@ const menuStyle = computed(() => {
 			<button
 				v-for="entry, index in contextMenu.options.entries"
 				:key="index"
+				class="btn slim"
+				:class="{ danger: entry.danger }"
 				@click="fhandler(entry.handler)"
 			>
 				{{ entry.name }}
@@ -56,9 +58,9 @@ const menuStyle = computed(() => {
 
 <style>
 .context-menu-overlay {
-	position: absolute;
-	z-index: 18;
-	background-color: #0008;
+	position: fixed;
+	z-index: 8;
+	background-color: #0004;
 	isolation: isolate;
 	inset: 0;
 	user-select: none;
