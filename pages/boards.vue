@@ -12,6 +12,12 @@ const { boards, createBoard } = await useBoards()
 async function logout() {
 	await session.clear()
 }
+
+async function onCreateBoard() {
+	const newBoard = await createBoard()
+
+	await navigateTo(`/${newBoard.id}`)
+}
 </script>
 
 <template>
@@ -38,7 +44,7 @@ async function logout() {
 			<Btn
 				role="primary"
 				icon="mdi:plus"
-				@click="createBoard"
+				@click="onCreateBoard"
 			>
 				Create Board
 			</Btn>

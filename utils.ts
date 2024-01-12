@@ -67,12 +67,17 @@ export async function getLinkPreview(url: string) {
 	return false
 }
 
+export function cancleEvent(event: Event) {
+	event.stopImmediatePropagation()
+	event.preventDefault()
+	event.stopPropagation()
+}
+
 export function suppressNextClick() {
-	document.addEventListener('click', (event: MouseEvent) => {
-		event.stopImmediatePropagation()
-		event.preventDefault()
-		event.stopPropagation()
-	}, { capture: true, once: true })
+	document.addEventListener('click', function suppressEvent(event: MouseEvent) {
+		document.removeEventListener('click', suppressEvent, true)
+		cancleEvent(event)
+	}, true)
 }
 
 export async function convert(card: Card) {

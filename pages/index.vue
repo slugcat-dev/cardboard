@@ -3,11 +3,11 @@ const { loggedIn } = useUserSession()
 const signinButtonGoogle = ref()
 const signinButtonGithub = ref()
 
-function login(provider: string) {
+async function login(provider: string) {
 	signinButtonGoogle.value.disabled = true
 	signinButtonGithub.value.disabled = true
 
-	navigateTo(`/signin/${provider}`, { external: true })
+	await navigateTo(`/signin/${provider}`, { external: true })
 }
 </script>
 

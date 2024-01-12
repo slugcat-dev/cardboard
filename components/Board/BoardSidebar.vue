@@ -13,6 +13,12 @@ function match() {
 function onToggleSidebar() {
 	hidden.value = !hidden.value
 }
+
+async function onCreateBoard() {
+	const newBoard = await createBoard()
+
+	await navigateTo(`/${newBoard.id}`)
+}
 </script>
 
 <template>
@@ -50,7 +56,7 @@ function onToggleSidebar() {
 		<Btn
 			role="primary"
 			icon="mdi:plus"
-			@click="createBoard"
+			@click="onCreateBoard"
 		>
 			Create Board
 		</Btn>

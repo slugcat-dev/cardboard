@@ -1,9 +1,9 @@
 <script setup lang="ts">
 const { loggedIn } = useUserSession()
 
-watch(loggedIn, () => {
+watch(loggedIn, async () => {
 	if (!loggedIn.value)
-		navigateTo('/')
+		await navigateTo('/')
 })
 
 useSeoMeta({

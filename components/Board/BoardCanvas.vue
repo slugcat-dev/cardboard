@@ -251,6 +251,15 @@ async function onClick(event: MouseEvent) {
 		})
 
 		board.value.cards.push(card)
+
+		// Navigate to the new board
+		setTimeout(async () => {
+			const { shift } = await useBreadcrumbs()
+
+			shift.value = 'down'
+
+			await navigateTo(`/${newBoard.id}`)
+		}, 400)
 	}
 	else {
 		const data: Card = shiftKey.value
