@@ -27,7 +27,8 @@
 	--color-scrollbar: oklch(60% 0 0deg);
 
 	/* TODO */
-	--shadow-card: 2px 2px 6px #00000010;
+	--color-shadow-ui: #00000010;
+	--shadow-card: 2px 2px 6px var(--color-shadow-ui);
 	--color-favicon: #f3f3f3;
 	--color-icon-shadow: transparent;
 	--icon-contrast: .75;
@@ -58,7 +59,7 @@
 		--color-scrollbar: oklch(40% 0 0deg);
 
 		/* TODO */
-		--shadow-card: 2px 2px 4px #00000040;
+		--color-shadow-ui: #00000040;
 		--color-favicon: #404040;
 		--color-icon-shadow: #00000060;
 		--icon-contrast: .75;

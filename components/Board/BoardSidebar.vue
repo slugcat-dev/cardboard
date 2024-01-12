@@ -72,7 +72,7 @@ async function onCreateBoard() {
 	padding: .5rem;
 	background-color: var(--color-background-secondary);
 	border-right: 1px solid var(--color-border);
-	box-shadow: 2px 0 4px #00000040;
+	box-shadow: 2px 0 4px var(--color-shadow-ui);
 	transition: margin-left .2s, box-shadow .2s;
 	user-select: none;
 
