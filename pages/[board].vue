@@ -6,10 +6,7 @@ definePageMeta({
 	pageTransition: { name: 'slide' },
 	layout: 'board'
 })
-useSeoMeta({
-	// TODO: vueuse useRouteParams
-	title: board.value.name
-})
+useSeoMeta({ title: board.value.name })
 </script>
 
 <template>

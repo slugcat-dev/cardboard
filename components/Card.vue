@@ -122,8 +122,8 @@ function onPointerUp() {
 	if (pointerMoved) {
 		pointerMoved = false
 
-		if (pointerType === 'mouse')
-			suppressNextClick()
+		// was mouse only
+		suppressNextClick()
 
 		return updateCard()
 	}

@@ -1,11 +1,5 @@
 export const useBreadcrumbs = createGlobalState(async () => {
-	const breadcrumbs = ref([])
-	const shift = ref()
-	const unshift = ref()
+	const breadcrumbs = ref<Breadcrumbs>({ bread: [], shift: false })
 
-	return {
-		breadcrumbs,
-		shift,
-		unshift
-	}
+	return breadcrumbs
 })

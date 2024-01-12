@@ -4,7 +4,10 @@ import { suppressNextClick } from '~/utils'
 
 const settings = useSettings()
 const canvasRef = ref()
-const { board, createBoard } = await useBoards()
+// Create a non-reactive copy of the board that doesn't update instantly
+// because we want to use page transitions
+const { board: boardRef, createBoard } = await useBoards()
+const board = ref(boardRef.value)
 const cardRefs: Ref<InstanceType<typeof CardComponent>[]> = ref([])
 const { metaKey, shiftKey } = useKeys()
 const selection = ref()

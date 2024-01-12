@@ -1,4 +1,5 @@
 export const useBoardState = createGlobalState(async () => {
+	const route = ref()
 	const {
 		data: boards,
 		execute: fetchBoards
@@ -7,15 +8,15 @@ export const useBoardState = createGlobalState(async () => {
 	await fetchBoards()
 
 	return {
+		route,
 		boards,
 		fetchBoards
 	}
 })
 
 export async function useBoards() {
-	const params = toRef(useRoute(), 'params')
-	const { boards, fetchBoards } = await useBoardState()
-	const board = computed(() => findBoard(params.value.board as string))
+	const { route, boards, fetchBoards } = await useBoardState()
+	const board = computed(() => findBoard(route.value.params.board))
 
 	function findBoard(id: string) {
 		const board = boards.value?.find(board => board.id === id)

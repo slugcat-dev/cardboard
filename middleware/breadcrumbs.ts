@@ -1,24 +1,45 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
-	const { breadcrumbs, shift, unshift } = await useBreadcrumbs()
+	const breadcrumbs = await useBreadcrumbs()
+	const { route } = await useBoardState()
 	const { findBoard } = await useBoards()
 
-	if (typeof to.meta.pageTransition === 'object') {
-		if (shift.value)
-			to.meta.pageTransition.name = 'drill'
-		else if (unshift.value)
-			to.meta.pageTransition.name = 'undrill'
-		else to.meta.pageTransition.name = 'slide'
-	}
+	route.value = to
 
-	if (shift.value) {
-		breadcrumbs.value.push(findBoard(from.params.board))
+	if (!from.params.board)
+		breadcrumbs.value.shift = false
 
-		shift.value = false
-	}
-	else if (unshift.value) {
-		breadcrumbs.value.pop()
+	const transitionName = (() => {
+		switch (breadcrumbs.value.shift) {
+			case 'down': {
+				const fromBoard = findBoard(from.params.board as string)
 
-		unshift.value = false
-	}
-	else breadcrumbs.value = []
+				breadcrumbs.value.bread.push({
+					path: fromBoard.id,
+					name: fromBoard.name
+				})
+
+				return 'drill'
+			}
+
+			case 'up': {
+				const toBoardId = to.params.board
+				const index = breadcrumbs.value.bread.findIndex(bread => bread.path === toBoardId)
+
+				breadcrumbs.value.bread.splice(index)
+
+				return 'undrill'
+			}
+
+			default: {
+				breadcrumbs.value.bread = []
+
+				return 'slide'
+			}
+		}
+	})()
+
+	if (typeof to.meta.pageTransition === 'object')
+		to.meta.pageTransition.name = transitionName
+
+	breadcrumbs.value.shift = false
 })

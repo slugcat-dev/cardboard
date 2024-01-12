@@ -2,7 +2,7 @@
 const settings = useSettings()
 const boardNameRef = ref()
 const { board, deleteBoard } = await useBoards()
-const { breadcrumbs, unshift } = await useBreadcrumbs()
+const breadcrumbs = await useBreadcrumbs()
 
 function onBoardNameUpdate() {
 	const name = boardNameRef.value.textContent
@@ -21,28 +21,31 @@ function onBoardNameUpdate() {
 	})
 }
 
-function onNavigate() {
-	if (breadcrumbs.value.length === 0)
+function onNavigate(id?: string) {
+	breadcrumbs.value.shift = 'up'
+
+	if (id)
+		return navigateTo(`/${id}`)
+
+	if (breadcrumbs.value.bread.length === 0)
 		return navigateTo('/boards')
 
-	unshift.value = true
-
-	navigateTo(`/${breadcrumbs.value[breadcrumbs.value.length - 1].id}`)
+	return navigateTo(`/${breadcrumbs.value.bread[breadcrumbs.value.bread.length - 1].path}`)
 }
 </script>
 
 <template>
 	<header id="header">
 		<div class="toolbar">
-			<a @click="onNavigate">
+			<a @click="onNavigate()">
 				<Icon name="mdi:chevron-left" size="1.5rem" />
 			</a>
 			<div style="display: flex;">
 				<div
-					v-for="bread in breadcrumbs"
-					:key="bread.id"
+					v-for="bread in breadcrumbs.bread"
+					:key="bread.path"
 				>
-					{{ bread.name }}
+					<a @click="onNavigate(bread.path)">{{ bread.name }}</a>
 					<span style="opacity: .5;">/</span>
 				</div>
 				<div

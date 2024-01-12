@@ -24,6 +24,16 @@ type User = {
 	picture: string
 }
 
+type Bread = {
+	path: string
+	name: string
+}
+
+type Breadcrumbs = {
+	bread: Bread[]
+	shift: 'up' | 'down' | false
+}
+
 declare module '#auth-utils' {
 	type UserSession = {
 		user: User
