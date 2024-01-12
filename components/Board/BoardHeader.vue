@@ -21,7 +21,7 @@ function onBoardNameUpdate() {
 	})
 }
 
-function navegateBack(id?: string) {
+function navigateBack(id?: string) {
 	shift.value = 'up'
 
 	if (id)
@@ -30,8 +30,12 @@ function navegateBack(id?: string) {
 	if (breadcrumbs.value.length === 0)
 		return navigateTo('/boards')
 
-	// TODO:
 	return navigateTo(`/${breadcrumbs.value.slice(-1)[0].path}`)
+}
+
+async function onDeleteBoard() {
+	await deleteBoard(board.value.id)
+	navigateBack()
 }
 </script>
 
@@ -41,13 +45,13 @@ function navegateBack(id?: string) {
 			<div class="breadcrumbs">
 				<a
 					class="bread nav-button"
-					@click="navegateBack()"
+					@click="navigateBack()"
 				>
 					<Icon name="mdi:chevron-left" size="1.5rem" />
 				</a>
 				<a
 					class="bread nav-button"
-					@click="navegateBack()"
+					@click="navigateBack()"
 				>
 					<Icon name="mdi:chevron-right" size="1.5rem" />
 				</a>
@@ -55,7 +59,7 @@ function navegateBack(id?: string) {
 					v-for="bread in breadcrumbs"
 					:key="bread.path"
 					class="bread"
-					@click="navegateBack(bread.path)"
+					@click="navigateBack(bread.path)"
 				>{{ bread.name }}</a>
 				<div
 					ref="boardNameRef"
@@ -86,7 +90,7 @@ function navegateBack(id?: string) {
 					Show grid
 				</label>
 			</ClientOnly>
-			<button @click="deleteBoard(board.id)">
+			<button @click="onDeleteBoard">
 				Delete Board
 			</button>
 		</div>
