@@ -26,10 +26,13 @@ export async function useBoards() {
 		return board || { id: '', name: '', owner: '', cards: [] }
 	}
 
-	async function createBoard() {
+	async function createBoard(open = false) {
 		const board = await $fetch<Board>(`/api/boards${boards.value?.length === 0 ? '/welcome' : ''}`, { method: 'POST' })
 
 		boards.value?.push(board)
+
+		if (open)
+			await navigateTo(`/${board.id}`)
 
 		return board
 	}

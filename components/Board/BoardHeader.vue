@@ -1,8 +1,15 @@
 <script setup lang="ts">
+const router = useRouter()
 const settings = useSettings()
 const boardNameRef = ref()
 const { board, deleteBoard } = await useBoards()
-const { breadcrumbs, shift } = await useBreadcrumbs()
+const { breadcrumbs } = await useBreadcrumbs()
+
+/*
+router.options.history.listen((to, from, information) => {
+	console.log(information)
+})
+*/
 
 function onBoardNameUpdate() {
 	const name = boardNameRef.value.textContent
@@ -21,21 +28,9 @@ function onBoardNameUpdate() {
 	})
 }
 
-function navigateBack(id?: string) {
-	shift.value = 'up'
-
-	if (id)
-		return navigateTo(`/${id}`)
-
-	if (breadcrumbs.value.length === 0)
-		return navigateTo('/boards')
-
-	return navigateTo(`/${breadcrumbs.value.slice(-1)[0].path}`)
-}
-
 async function onDeleteBoard() {
 	await deleteBoard(board.value.id)
-	navigateBack()
+	router.back()
 }
 </script>
 
@@ -44,23 +39,25 @@ async function onDeleteBoard() {
 		<div class="toolbar">
 			<div class="breadcrumbs">
 				<a
-					class="bread nav-button"
-					@click="navigateBack()"
+					class="nav-button"
+					@click="router.back()"
 				>
 					<Icon name="mdi:chevron-left" size="1.5rem" />
 				</a>
 				<a
-					class="bread nav-button"
-					@click="navigateBack()"
+					class="nav-button"
+					@click="router.forward()"
 				>
 					<Icon name="mdi:chevron-right" size="1.5rem" />
 				</a>
-				<a
+				<div
 					v-for="bread in breadcrumbs"
 					:key="bread.path"
 					class="bread"
-					@click="navigateBack(bread.path)"
-				>{{ bread.name }}</a>
+				>
+					<a @click="navigateTo(`/${bread.path}`)">{{ bread.name }}</a>
+					<span class="bread-separator">/</span>
+				</div>
 				<div
 					ref="boardNameRef"
 					class="board-name"
@@ -115,21 +112,33 @@ async function onDeleteBoard() {
 		align-items: center;
 		font-weight: bold;
 
-		.bread {
+		.nav-button {
 			color: var(--color-warn);
-			text-decoration: none;
-
-			&:not(.nav-button) {
-				padding: 0 .25rem;
-			}
 
 			&:nth-child(2) {
 				margin-right: .75rem;
 				color: var(--color-text-tertiary);
 			}
+		}
 
-			&:not(.nav-button)::after {
-				margin-left: .5rem;
+		.bread {
+			display: flex;
+			align-items: center;
+
+			a {
+				padding: .125rem .25rem;
+				color: var(--color-warn);
+				text-decoration: none;
+				border-radius: .25rem;
+				transition: background-color .1s;
+
+				&:hover {
+					background-color: var(--color-warn-25);
+				}
+			}
+
+			.bread-separator {
+				margin: 0 .25rem;
 				overflow: hidden;
 				color: var(--color-text-tertiary);
 				content: '/';

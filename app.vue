@@ -43,8 +43,8 @@ useHead({
 
 <style lang="scss">
 body {
-	width: 100vw;
-	height: 100vh;
+	min-width: 100vw;
+	min-height: 100vh;
 	margin: 0;
 	padding: 0;
 	color: var(--color-text);
@@ -60,6 +60,9 @@ body {
 .drill-enter-active,
 .undrill-leave-active,
 .undrill-enter-active {
+	position: absolute;
+	width: 100%;
+	height: 100%;
 	overflow: hidden !important;
   transition: all .2s cubic-bezier(0, 0, 0, 1);
 }

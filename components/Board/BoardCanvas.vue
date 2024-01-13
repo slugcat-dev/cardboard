@@ -254,9 +254,9 @@ async function onClick(event: MouseEvent) {
 
 		// Navigate to the new board
 		setTimeout(async () => {
-			const { shift } = await useBreadcrumbs()
+			const { push } = await useBreadcrumbs()
 
-			shift.value = 'down'
+			push.value = true
 
 			await navigateTo(`/${newBoard.id}`)
 		}, 400)
