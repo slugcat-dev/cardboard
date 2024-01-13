@@ -299,6 +299,45 @@ function onWheel(event: WheelEvent) {
 	zoomF(zoom.value + zoom.value * Math.sign(event.deltaY) * -.1, event)
 }
 
+// Drop images onto the board
+function onDrop(event: DragEvent) {
+	const files = event.dataTransfer?.files
+
+	if (files) {
+		Array.prototype.forEach.call(files, async (file) => {
+			if (!file.type.startsWith('image'))
+				return
+
+			const data = await readDropFile(file)
+			const card = await $fetch<Card>('/api/cards', {
+				method: 'POST',
+				body: {
+					board: board.value.id,
+					card: {
+						type: 'image',
+						created: new Date(),
+						position: getMousePos(event),
+						content: data
+					}
+				}
+			})
+
+			board.value.cards.push(card)
+		})
+	}
+
+	event.preventDefault()
+}
+
+function readDropFile(file: File) {
+	return new Promise<string>((resolve) => {
+		const reader = new FileReader()
+
+		reader.addEventListener('load', () => resolve(reader.result as string))
+		reader.readAsDataURL(file)
+	})
+}
+
 function onCardMove(id: string, prevPosition: Position, newPosition: Position) {
 	if (selectedCards.length === 0)
 		return
@@ -448,6 +487,9 @@ const selectionStyle = computed(() => {
 		@touchcancel="onTouchEnd"
 		@click="onClick"
 		@wheel="onWheel"
+		@dragenter.prevent
+		@dragover.prevent
+		@drop="onDrop"
 	>
 		<div
 			v-if="board.cards.length > 0"
