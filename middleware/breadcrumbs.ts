@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
-	const { breadcrumbs, push } = await useBreadcrumbs()
+	const { breadcrumbs, oldcrumbs, push } = await useBreadcrumbs()
 	const { route } = await useBoardState()
 	const { findBoard } = await useBoards()
 
@@ -9,27 +9,49 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 		push.value = false
 
 	const transitionName = (() => {
-		if (push.value) {
-			const fromBoard = findBoard(from.params.board as string)
+		const fromBoard = findBoard(from.params.board as string)
+		const toBoardId = to.params.board
+		const breadIndex = breadcrumbs.value.findIndex(bread => bread.path === toBoardId)
 
+		// If explicity set, push state and go down
+		if (push.value) {
 			breadcrumbs.value.push({
 				path: fromBoard.id,
 				name: fromBoard.name
 			})
 
+			oldcrumbs.value = []
+
 			return 'drill'
 		}
 
-		const toBoardId = to.params.board
-		const index = breadcrumbs.value.findIndex(bread => bread.path === toBoardId)
+		// Go back
+		if (breadIndex !== -1) {
+			const leftover = [...breadcrumbs.value.splice(breadIndex)]
 
-		if (index !== -1) {
-			breadcrumbs.value.splice(index)
+			leftover.splice(0, 1)
+			leftover.push({
+				path: fromBoard.id,
+				name: fromBoard.name
+			})
+			oldcrumbs.value.unshift(...leftover)
 
 			return 'undrill'
 		}
 
+		// Go forward
+		if (oldcrumbs.value.length !== 0 && oldcrumbs.value[0].path === toBoardId) {
+			breadcrumbs.value.push({
+				path: fromBoard.id,
+				name: fromBoard.name
+			})
+			oldcrumbs.value.shift()
+
+			return 'drill'
+		}
+
 		breadcrumbs.value = []
+		oldcrumbs.value = []
 
 		return 'slide'
 	})()

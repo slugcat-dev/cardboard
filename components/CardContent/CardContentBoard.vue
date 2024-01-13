@@ -18,7 +18,10 @@ async function onNavigate() {
 		<a @click="onNavigate">
 			{{ board.name }}
 		</a>
-		<img src="~/assets/images/miniboard.png">
+		<img
+			src="~/assets/images/miniboard.png"
+			draggable="false"
+		>
 	</div>
 </template>
 

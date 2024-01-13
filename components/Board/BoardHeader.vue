@@ -51,11 +51,11 @@ async function onDeleteBoard() {
 					<Icon name="mdi:chevron-right" size="1.5rem" />
 				</a>
 				<div
-					v-for="bread in breadcrumbs"
+					v-for="bread, index in breadcrumbs"
 					:key="bread.path"
 					class="bread"
 				>
-					<a @click="navigateTo(`/${bread.path}`)">{{ bread.name }}</a>
+					<a @click="router.go(-(breadcrumbs.length - index))">{{ bread.name }}</a>
 					<span class="bread-separator">/</span>
 				</div>
 				<div
