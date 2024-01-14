@@ -29,6 +29,17 @@ type Bread = {
 	name: string
 }
 
+type ContextMenuEntry = {
+	name: string
+	handler: Function
+	role?: 'danger'
+}
+
+type ContextMenuOptions = {
+	position: Position
+	entries: ContextMenuEntry[]
+}
+
 declare module '#auth-utils' {
 	type UserSession = {
 		user: User

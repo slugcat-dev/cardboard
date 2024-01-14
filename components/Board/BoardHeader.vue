@@ -3,13 +3,7 @@ const router = useRouter()
 const settings = useSettings()
 const boardNameRef = ref()
 const { board, deleteBoard } = await useBoards()
-const { breadcrumbs } = await useBreadcrumbs()
-
-/*
-router.options.history.listen((to, from, information) => {
-	console.log(information)
-})
-*/
+const { breadcrumbs, oldcrumbs } = await useBreadcrumbs()
 
 function onBoardNameUpdate() {
 	const name = boardNameRef.value.textContent
@@ -42,14 +36,16 @@ async function onDeleteBoard() {
 					class="nav-button"
 					@click="router.back()"
 				>
-					<Icon name="mdi:chevron-left" size="1.5rem" />
+					<Icon name="material-symbols:arrow-back-ios-rounded" size="1rem" />
 				</a>
 				<a
 					class="nav-button"
+					:class="{ disabled: oldcrumbs.length === 0 }"
 					@click="router.forward()"
 				>
-					<Icon name="mdi:chevron-right" size="1.5rem" />
+					<Icon name="material-symbols:arrow-forward-ios-rounded" size="1rem" />
 				</a>
+				<span class="bread-separator">/</span>
 				<div
 					v-for="bread, index in breadcrumbs"
 					:key="bread.path"
@@ -68,6 +64,7 @@ async function onDeleteBoard() {
 				>
 					{{ board.name }}
 				</div>
+				<span class="bread-separator">/</span>
 			</div>
 			<ClientOnly>
 				<label class="option">
@@ -113,12 +110,26 @@ async function onDeleteBoard() {
 		font-weight: bold;
 
 		.nav-button {
-			color: var(--color-warn);
+			display: flex;
+			align-items: center;
+			margin-right: .5rem;
+			color: var(--color-text);
+			transition: color .1s;
 
 			&:nth-child(2) {
 				margin-right: .75rem;
+			}
+
+			&.disabled {
 				color: var(--color-text-tertiary);
 			}
+		}
+
+		.bread-separator {
+			margin: 0 .25rem;
+			overflow: hidden;
+			color: var(--color-text-tertiary);
+			content: '/';
 		}
 
 		.bread {
@@ -135,13 +146,6 @@ async function onDeleteBoard() {
 				&:hover {
 					background-color: var(--color-warn-25);
 				}
-			}
-
-			.bread-separator {
-				margin: 0 .25rem;
-				overflow: hidden;
-				color: var(--color-text-tertiary);
-				content: '/';
 			}
 		}
 

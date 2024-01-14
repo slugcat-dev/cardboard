@@ -150,32 +150,52 @@ function onContextMenu(event: MouseEvent) {
 	if (event.shiftKey)
 		return deleteCard()
 
+	const typeSpecificEntries: ContextMenuEntry[] = []
+
+	switch (card.type) {
+		case 'text':
+			typeSpecificEntries.push({
+				name: 'Copy Text',
+				handler: () => navigator.clipboard.writeText(card.content)
+			})
+			break
+		case 'image':
+			typeSpecificEntries.push(
+				{
+					name: 'View Image',
+					handler: () => {}
+				},
+				{
+					name: 'Copy Image',
+					handler: async () => navigator.clipboard.write([new ClipboardItem({ 'image/png': (await fetch(card.content)).blob() })])
+				}
+			)
+			break
+		case 'link':
+			typeSpecificEntries.push(
+				{
+					name: 'Open Link in New Tab',
+					handler: () => navigateTo(card.content.url, { external: true, open: { target: '_blank' } })
+				},
+				{
+					name: 'Copy Link Address',
+					handler: () => navigator.clipboard.writeText(card.content.url)
+				}
+			)
+			break
+	}
+
 	useContextMenu().show({
 		position: {
 			x: event.clientX,
 			y: event.clientY
 		},
 		entries: [
-			{
-				name: 'Dummy',
-				handler: () => console.log('hello')
-			},
-			{
-				name: 'Color',
-				handler: () => console.log('hello')
-			},
-			{
-				name: 'Copy Content',
-				handler: () => console.log('hello')
-			},
-			{
-				name: 'Connect',
-				handler: () => console.log('hello')
-			},
+			...typeSpecificEntries,
 			{
 				name: 'Delete',
-				danger: true,
-				handler: deleteCard
+				handler: deleteCard,
+				role: 'danger'
 			}
 		]
 	})

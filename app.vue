@@ -39,6 +39,7 @@ useHead({
 	<NuxtLayout>
 		<NuxtPage />
 	</NuxtLayout>
+	<ContextMenu />
 </template>
 
 <style lang="scss">

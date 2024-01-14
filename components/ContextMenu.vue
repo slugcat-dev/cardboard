@@ -1,66 +1,63 @@
 <script setup lang="ts">
+import type { Point } from 'puppeteer-core'
+
 const { contextMenu } = useContextMenu()
 
-function onClose(event: MouseEvent) {
+function onClose(event: PointerEvent) {
 	if (!event.target.classList.contains('context-menu-overlay'))
 		return
 
-	contextMenu.options = undefined
+	contextMenu.value = undefined
 }
 
 function fhandler(handler: Function) {
 	handler()
 
-	contextMenu.options = undefined
+	contextMenu.value = undefined
 }
 
 const menuStyle = computed(() => {
 	const style = {}
 
-	if (contextMenu.options.position.x > window.innerWidth / 2)
-		style.right = `${window.innerWidth - contextMenu.options.position.x}px`
-	else style.left = `${contextMenu.options.position.x}px`
+	if (contextMenu.value.position.x > window.innerWidth / 2)
+		style.right = `${window.innerWidth - contextMenu.value.position.x}px`
+	else style.left = `${contextMenu.value.position.x}px`
 
-	if (contextMenu.options.position.y > window.innerHeight / 2)
-		style.bottom = `${window.innerHeight - contextMenu.options.position.y}px`
-	else style.top = `${contextMenu.options.position.y}px`
+	if (contextMenu.value.position.y > window.innerHeight / 2)
+		style.bottom = `${window.innerHeight - contextMenu.value.position.y}px`
+	else style.top = `${contextMenu.value.position.y}px`
 
 	return style
 })
 </script>
 
 <template>
-	<Transition name="page">
+	<div
+		v-if="contextMenu"
+		class="context-menu-overlay"
+		@pointerdown.prevent="onClose"
+	/>
+	<div
+		v-if="contextMenu"
+		class="context-menu"
+		:style="menuStyle"
+	>
 		<div
-			v-if="contextMenu.options"
-			class="context-menu-overlay"
-			@mousedown.prevent="onClose"
-		/>
-	</Transition>
-	<Transition name="page">
-		<div
-			v-if="contextMenu.options"
-			class="context-menu"
-			:style="menuStyle"
+			v-for="entry, index in contextMenu.entries"
+			:key="index"
+			class="menu-option"
+			:class="{ danger: entry.role === 'danger' }"
+			@click="fhandler(entry.handler)"
 		>
-			<button
-				v-for="entry, index in contextMenu.options.entries"
-				:key="index"
-				class="btn slim"
-				:class="{ danger: entry.danger }"
-				@click="fhandler(entry.handler)"
-			>
-				{{ entry.name }}
-			</button>
+			{{ entry.name }}
 		</div>
-	</Transition>
+	</div>
 </template>
 
-<style>
+<style lang="scss">
 .context-menu-overlay {
 	position: fixed;
-	z-index: 8;
-	background-color: #0004;
+	z-index: 30;
 	isolation: isolate;
 	inset: 0;
 	user-select: none;
@@ -71,12 +68,36 @@ const menuStyle = computed(() => {
 	z-index: 30;
 	display: flex;
 	flex-direction: column;
-	gap: .25rem;
 	padding: .25rem;
-	background-color: var(--color-background-secondary);
-	border: 1px solid var(--color-border);
+	background-color: color-mix(in srgb, var(--color-background-secondary), transparent 40%);
+	border: 1px solid var(--color-scrollbar);
 	border-radius: .25rem;
 	box-shadow: var(--shadow-card);
+	backdrop-filter: blur(8px);
 	user-select: none;
+
+	.menu-option {
+		display: flex;
+		gap: .75rem;
+		align-items: center;
+		min-width: 100px;
+		padding: .125rem .5rem;
+		font-weight: bold;
+		font-size: .875rem;
+		text-align: left;
+		border-radius: .25rem;
+
+		&:hover {
+			background-color: var(--color-accent-25);
+		}
+
+		&.danger {
+			color: var(--color-danger);
+
+			&:hover {
+				background-color: var(--color-danger-25);
+			}
+		}
+	}
 }
 </style>
