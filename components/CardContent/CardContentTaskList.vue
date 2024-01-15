@@ -54,7 +54,7 @@ defineExpose({ activate })
 				contenteditable="plaintext-only"
 				@blur="onListNameUpdate"
 				@keydown.enter="listNameRef.blur"
-				@keydown.escape="listNameRef.blur"
+				@keydown.escape="(e) => { e.stopPropagation(); listNameRef.blur(); }"
 			>
 				{{ card.content.title }}
 			</div>
@@ -78,7 +78,7 @@ defineExpose({ activate })
 			v-model="newTodo"
 			placeholder="+ Add task"
 			@keydown.enter="addTask"
-			@keydown.escape="inputRef.blur"
+			@keydown.escape="(e) => { e.stopPropagation(); inputRef.blur(); }"
 		>
 	</div>
 </template>

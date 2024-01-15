@@ -5,6 +5,15 @@ const boardNameRef = ref()
 const { board, deleteBoard } = await useBoards()
 const { breadcrumbs, oldcrumbs } = await useBreadcrumbs()
 
+defineShortcuts({
+	escape: () => {
+		if (breadcrumbs.value.length === 0)
+			return
+
+		router.back()
+	}
+})
+
 function onBoardNameUpdate() {
 	const name = boardNameRef.value.textContent
 

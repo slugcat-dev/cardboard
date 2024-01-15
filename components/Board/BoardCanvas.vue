@@ -26,12 +26,10 @@ defineShortcuts({
 		top: 0,
 		left: 0
 	}),
-	'end': () => {
-		canvasRef.value.scrollTo({
-			top: canvasRef.value.scrollHeight,
-			left: canvasRef.value.scrollWidth
-		})
-	},
+	'end': () => canvasRef.value.scrollTo({
+		top: canvasRef.value.scrollHeight,
+		left: canvasRef.value.scrollWidth
+	}),
 	// Select all cards
 	'meta_a': () => {
 		selection.value = new DOMRect(

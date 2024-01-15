@@ -71,7 +71,7 @@ const menuStyle = computed(() => {
 	padding: .25rem;
 	background-color: color-mix(in srgb, var(--color-background-secondary), transparent 40%);
 	border: 1px solid var(--color-scrollbar);
-	border-radius: .25rem;
+	border-radius: .375rem;
 	box-shadow: var(--shadow-card);
 	backdrop-filter: blur(8px);
 	user-select: none;

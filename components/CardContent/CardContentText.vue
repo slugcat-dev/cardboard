@@ -132,7 +132,7 @@ defineExpose({ activate })
 		contenteditable="false"
 		spellcheck="false"
 		@keydown.enter.exact="textRef.blur"
-		@keydown.escape="textRef.blur"
+		@keydown.escape="(e) => { e.stopPropagation(); textRef.blur(); }"
 		@keydown.delete="() => { if (isEmpty()) textRef.blur() }"
 		@input="onInput"
 		@blur="onBlur"
