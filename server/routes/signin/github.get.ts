@@ -21,7 +21,7 @@ export default oauth.githubEventHandler({
 			}
 		})
 
-		return sendRedirect(event, '/boards')
+		return sendRedirect(event, '/')
 	},
 	config: {
 		emailRequired: true

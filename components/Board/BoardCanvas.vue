@@ -298,6 +298,8 @@ function onWheel(event: WheelEvent) {
 }
 
 // Drop images onto the board
+const waiting = ref(false)
+
 function onDrop(event: DragEvent) {
 	const files = event.dataTransfer?.files
 
@@ -305,6 +307,8 @@ function onDrop(event: DragEvent) {
 		Array.prototype.forEach.call(files, async (file) => {
 			if (!file.type.startsWith('image'))
 				return
+
+			waiting.value = true
 
 			const data = await readDropFile(file)
 			const card = await $fetch<Card>('/api/cards', {
@@ -319,6 +323,8 @@ function onDrop(event: DragEvent) {
 					}
 				}
 			})
+
+			waiting.value = false
 
 			board.value.cards.push(card)
 		})
@@ -450,7 +456,7 @@ const canvasStyle = computed(() => {
 		'--grid-color': settings.grid.show && zoom.value > .75 ? `var(--color-scrollbar)` : 'transparent',
 		'background-image': `radial-gradient(circle, var(--grid-color) ${Math.max(1, zoom.value)}px, transparent ${Math.max(1, zoom.value)}px)`,
 		'background-size': `${visualGridSize}px ${visualGridSize}px`,
-		'cursor': pointerMoved.value && !selectionVisible.value ? 'move' : 'default'
+		'cursor': pointerMoved.value && !selectionVisible.value ? 'move' : waiting.value ? 'progress' : 'default'
 	}
 })
 
@@ -469,7 +475,7 @@ const selectionStyle = computed(() => {
 </script>
 
 <template>
-	<div
+	<main
 		id="canvas"
 		ref="canvasRef"
 		:class="{ selecting: metaKey }"
@@ -520,7 +526,7 @@ const selectionStyle = computed(() => {
 			:style="selectionStyle"
 		/>
 		<ContextMenu />
-	</div>
+	</main>
 </template>
 
 <style lang="scss">

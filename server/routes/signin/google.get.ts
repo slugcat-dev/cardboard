@@ -21,6 +21,6 @@ export default oauth.googleEventHandler({
 			}
 		})
 
-		return sendRedirect(event, '/boards')
+		return sendRedirect(event, '/')
 	}
 })
