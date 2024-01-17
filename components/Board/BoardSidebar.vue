@@ -3,13 +3,6 @@ const session = useUserSession()
 const { user } = session
 const { boards, createBoard } = await useBoards()
 const settings = useSettings()
-const hidden = computed(() => {
-	if (process.client)
-		return !settings.value.sidebar
-
-	return true
-})
-
 /*
 function match() {
 	return window.matchMedia('(width <= 480px)').matches
@@ -20,7 +13,7 @@ function match() {
 <template>
 	<div
 		id="sidebar"
-		:class="{ hidden }"
+		:class="{ hidden: !settings.sidebar }"
 	>
 		<div class="profile">
 			<img

@@ -410,11 +410,13 @@ defineExpose({ activate, alignToGrid, getSizeRect })
 	}
 
 	&.selected {
-		box-shadow: 0 0 0 2px var(--color-accent-50);
+		border: 1px solid var(--color-accent-50);
+		box-shadow: 0 0 0 1px var(--color-accent-50);
 	}
 
 	&:has(.card-text:focus-visible) {
-		box-shadow: 0 0 0 2px var(--color-accent);
+		border: 1px solid var(--color-accent);
+		box-shadow: 0 0 0 1px var(--color-accent);
 	}
 
 	&:not(:has(.card-text[contenteditable="true"])),
