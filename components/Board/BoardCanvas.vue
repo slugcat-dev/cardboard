@@ -450,10 +450,9 @@ const areaSpacerStyle = computed(() => {
 })
 
 const canvasStyle = computed(() => {
-	const visualGridSize = settings.grid.size * zoom.value
+	const visualGridSize = settings.value.grid.size * zoom.value
 
 	return {
-		'--grid-color': settings.grid.show && zoom.value > .75 ? `var(--color-scrollbar)` : 'transparent',
 		'background-image': `radial-gradient(circle, var(--grid-color) ${Math.max(1, zoom.value)}px, transparent ${Math.max(1, zoom.value)}px)`,
 		'background-size': `${visualGridSize}px ${visualGridSize}px`,
 		'cursor': pointerMoved.value && !selectionVisible.value ? 'move' : waiting.value ? 'progress' : 'default'

@@ -2,17 +2,19 @@
 const session = useUserSession()
 const { user } = session
 const { boards, createBoard } = await useBoards()
-const hidden = ref(false)
+const settings = useSettings()
+const hidden = computed(() => {
+	if (process.client)
+		return !settings.value.sidebar
+
+	return true
+})
 
 /*
 function match() {
 	return window.matchMedia('(width <= 480px)').matches
 }
 */
-
-function onToggleSidebar() {
-	hidden.value = !hidden.value
-}
 </script>
 
 <template>
@@ -20,16 +22,7 @@ function onToggleSidebar() {
 		id="sidebar"
 		:class="{ hidden }"
 	>
-		<button
-			class="sidebar-toggle"
-			@click="onToggleSidebar"
-		>
-			Toggle Sidebar
-		</button>
-		<div
-			class="profile"
-			@click="session.clear()"
-		>
+		<div class="profile">
 			<img
 				class="profile-picture"
 				:src="user.picture"
@@ -54,6 +47,13 @@ function onToggleSidebar() {
 		>
 			Create Board
 		</Btn>
+		<Btn
+			role="danger"
+			icon="mdi:logout"
+			@click="session.clear()"
+		>
+			Log Out
+		</Btn>
 	</div>
 </template>
 
@@ -73,13 +73,6 @@ function onToggleSidebar() {
 	&.hidden{
 		margin-left: -220px;
 		box-shadow: none;
-	}
-
-	.sidebar-toggle {
-		position: fixed;
-		bottom: 1rem;
-		left: 1rem;
-		z-index: 25;
 	}
 
 	.profile {

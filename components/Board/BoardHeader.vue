@@ -39,20 +39,29 @@ async function onDeleteBoard() {
 
 <template>
 	<header id="header">
-		<div class="toolbar">
+		<div
+			v-if="board.id"
+			class="toolbar"
+		>
+			<button
+				class="sidebar-toggle"
+				@click="settings.sidebar = !settings.sidebar"
+			>
+				<Icon name="akar-icons:sidebar-left" size="1rem" />
+			</button>
 			<div class="breadcrumbs">
 				<a
 					class="nav-button"
 					@click="router.back()"
 				>
-					<Icon name="material-symbols:arrow-back-ios-rounded" size="1rem" />
+					<Icon name="material-symbols:arrow-back-ios-rounded" size="14px" />
 				</a>
 				<a
 					class="nav-button"
 					:class="{ disabled: oldcrumbs.length === 0 }"
 					@click="router.forward()"
 				>
-					<Icon name="material-symbols:arrow-forward-ios-rounded" size="1rem" />
+					<Icon name="material-symbols:arrow-forward-ios-rounded" size="14px" />
 				</a>
 				<span class="bread-separator">/</span>
 				<div
@@ -84,25 +93,76 @@ async function onDeleteBoard() {
 					>
 					Snap cards to grid
 				</label>
-				<label class="option">
-					<input
-						type="checkbox"
-						:checked="settings.grid.show"
-						@change="settings.grid.show = ($event.target as HTMLInputElement).checked"
-					>
-					Show grid
-				</label>
 			</ClientOnly>
 			<button @click="onDeleteBoard">
 				Delete Board
 			</button>
+			<div
+				v-if="false"
+				class="toolbox"
+			>
+				<div class="tool active">
+					<Icon
+						name="material-symbols:text-fields"
+						size="1rem"
+					/>
+				</div>
+				<div class="tool">
+					<Icon
+						name="material-symbols:dashboard"
+						size="1rem"
+					/>
+				</div>
+				<div class="tool">
+					<Icon
+						name="material-symbols:checklist"
+						size="1rem"
+					/>
+				</div>
+			</div>
+		</div>
+		<div
+			v-else
+			class="header-title"
+		>
+			<Icon name="material-symbols:search" size="16px" />
+			Cardboard<kbd>⌘</kbd><kbd>K</kbd>
 		</div>
 	</header>
 </template>
 
 <style lang="scss">
+.header-title {
+	display: flex;
+	gap: .25rem;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: .125rem;
+	font-weight: bold;
+	font-size: .875rem;
+	line-height: 18px;
+	text-align: center;
+	background-color: var(--color-background-tertiary);
+	border: 1px solid var(--color-scrollbar);
+	border-radius: .375rem;
+
+	.icon {
+		opacity: .635;
+	}
+
+	kbd {
+		display: none;
+		padding: 0 .25rem;
+		background-color: #666;
+		border-radius: .25rem;
+		box-shadow: 0 -2px 0 0 #444 inset;
+		opacity: .635;
+	}
+}
+
 #header {
-	z-index: 15;
+	z-index: 10;
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
@@ -180,6 +240,29 @@ async function onDeleteBoard() {
 		.option > input[type="checkbox"] {
 			cursor: pointer;
 		}
+
+		.toolbox {
+			display: flex;
+
+			.tool {
+				padding: .25rem;
+				text-decoration: none;
+				border-radius: .25rem;
+
+				&:hover {
+					background-color: var(--color-accent-25);
+				}
+
+				&.active {
+					color: var(--color-accent);
+				}
+
+				.icon {
+					display: block;
+				}
+			}
+		}
+
 	}
 }
 </style>

@@ -317,7 +317,7 @@ async function deleteCard() {
 }
 
 function alignToGrid() {
-	const gridSize = settings.grid.snap ? settings.grid.size : 1
+	const gridSize = settings.value.grid.snap ? settings.value.grid.size : 1
 	const prevPosition = card.position
 
 	card.position = {
