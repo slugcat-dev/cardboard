@@ -18,11 +18,11 @@ useSeoMeta({
 	themeColor: [
 		{
 			media: '(prefers-color-scheme: dark)',
-			content: '#101010'
+			content: '#222222'
 		},
 		{
 			media: '(prefers-color-scheme: light)',
-			content: '#f3f3f3'
+			content: '#ffffff'
 		}
 	]
 })

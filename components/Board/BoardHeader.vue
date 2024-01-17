@@ -35,6 +35,9 @@ async function onDeleteBoard() {
 	await deleteBoard(board.value.id)
 	router.back()
 }
+
+const isDark = useDark({ storageKey: 'color-scheme' })
+const toggleDark = useToggle(isDark)
 </script>
 
 <template>
@@ -96,6 +99,9 @@ async function onDeleteBoard() {
 			</ClientOnly>
 			<button @click="onDeleteBoard">
 				Delete Board
+			</button>
+			<button @click="toggleDark()">
+				<Icon name="bi:sun" size="1rem" />
 			</button>
 			<div
 				v-if="false"
