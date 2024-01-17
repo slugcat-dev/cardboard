@@ -42,16 +42,16 @@ const toggleDark = useToggle(isDark)
 
 <template>
 	<header id="header">
+		<button
+			class="sidebar-toggle"
+			@click="settings.sidebar = !settings.sidebar"
+		>
+			<Icon name="akar-icons:sidebar-left" size="1rem" />
+		</button>
 		<div
 			v-if="board.id"
 			class="toolbar"
 		>
-			<button
-				class="sidebar-toggle"
-				@click="settings.sidebar = !settings.sidebar"
-			>
-				<Icon name="akar-icons:sidebar-left" size="1rem" />
-			</button>
 			<div class="breadcrumbs">
 				<a
 					class="nav-button"
@@ -170,8 +170,8 @@ const toggleDark = useToggle(isDark)
 #header {
 	z-index: 10;
 	display: flex;
+	gap: 1rem;
 	align-items: flex-start;
-	justify-content: space-between;
 	padding: .5rem 1rem;
 	background-color: var(--color-background-secondary);
 	border-bottom: 1px solid var(--color-border);
