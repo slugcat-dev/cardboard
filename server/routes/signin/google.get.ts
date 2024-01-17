@@ -13,6 +13,7 @@ export default oauth.googleEventHandler({
 		else if (!userLink.google)
 			await userLink.updateOne({ google: user.sub })
 
+		await userLink.updateOne({ lastseen: Date.now() })
 		await setUserSession(event, {
 			user: {
 				id: userLink.id,

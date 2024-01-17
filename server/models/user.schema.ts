@@ -14,6 +14,10 @@ export const UserSchema = defineMongooseModel({
 		github: {
 			type: Number,
 			required: false
+		},
+		lastseen: {
+			type: Date,
+			required: false
 		}
 	},
 	options: { toJSON: { virtuals: true } }
