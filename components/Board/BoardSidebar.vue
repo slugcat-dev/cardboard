@@ -21,18 +21,35 @@ function match() {
 				:src="user.picture"
 				draggable="false"
 			>
-			{{ user.name }}
+			<div class="info">
+				Good evening, {{ user.name }}!
+				<div class="text-secondary">
+					{{ user.email }}
+				</div>
+			</div>
 		</div>
-		<ul>
-			<li
+		<Btn
+			icon="mdi:logout"
+			@click="session.clear()"
+		>
+			Log Out
+		</Btn>
+		<strong><br>Your Boards</strong>
+		<div class="boards">
+			<div
 				v-for="board of boards"
 				:key="board.id"
+				class="board"
 			>
-				<NuxtLink :to="board.id">
+				<NuxtLink class="board-link" :to="board.id">
+					<Icon
+						name="fluent:page-20-regular"
+						size="20px"
+					/>
 					{{ board.name }}
 				</NuxtLink>
-			</li>
-		</ul>
+			</div>
+		</div>
 		<Btn
 			role="primary"
 			icon="mdi:plus"
@@ -40,23 +57,20 @@ function match() {
 		>
 			Create Board
 		</Btn>
-		<Btn
-			role="danger"
-			icon="mdi:logout"
-			@click="session.clear()"
-		>
-			Log Out
-		</Btn>
 	</div>
 </template>
 
 <style lang="scss">
 #sidebar {
 	z-index: 10;
-	min-width: 220px;
+	display: flex;
+	flex-direction: column;
+	gap: .25rem;
+	width: 240px;
 	height: 100%;
 	margin-left: 0;
-	padding: .5rem;
+	padding: .5rem .75rem;
+	overflow-y: auto;
 	background-color: var(--color-background-secondary);
 	border-right: 1px solid var(--color-border);
 	box-shadow: 2px 0 4px var(--color-shadow-ui);
@@ -73,7 +87,17 @@ function match() {
 		gap: .5rem;
 		align-items: center;
 		font-weight: bold;
-		cursor: pointer;
+		font-size: .875rem;
+		background-color: var(--color-background-secondary);
+
+		.info {
+			line-height: 1em;
+
+			.text-secondary {
+				font-weight: normal;
+				font-size: .625rem;
+			}
+		}
 
 		.profile-picture {
 			width: 1.5rem;
@@ -81,6 +105,28 @@ function match() {
 			background-color: var(--color-scrollbar);
 			border-radius: 100%;
 		}
+	}
+}
+
+.board-link {
+	display: block;
+	padding: .5rem 0;
+	overflow: hidden;
+	color: currentcolor;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	border-radius: .375rem;
+
+	&:hover {
+		text-decoration: none;
+	}
+
+	&.router-link-active {
+		background-color: var(--color-background-tertiary);
+	}
+
+	&:not(.router-link-active) {
+		color: var(--color-text-tertiary);
 	}
 }
 </style>
