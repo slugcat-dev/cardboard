@@ -66,6 +66,12 @@ body {
   transition: all .2s cubic-bezier(0, 0, 0, 1);
 }
 
+.slide-enter-active,
+.drill-enter-active,
+.undrill-enter-active {
+	transition: all .2s cubic-bezier(0, 1, 1, 1);
+}
+
 .slide-enter-from {
 	transform: translateY(2vh);
 	opacity: 0;

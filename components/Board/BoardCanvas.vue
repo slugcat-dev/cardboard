@@ -217,8 +217,6 @@ function distance(touches: TouchList) {
 	)
 }
 
-//
-
 // Create a new text card when you doubleclick or tap the canvas
 async function onClick(event: MouseEvent) {
 	if (event.target !== canvasRef.value)
@@ -233,7 +231,7 @@ async function onClick(event: MouseEvent) {
 
 	const position = getMousePos(event)
 
-	if (metaKey.value) {
+	if (useShortcuts().macOS ? event.metaKey : event.ctrlKey) {
 		const newBoard = await createBoard()
 		const card = await $fetch<Card>('/api/cards', {
 			method: 'POST',
@@ -260,7 +258,7 @@ async function onClick(event: MouseEvent) {
 		}, 400)
 	}
 	else {
-		const data: Card = shiftKey.value
+		const data: Card = event.shiftKey
 			? {
 					id: 'create',
 					type: 'tasklist',

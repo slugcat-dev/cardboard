@@ -212,7 +212,7 @@ function onWheel(event: WheelEvent) {
 	// because browsers usually implement smooth scrolling
 	const updPos = () => onPointerMove(cachedPointerEvent)
 
-	props.canvasRef.addEventListener('scroll', updPos)
+	props.canvasRef.addEventListener('scroll', updPos, { passive: true })
 	props.canvasRef.addEventListener('scrollend', () => {
 		props.canvasRef.removeEventListener('scroll', updPos)
 
@@ -338,6 +338,10 @@ function getSizeRect() {
 }
 
 defineExpose({ activate, alignToGrid, getSizeRect })
+
+onMounted(() => {
+	//
+})
 </script>
 
 <template>

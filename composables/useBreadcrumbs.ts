@@ -1,4 +1,4 @@
-export const useBreadcrumbs = createGlobalState(async () => {
+export const useBreadcrumbs = createGlobalState(() => {
 	const breadcrumbs = ref<Bread[]>([])
 	const oldcrumbs = ref<Bread[]>([])
 	const push = ref(false)

@@ -54,7 +54,7 @@ defineExpose({ activate })
 				contenteditable="plaintext-only"
 				@blur="onListNameUpdate"
 				@keydown.enter="listNameRef.blur"
-				@keydown.escape="(e) => { e.stopPropagation(); listNameRef.blur(); }"
+				@keydown.escape="(e) => { /* because somewhere, esc is used as hotkey*/ e.stopPropagation(); listNameRef.blur(); }"
 			>
 				{{ card.content.title }}
 			</div>

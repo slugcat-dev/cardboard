@@ -3,10 +3,11 @@ export const useKeys = createSharedComposable(() => {
 	const metaKey = ref(false)
 	const shiftKey = ref(false)
 
-	useEventListener('keydown', keyboardEventHandler)
-	useEventListener('keyup', keyboardEventHandler)
+	useEventListener('keydown', keyEventHandler)
+	useEventListener('keyup', keyEventHandler)
+	useEventListener('pointerdown', keyEventHandler)
 
-	function keyboardEventHandler(event: KeyboardEvent | MouseEvent) {
+	function keyEventHandler(event: KeyboardEvent | PointerEvent) {
 		metaKey.value = macOS ? event.metaKey : event.ctrlKey
 		shiftKey.value = event.shiftKey
 	}
