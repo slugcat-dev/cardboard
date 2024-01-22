@@ -9,7 +9,6 @@ watch(loggedIn, async () => {
 useSeoMeta({
 	title: 'Cardboard',
 	description: 'Place virtual cards on a virtual canvas virtually anywhere',
-	charset: 'utf-8',
 	viewport: {
 		width: 'device-width',
 		initialScale: '1.0',
@@ -39,7 +38,6 @@ useHead({
 	<NuxtLayout>
 		<NuxtPage />
 	</NuxtLayout>
-	<ContextMenu />
 </template>
 
 <style lang="scss">

@@ -27,15 +27,22 @@ function match() {
 					{{ user.email }}
 				</div>
 			</div>
+			<Btn
+				icon="mdi:logout"
+				@click="session.clear()"
+			>
+				Log Out
+			</Btn>
+			<Btn
+				role="primary"
+				icon="mdi:plus"
+				@click="createBoard(true)"
+			>
+				Create Board
+			</Btn>
 		</div>
-		<Btn
-			icon="mdi:logout"
-			@click="session.clear()"
-		>
-			Log Out
-		</Btn>
-		<strong><br>Your Boards</strong>
 		<div class="boards">
+			<strong style="position: sticky; top: 0; left: 0; display: block; width: 100%; padding-left: 1rem; background-color: var(--color-background-secondary);">Your Boards</strong>
 			<div
 				v-for="board of boards"
 				:key="board.id"
@@ -50,13 +57,6 @@ function match() {
 				</NuxtLink>
 			</div>
 		</div>
-		<Btn
-			role="primary"
-			icon="mdi:plus"
-			@click="createBoard(true)"
-		>
-			Create Board
-		</Btn>
 	</div>
 </template>
 
@@ -65,11 +65,9 @@ function match() {
 	z-index: 10;
 	display: flex;
 	flex-direction: column;
-	gap: .25rem;
+	grid-area: sidebar;
 	width: 240px;
-	height: 100%;
 	margin-left: 0;
-	padding: .5rem .75rem;
 	overflow-y: auto;
 	background-color: var(--color-background-secondary);
 	border-right: 1px solid var(--color-border);
@@ -78,14 +76,16 @@ function match() {
 	user-select: none;
 
 	&.hidden{
-		margin-left: -220px;
+		margin-left: -240px;
 		box-shadow: none;
 	}
 
 	.profile {
 		display: flex;
-		gap: .5rem;
+		flex-wrap: wrap;
+		gap: 1rem .5rem;
 		align-items: center;
+		padding: 1rem;
 		font-weight: bold;
 		font-size: .875rem;
 		background-color: var(--color-background-secondary);
@@ -106,16 +106,40 @@ function match() {
 			border-radius: 100%;
 		}
 	}
+
+	.boards {
+		flex-direction: column;
+		overflow-y: scroll;
+
+		&:not(:hover) {
+			&::-webkit-scrollbar {
+				width: 0;
+				height: 0;
+			}
+		}
+	}
+}
+
+.board {
+	border-top: 1px solid var(--color-border);
+
+	&:has(.router-link-active),
+	&:has(.router-link-active) + .board {
+		border-color: var(--color-background);
+	}
+
+	&:last-child:has(.router-link-active) {
+		border-bottom: 1px solid var(--color-background);
+	}
 }
 
 .board-link {
 	display: block;
-	padding: .5rem 0;
+	padding: .5rem 1rem;
 	overflow: hidden;
 	color: currentcolor;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	border-radius: .375rem;
 
 	&:hover {
 		text-decoration: none;

@@ -17,6 +17,7 @@ export default oauth.googleEventHandler({
 		await setUserSession(event, {
 			user: {
 				id: userLink.id,
+				email: user.email,
 				name: user.given_name || user.name,
 				picture: user.picture
 			}

@@ -17,6 +17,7 @@ export default oauth.githubEventHandler({
 		await setUserSession(event, {
 			user: {
 				id: userLink.id,
+				email: user.email,
 				name: user.name || user.login,
 				picture: user.avatar_url
 			}

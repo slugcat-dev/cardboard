@@ -140,10 +140,10 @@ const toggleDark = useToggle(isDark)
 <style lang="scss">
 .header-title {
 	display: flex;
+	grid-area: header;
 	gap: .25rem;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
 	padding: .125rem;
 	font-weight: bold;
 	font-size: .875rem;

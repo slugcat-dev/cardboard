@@ -1,12 +1,9 @@
 <template>
-	<div id="board">
+	<div id="app">
 		<BoardSidebar />
-		<div class="board-main">
-			<BoardHeader />
-			<div class="canvas-transition-wrapper">
-				<slot />
-			</div>
-		</div>
+		<BoardHeader />
+		<NuxtPage />
+		<ContextMenu />
 	</div>
 </template>
 
@@ -15,19 +12,19 @@ body {
 	overflow: hidden;
 }
 
-#board {
-	display: flex;
+#app {
+	position: relative;
+	display: grid;
+	grid-template-areas:
+		'sidebar header'
+		'sidebar main';
+	grid-template-rows: 41px auto;
+	grid-template-columns: min-content auto;
 	height: 100vh;
 
-	.board-main {
-		display: flex;
-		flex-direction: column;
-		flex-grow: 1;
-
-		.canvas-transition-wrapper {
-			position: relative;
-			flex-grow: 1;
-		}
+	.canvas-transition-wrapper {
+		position: relative;
+		grid-area: main;
 	}
 }
 </style>
