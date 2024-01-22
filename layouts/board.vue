@@ -8,6 +8,8 @@
 </template>
 
 <style lang="scss">
+/* stylelint-disable declaration-block-no-redundant-longhand-properties */
+
 body {
 	overflow: hidden;
 }

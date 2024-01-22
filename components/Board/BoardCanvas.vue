@@ -541,6 +541,7 @@ const selectionStyle = computed(() => {
 	position: absolute;
 	grid-area: main;
 	width: 100%;
+	height: 100%;
 	overflow: auto;
 	background-attachment: local;
 	user-select: none;
