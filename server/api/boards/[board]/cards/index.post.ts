@@ -1,10 +1,10 @@
 export default defineEventHandler(async (event) => {
 	const { user } = await requireUserSession(event)
-	const id = event.context.params?.id
-	const board = await BoardSchema.findById(id)
+	const board = await BoardSchema.findById(getRouterParams(event).board)
+	const data = await readBody(event)
 
 	if (!board) {
-		return createError({
+		throw createError({
 			statusCode: 404,
 			message: 'Board not found'
 		})
@@ -17,9 +17,9 @@ export default defineEventHandler(async (event) => {
 		})
 	}
 
-	await CardSchema.deleteMany({ $or: [
-		{ _id: { $in: board.cards } },
-		{ content: id }
-	] })
-	await board.deleteOne()
+	const card = (await new CardSchema(data.card).save())
+
+	await board.updateOne({ $push: { cards: card.id } })
+
+	return card
 })

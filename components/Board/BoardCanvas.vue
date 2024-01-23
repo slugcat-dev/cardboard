@@ -49,7 +49,7 @@ defineShortcuts({
 		if (selectedCards.length === board.value.cards.length && !confirm('Are you sure you want to delete ALL cards on this board?'))
 			return
 
-		await $fetch('/api/cards/many', {
+		await $fetch(`/api/boards/${board.value.id}/cards/many`, {
 			method: 'DELETE',
 			body: selectedCards
 		})
@@ -233,10 +233,9 @@ async function onClick(event: MouseEvent) {
 
 	if (useShortcuts().macOS ? event.metaKey : event.ctrlKey) {
 		const newBoard = await createBoard()
-		const card = await $fetch<Card>('/api/cards', {
+		const card = await $fetch<Card>(`/api/boards/${board.value.id}/cards`, {
 			method: 'POST',
 			body: {
-				board: board.value.id,
 				card: {
 					type: 'board',
 					created: new Date(),
@@ -309,10 +308,9 @@ function onDrop(event: DragEvent) {
 			waiting.value = true
 
 			const data = await readDropFile(file)
-			const card = await $fetch<Card>('/api/cards', {
+			const card = await $fetch<Card>(`/api/boards/${board.value.id}/cards`, {
 				method: 'POST',
 				body: {
-					board: board.value.id,
 					card: {
 						type: 'image',
 						created: new Date(),
@@ -359,13 +357,13 @@ function onCardMove(id: string, prevPosition: Position, newPosition: Position) {
 
 async function onCardUpdate(card: Card) {
 	if (selectedCards.length === 0) {
-		return await $fetch(`/api/cards/${card.id}`, {
+		return await $fetch(`/api/boards/${board.value.id}/cards/${card.id}`, {
 			method: 'PUT',
 			body: card
 		})
 	}
 
-	await $fetch(`/api/cards/many`, {
+	await $fetch(`/api/boards/${board.value.id}/cards/many`, {
 		method: 'PUT',
 		body: board.value.cards
 			.filter(card => selectedCards.includes(card.id))
@@ -380,7 +378,7 @@ async function onCardUpdate(card: Card) {
 
 async function onCardDelete(id: string) {
 	if (id !== 'create')
-		await $fetch(`/api/cards/${id}`, { method: 'DELETE' })
+		await $fetch(`/api/boards/${board.value.id}/cards/${id}`, { method: 'DELETE' })
 
 	board.value.cards.splice(board.value.cards.findIndex(card => card.id === id), 1)
 }

@@ -1,9 +1,9 @@
 export default defineEventHandler(async (event) => {
 	const { user } = await requireUserSession(event)
-	const board = await BoardSchema.findById(event.context.params?.id).populate('cards')
+	const board = await BoardSchema.findById(getRouterParams(event).board)
 
 	if (!board) {
-		return createError({
+		throw createError({
 			statusCode: 404,
 			message: 'Board not found'
 		})
@@ -16,5 +16,9 @@ export default defineEventHandler(async (event) => {
 		})
 	}
 
-	return board
+	await CardSchema.deleteMany({ $or: [
+		{ _id: { $in: board.cards } },
+		{ content: board.id }
+	] })
+	await board.deleteOne()
 })

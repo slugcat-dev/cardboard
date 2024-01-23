@@ -274,12 +274,9 @@ async function updateCard(contentChanged: boolean = false) {
 	if (card.id === 'create') {
 		delete card.id
 
-		const data = await $fetch<Card>('/api/cards', {
+		const data = await $fetch<Card>(`/api/boards/${route.params.board}/cards`, {
 			method: 'POST',
-			body: {
-				board: route.params.board,
-				card
-			}
+			body: { card }
 		})
 
 		card.id = data.id

@@ -1,9 +1,9 @@
 export default defineEventHandler(async (event) => {
 	const { user } = await requireUserSession(event)
-	const board = await BoardSchema.findById(event.context.params?.id)
+	const board = await BoardSchema.findById(getRouterParams(event).board)
 
 	if (!board) {
-		return createError({
+		throw createError({
 			statusCode: 404,
 			message: 'Board not found'
 		})

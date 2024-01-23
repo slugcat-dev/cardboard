@@ -1,10 +1,9 @@
 export default defineEventHandler(async (event) => {
 	const { user } = await requireUserSession(event)
-	const data = await readBody(event)
-	const board = await BoardSchema.findById(data.board)
+	const board = await BoardSchema.findById(getRouterParams(event).board).populate('cards')
 
 	if (!board) {
-		return createError({
+		throw createError({
 			statusCode: 404,
 			message: 'Board not found'
 		})
@@ -17,9 +16,5 @@ export default defineEventHandler(async (event) => {
 		})
 	}
 
-	const card = (await new CardSchema(data.card).save())
-
-	await board.updateOne({ $push: { cards: card.id } })
-
-	return card
+	return board
 })
