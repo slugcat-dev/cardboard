@@ -22,7 +22,7 @@ function match() {
 				draggable="false"
 			>
 			<div class="info">
-				Good evening, {{ user.name }}!
+				{{ user.name }}
 				<div class="text-secondary">
 					{{ user.email }}
 				</div>

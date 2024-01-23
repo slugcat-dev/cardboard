@@ -42,6 +42,7 @@ definePageMeta({
 	position: absolute;
 	display: flex;
 	flex-direction: column;
+	grid-area: main;
 	align-items: center;
 	width: 100%;
 }

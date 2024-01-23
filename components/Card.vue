@@ -22,6 +22,7 @@ const route = useRoute()
 const settings = useSettings()
 const cardRef = ref()
 const contentRef = ref()
+const { metaKey } = useKeys()
 const selected = ref(false)
 const contentActive = ref(false)
 const pointerDown = ref(false)
@@ -133,7 +134,7 @@ function onClick(event: MouseEvent) {
 	if (isInteractable(event.target) || pointerMoved)
 		return
 
-	if (useShortcuts().macOS ? event.metaKey : event.ctrlKey)
+	if (metaKey.value)
 		selected.value = !selected.value
 	else if (card.type !== 'tasklist')
 		activate(event)

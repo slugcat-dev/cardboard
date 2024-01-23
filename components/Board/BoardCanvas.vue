@@ -9,7 +9,7 @@ const canvasRef = ref()
 const { board: boardRef, createBoard } = await useBoards()
 const board = ref(boardRef.value)
 const cardRefs: Ref<InstanceType<typeof CardComponent>[]> = ref([])
-const { metaKey, shiftKey } = useKeys()
+const { metaKey } = useKeys()
 const selection = ref()
 const selectionVisible = ref(false)
 const pointerMoved = ref(false)
@@ -98,7 +98,7 @@ function onPointerDown(event: PointerEvent) {
 	if (event.target !== canvasRef.value)
 		return
 
-	if (useShortcuts().macOS ? event.metaKey : event.ctrlKey) {
+	if (metaKey.value) {
 		selection.value = new DOMRect(
 			pointerClickPos.x - canvasRect.left + canvasRef.value.scrollLeft,
 			pointerClickPos.y - canvasRect.top + canvasRef.value.scrollTop
@@ -233,7 +233,7 @@ async function onClick(event: MouseEvent) {
 
 	const position = getMousePos(event)
 
-	if (useShortcuts().macOS ? event.metaKey : event.ctrlKey) {
+	if (metaKey.value) {
 		const newBoard = await createBoard()
 		const card = await $fetch<Card>(`/api/boards/${board.value.id}/cards`, {
 			method: 'POST',
@@ -288,7 +288,7 @@ async function onClick(event: MouseEvent) {
 
 // Zoom using the mouse wheel
 function onWheel(event: WheelEvent) {
-	if (!(useShortcuts().macOS ? event.metaKey : event.ctrlKey))
+	if (!metaKey.value)
 		return
 
 	event.preventDefault()
@@ -532,6 +532,7 @@ const selectionStyle = computed(() => {
 	gap: .5rem;
 	align-items: center;
 	justify-content: center;
+	height: 100%;
 	font-weight: bold;
 }
 

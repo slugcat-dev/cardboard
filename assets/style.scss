@@ -3,8 +3,6 @@
 
 /* Default (light) theme */
 :root {
-	color-scheme: light;
-
 	--color-text: oklch(0% 0 0deg);
 	--color-text-secondary: oklch(40% 0 0deg);
 	--color-text-tertiary: oklch(60% 0 0deg);
@@ -32,12 +30,13 @@
 	--color-favicon: #f3f3f3;
 	--color-icon-shadow: transparent;
 	--icon-contrast: .75;
+
+	color-scheme: light;
+	accent-color: var(--color-accent);
 }
 
 /* Dark theme */
 :root.dark {
-	color-scheme: dark;
-	
 	--color-text: oklch(85% 0 0deg);
 	--color-text-secondary: oklch(75% 0 0deg);
 	--color-text-tertiary: oklch(65% 0 0deg);
@@ -64,6 +63,8 @@
 	--color-favicon: #404040;
 	--color-icon-shadow: #00000060;
 	--icon-contrast: .75;
+
+	color-scheme: dark;
 }
 
 @media (pointer: coarse) {
@@ -120,4 +121,10 @@ a {
 
 .allow-pointer-events {
 	pointer-events: auto;
+}
+
+button,
+input {
+	font-size: .75rem;
+	font-family: inherit;
 }
