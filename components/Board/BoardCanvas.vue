@@ -162,12 +162,14 @@ let prevTranslation: Position
 
 function onTouchStart(event: TouchEvent) {
 	gesture = event.touches.length === 2
-	initialTouches = event.touches
-	initialZoom = zoom.value
-	prevTranslation = { x: 0, y: 0 }
 
-	if (gesture)
+	if (gesture) {
 		event.preventDefault()
+
+		initialTouches = event.touches
+		initialZoom = zoom.value
+		prevTranslation = { x: 0, y: 0 }
+	}
 }
 
 function onTouchMove(event: TouchEvent) {
