@@ -19,7 +19,7 @@ export const BoardSchema = defineMongooseModel({
 		},
 		cards: [{
 			type: Schema.Types.ObjectId,
-			ref: 'Card'
+			ref: CardSchema
 		}]
 	},
 	options: { toJSON: { virtuals: true } }
