@@ -6,8 +6,9 @@ export const useKeys = createSharedComposable(() => {
 	useEventListener('keydown', keyEventHandler)
 	useEventListener('keyup', keyEventHandler)
 	useEventListener('pointerdown', keyEventHandler)
+	useEventListener('wheel', keyEventHandler)
 
-	function keyEventHandler(event: KeyboardEvent | PointerEvent) {
+	function keyEventHandler(event: KeyboardEvent | PointerEvent | WheelEvent) {
 		metaKey.value = macOS ? event.metaKey : event.ctrlKey
 		shiftKey.value = event.shiftKey
 	}

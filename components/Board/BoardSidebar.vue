@@ -70,14 +70,29 @@ function match() {
 	margin-left: 0;
 	overflow-y: auto;
 	background-color: var(--color-background-secondary);
-	border-right: 1px solid var(--color-border);
+	border-right: 1px solid var(--color-background-secondary);
 	box-shadow: 2px 0 4px var(--color-shadow-ui);
 	transition: margin-left .2s, box-shadow .2s;
 	user-select: none;
 
+	&::after {
+		position: fixed;
+		top: 40px;
+		left: 239px;
+		width: 1px;
+		height: 100vh;
+		background-color: var(--color-border);
+		transition: left .2s;
+		content: '';
+	}
+
 	&.hidden{
 		margin-left: -240px;
 		box-shadow: none;
+
+		&::after {
+			left: -1px;
+		}
 	}
 
 	.profile {
@@ -86,6 +101,7 @@ function match() {
 		gap: 1rem .5rem;
 		align-items: center;
 		padding: 1rem;
+		padding-top: .5rem;
 		font-weight: bold;
 		font-size: .875rem;
 		background-color: var(--color-background-secondary);

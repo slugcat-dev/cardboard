@@ -1,38 +1,22 @@
-import { Types } from 'mongoose'
-
 export default defineEventHandler(async (event) => {
 	const { user } = await requireUserSession(event)
-	const cards = [{ position: { x: 100, y: 80 }, _id: '6596cfcffc9ab60fac48726e', __v: 0, content: 'To create <b>new cards</b> <u>double click</u>&nbsp;/ <u>tap</u>&nbsp;the canvas<br>You can <b>move cards</b>&nbsp;freely&nbsp;by <u>dragging</u> them around<br>To create a <b>new board</b>, hold <u>Ctrl</u> / <u>⌘</u> while <u>double clicking</u>', created: '2024-01-04T15:32:26.810Z', type: 'text', id: '6596cfcffc9ab60fac48726e' }, { position: { x: 100, y: 320 }, _id: '6596cfddfc9ab60fac487274', __v: 0, content: { title: 'How To Create A Tasklist', tasks: [{ content: 'hold shift', done: false }, { content: 'double click', done: false }, { content: 'done', done: false }] }, created: '2024-01-04T15:33:43.228Z', type: 'tasklist', id: '6596cfddfc9ab60fac487274' }, { position: { x: 360, y: 400 }, _id: '6596cff7fc9ab60fac48727e', __v: 0, content: { title: 'Kowloon Walled City - Wikipedia', favicon: 'https://en.wikipedia.org/static/favicon/wikipedia.ico', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Kowloon_Walled_City_-_1989_Aerial.jpg/1200px-Kowloon_Walled_City_-_1989_Aerial.jpg', domain: 'en.wikipedia.org', url: 'https://en.wikipedia.org/wiki/Kowloon_Walled_City' }, created: '2024-01-04T15:34:12.079Z', type: 'link', id: '6596cff7fc9ab60fac48727e' }, { position: { x: 360, y: 460 }, _id: '6596cffefc9ab60fac487282', __v: 0, content: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Kowloon_Walled_City_1991.jpg/800px-Kowloon_Walled_City_1991.jpg', created: '2024-01-04T15:34:21.580Z', type: 'image', id: '6596cffefc9ab60fac487282' }, { position: { x: 100, y: 240 }, _id: '6596d00efc9ab60fac487286', __v: 0, content: 'Join on <a href="https://discord.gg/qPQqbBfvSM">Discord</a> or open an issue on <a href="https://github.com/slugcat-dev/cardboard/issues">GitHub</a>', created: '2024-01-04T15:34:37.554Z', type: 'text', id: '6596d00efc9ab60fac487286' }, { position: { x: 100, y: 200 }, _id: '6596d055fc9ab60fac487296', __v: 0, content: '<h2 style="\n    margin: 0;\n">Bugs &amp; Feature Requests</h2>\n', created: '2024-01-04T15:35:34.944Z', type: 'text', id: '6596d055fc9ab60fac487296' }, { position: { x: 100, y: 40 }, _id: '6596d083fc9ab60fac4872a2', __v: 0, content: '<h2 style="\n    margin:  0;\n">Welcome</h2>', created: '2024-01-04T15:36:31.232Z', type: 'text', id: '6596d083fc9ab60fac4872a2' }, { position: { x: 360, y: 320 }, _id: '6596d0a1fc9ab60fac4872a8', __v: 0, content: '<h2 style="\n    margin:  0;\n">Add Images And Links</h2>', created: '2024-01-04T15:36:56.911Z', type: 'text', id: '6596d0a1fc9ab60fac4872a8' }, { position: { x: 360, y: 360 }, _id: '6596d0e1fc9ab60fac4872bb', __v: 0, content: 'Just <u>paste</u> them into a new card!', created: '2024-01-04T15:37:58.518Z', type: 'text', id: '6596d0e1fc9ab60fac4872bb' }]
-
-	await CardSchema.bulkWrite(cards.map(card => ({
-		updateOne: {
-			filter: { _id: new Types.ObjectId(card._id) },
-			update: card,
-			upsert: true
-		}
-	})))
+	const now = new Date()
+	const templateCards = [
+		{ position: { x: 100, y: 80 }, content: 'To create <b>new cards</b> <u>double click</u> / <u>tap</u> the canvas<br>You can <b>move cards</b> freely by <u>dragging</u> them around<br>To create a <b>new board</b>, hold <u>Ctrl</u> / <u>⌘</u> while <u>double clicking</u>', type: 'text', created: now },
+		{ position: { x: 100, y: 320 }, content: { title: 'How To Create A Tasklist', tasks: [{ content: 'hold shift', done: false }, { content: 'double click', done: false }, { content: 'done', done: false }] }, type: 'tasklist', created: now },
+		{ position: { x: 360, y: 400 }, content: { title: 'Kowloon Walled City - Wikipedia', favicon: 'https://en.wikipedia.org/static/favicon/wikipedia.ico', domain: 'en.wikipedia.org', url: 'https://en.wikipedia.org/wiki/Kowloon_Walled_City' }, type: 'link', created: now },
+		{ position: { x: 360, y: 460 }, content: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Kowloon_Walled_City_1991.jpg/800px-Kowloon_Walled_City_1991.jpg', type: 'image', created: now },
+		{ position: { x: 100, y: 240 }, content: 'Join on <a href="https://discord.gg/qPQqbBfvSM">Discord</a> or open an issue on <a href="https://github.com/slugcat-dev/cardboard/issues">GitHub</a>', type: 'text', created: now },
+		{ position: { x: 100, y: 200 }, content: '<h2 style="margin: 0;">Bugs &amp; Feature Requests</h2>', type: 'text', created: now },
+		{ position: { x: 100, y: 40 }, content: '<h2 style="margin:  0;">Welcome</h2>', type: 'text', created: now },
+		{ position: { x: 360, y: 320 }, content: '<h2 style="margin:  0;">Add Images And Links</h2>', type: 'text', created: now },
+		{ position: { x: 360, y: 360 }, content: 'Just <u>drag</u> them onto the board or <u>paste</u> them into a new card!', type: 'text', created: now }
+	]
+	const cards = await CardSchema.create(templateCards)
 
 	return (await new BoardSchema({
 		name: 'Welcome',
 		owner: user.id,
-		cards: [
-			'6596c20bb86153f508bd00c9',
-			'6596c2b7b86153f508bd00fc',
-			'6596c445b86153f508bd0136',
-			'6596c4bbb86153f508bd0159',
-			'6596c5efb86153f508bd019d',
-			'6596c662b86153f508bd01d0',
-			'6596c723b86153f508bd01f9',
-			'6596c9a5b86153f508bd021e',
-			'6596cfcffc9ab60fac48726e',
-			'6596cfddfc9ab60fac487274',
-			'6596cff7fc9ab60fac48727e',
-			'6596cffefc9ab60fac487282',
-			'6596d00efc9ab60fac487286',
-			'6596d055fc9ab60fac487296',
-			'6596d083fc9ab60fac4872a2',
-			'6596d0a1fc9ab60fac4872a8',
-			'6596d0e1fc9ab60fac4872bb'
-		]
+		cards: cards.map(card => card.id)
 	}).save()).populate('cards')
 })

@@ -27,7 +27,7 @@ export async function useBoards() {
 	}
 
 	async function createBoard(open = false) {
-		const board = await $fetch<Board>(`/api/boards${boards.value?.length === 0 ? '/welcome' : ''}`, { method: 'POST' })
+		const board = await $fetch<Board>(`/api/boards${boards.value?.length !== 0 ? '/welcome' : ''}`, { method: 'POST' })
 
 		boards.value?.push(board)
 
