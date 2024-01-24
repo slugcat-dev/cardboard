@@ -3,6 +3,7 @@ const session = useUserSession()
 const { user } = session
 const { boards, createBoard } = await useBoards()
 const settings = useSettings()
+const rootBoards = computed(() => boards.value?.filter(board => !board.parent))
 /*
 function match() {
 	return window.matchMedia('(width <= 480px)').matches
@@ -44,7 +45,7 @@ function match() {
 		<div class="boards">
 			<strong style="position: sticky; top: 0; left: 0; display: block; width: 100%; padding-left: 1rem; background-color: var(--color-background-secondary);">Your Boards</strong>
 			<div
-				v-for="board of boards"
+				v-for="board of rootBoards"
 				:key="board.id"
 				class="board"
 			>

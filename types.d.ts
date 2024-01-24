@@ -15,6 +15,7 @@ type Board = {
 	id: string
 	name: string
 	owner: string
+	parent?: string
 	cards: Card[]
 }
 

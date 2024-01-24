@@ -27,8 +27,6 @@ export async function useBoards() {
 	}
 
 	async function createBoard(options: { open: boolean, parent?: string }) {
-		console.log(options)
-
 		const board = await $fetch<Board>(`/api/boards${boards.value?.length === 0 ? '/welcome' : ''}`, {
 			method: 'POST',
 			body: { parent: options.parent }
