@@ -13,7 +13,6 @@ export default oauth.githubEventHandler({
 		else if (!userLink.github)
 			await userLink.updateOne({ github: user.id })
 
-		await userLink.updateOne({ lastseen: Date.now() })
 		await setUserSession(event, {
 			user: {
 				id: userLink.id,
