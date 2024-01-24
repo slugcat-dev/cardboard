@@ -12,9 +12,14 @@ export const BoardSchema = defineMongooseModel({
 			type: String,
 			required: true
 		},
+		parent: {
+			type: Schema.Types.ObjectId,
+			ref: 'Board',
+			required: false
+		},
 		cards: [{
 			type: Schema.Types.ObjectId,
-			ref: CardSchema
+			ref: 'Card'
 		}]
 	},
 	options: { toJSON: { virtuals: true } }

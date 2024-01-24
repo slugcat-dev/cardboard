@@ -1,9 +1,14 @@
 export default defineEventHandler(async (event) => {
 	const { user } = await requireUserSession(event)
-	const title = await readBody(event)
+	const { parent } = await readBody(event)
 
-	return await new BoardSchema({
-		name: title || 'New Board',
+	const board = await new BoardSchema({
+		name: 'New Board',
 		owner: user.id
 	}).save()
+
+	if (parent)
+		await board.updateOne({ parent })
+
+	return board
 })

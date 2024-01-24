@@ -36,7 +36,7 @@ function match() {
 			<Btn
 				role="primary"
 				icon="mdi:plus"
-				@click="createBoard(true)"
+				@click="createBoard({ open: true })"
 			>
 				Create Board
 			</Btn>

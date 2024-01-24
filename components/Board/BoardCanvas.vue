@@ -234,7 +234,7 @@ async function onClick(event: MouseEvent) {
 	const position = getMousePos(event)
 
 	if (metaKey.value) {
-		const newBoard = await createBoard()
+		const newBoard = await createBoard({ open: false, parent: board.value.id })
 		const card = await $fetch<Card>(`/api/boards/${board.value.id}/cards`, {
 			method: 'POST',
 			body: {
