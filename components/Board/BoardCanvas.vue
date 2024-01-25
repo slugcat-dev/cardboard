@@ -292,7 +292,7 @@ function onWheel(event: WheelEvent) {
 
 	event.preventDefault()
 
-	const zoomDelta = (macOS ? event.deltaY : Math.sign(event.deltaY)) * -.1
+	const zoomDelta = -(macOS ? event.deltaY / 100 : Math.sign(event.deltaY) / 10)
 
 	zoomF(zoom.value + zoom.value * zoomDelta, event)
 }
