@@ -2,14 +2,13 @@
 import type CardComponent from './Card.vue'
 import { suppressNextClick } from '~/utils'
 
-const settings = useSettings()
 const canvasRef = ref()
 // Create a non-reactive copy of the board that doesn't update instantly
 // because we want to use page transitions
 const { board: boardRef, createBoard } = await useBoards()
 const board = ref(boardRef.value)
 const cardRefs: Ref<InstanceType<typeof CardComponent>[]> = ref([])
-const { metaKey } = useKeys()
+const { macOS, metaKey } = useKeys()
 const selection = ref()
 const selectionVisible = ref(false)
 const pointerMoved = ref(false)
@@ -293,7 +292,9 @@ function onWheel(event: WheelEvent) {
 
 	event.preventDefault()
 
-	zoomF(zoom.value + zoom.value * Math.sign(event.deltaY) * -.1, event)
+	const zoomDelta = (macOS ? event.deltaY : Math.sign(event.deltaY)) * -.1
+
+	zoomF(zoom.value + zoom.value * zoomDelta, event)
 }
 
 // Drop images onto the board
