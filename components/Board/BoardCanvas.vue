@@ -251,7 +251,7 @@ async function onClick(event: MouseEvent) {
 
 		// Navigate to the new board
 		setTimeout(async () => {
-			const { push } = await useBreadcrumbs()
+			const { push } = useBreadcrumbs()
 
 			push.value = true
 
@@ -447,16 +447,6 @@ const areaSpacerStyle = computed(() => {
 	}
 })
 
-const canvasStyle = computed(() => {
-	const visualGridSize = settings.value.grid.size * zoom.value
-
-	return {
-		'background-image': `radial-gradient(circle, var(--grid-color) ${Math.max(1, zoom.value)}px, transparent ${Math.max(1, zoom.value)}px)`,
-		'background-size': `${visualGridSize}px ${visualGridSize}px`,
-		'cursor': pointerMoved.value && !selectionVisible.value ? 'move' : waiting.value ? 'progress' : 'default'
-	}
-})
-
 const selectionStyle = computed(() => {
 	if (!selection.value)
 		return { display: 'none' }
@@ -476,7 +466,7 @@ const selectionStyle = computed(() => {
 		id="canvas"
 		ref="canvasRef"
 		:class="{ selecting: metaKey }"
-		:style="canvasStyle"
+		:style="{ cursor: pointerMoved && !selectionVisible ? 'move' : waiting ? 'progress' : 'default' }"
 		@pointerdown.left="onPointerDown"
 		@pointermove="onPointerMove"
 		@pointerup="onPointerUp"

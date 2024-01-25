@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
-	const { breadcrumbs, oldcrumbs, push } = await useBreadcrumbs()
+	const { breadcrumbs, oldcrumbs, push } = useBreadcrumbs()
 	const { route } = await useBoardState()
 	const { findBoard } = await useBoards()
 

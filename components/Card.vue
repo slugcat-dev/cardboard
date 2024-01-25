@@ -184,6 +184,26 @@ function onContextMenu(event: MouseEvent) {
 				}
 			)
 			break
+		case 'board':
+			typeSpecificEntries.push({
+				name: 'Open',
+				handler: () => {
+					const { push } = useBreadcrumbs()
+
+					push.value = true
+
+					return navigateTo(`/${card.content}`)
+				}
+			})
+			break
+	}
+
+	if (card.type !== 'board') {
+		typeSpecificEntries.push({
+			name: 'Delete',
+			handler: deleteCard,
+			role: 'danger'
+		})
 	}
 
 	useContextMenu().show({
@@ -191,14 +211,7 @@ function onContextMenu(event: MouseEvent) {
 			x: event.clientX,
 			y: event.clientY
 		},
-		entries: [
-			...typeSpecificEntries,
-			{
-				name: 'Delete',
-				handler: deleteCard,
-				role: 'danger'
-			}
-		]
+		entries: typeSpecificEntries
 	})
 }
 

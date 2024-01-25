@@ -3,7 +3,7 @@ const router = useRouter()
 const settings = useSettings()
 const boardNameRef = ref()
 const { board, deleteBoard } = await useBoards()
-const { breadcrumbs, oldcrumbs } = await useBreadcrumbs()
+const { breadcrumbs, oldcrumbs } = useBreadcrumbs()
 
 defineShortcuts({
 	escape: () => {
@@ -213,13 +213,13 @@ const toggleDark = useToggle(isDark)
 
 			a {
 				padding: .125rem .25rem;
-				color: var(--color-warn);
+				color: var(--color-accent);
 				text-decoration: none;
 				border-radius: .25rem;
 				transition: background-color .1s;
 
 				&:hover {
-					background-color: var(--color-warn-25);
+					background-color: var(--color-accent-25);
 				}
 			}
 		}

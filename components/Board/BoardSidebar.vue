@@ -45,9 +45,10 @@ function match() {
 		<div class="boards">
 			<strong style="position: sticky; top: 0; left: 0; display: block; width: 100%; padding-left: 1rem; background-color: var(--color-background-secondary);">Your Boards</strong>
 			<div
-				v-for="board of rootBoards"
+				v-for="board of boards"
 				:key="board.id"
 				class="board"
+				:style="{ opacity: rootBoards?.map(board => board.id).includes(board.id) ? 1 : .5 }"
 			>
 				<NuxtLink class="board-link" :to="board.id">
 					<Icon

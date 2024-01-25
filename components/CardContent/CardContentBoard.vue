@@ -4,8 +4,8 @@ const { findBoard } = await useBoards()
 const board = findBoard(card.content)
 const previewCards = board.cards.filter(card => card.position.x < 1920 && card.position.y < 1080)
 
-async function onNavigate() {
-	const { push } = await useBreadcrumbs()
+function onNavigate() {
+	const { push } = useBreadcrumbs()
 
 	push.value = true
 
