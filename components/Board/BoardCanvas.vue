@@ -287,10 +287,8 @@ async function onClick(event: MouseEvent) {
 }
 
 // Zoom using the mouse wheel
-useEventListener('wheel', wheelHandler, { passive: false })
-
-function wheelHandler(event: WheelEvent) {
-	if (!metaKey.value)
+function onWheel(event: WheelEvent) {
+	if (!event.ctrlKey && !event.metaKey)
 		return
 
 	event.preventDefault()
@@ -479,6 +477,7 @@ const selectionStyle = computed(() => {
 		@touchend="onTouchEnd"
 		@touchcancel="onTouchEnd"
 		@click="onClick"
+		@wheel="onWheel"
 		@dragenter.prevent
 		@dragover.prevent
 		@drop="onDrop"
