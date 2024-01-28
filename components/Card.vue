@@ -366,10 +366,6 @@ function getSizeRect() {
 }
 
 defineExpose({ activate, alignToGrid, getSizeRect })
-
-onMounted(() => {
-	//
-})
 </script>
 
 <template>

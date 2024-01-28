@@ -426,18 +426,21 @@ function zoomF(v: number, event: { clientX: number, clientY: number }, translati
 }
 
 const areaSpacerStyle = computed(() => {
-	const areaRect = new DOMRect()
-
 	// Find the bottom-righ corner of the bottom-right-most card
-	cardRefs.value.forEach((card) => {
-		const cardRect = card.getSizeRect()
+	const areaRect = cardRefs.value.reduce((acc, card) => {
+		try {
+			const cardRect = card.getSizeRect()
 
-		areaRect.width = Math.max(areaRect.width, cardRect.left + cardRect.width)
-		areaRect.height = Math.max(areaRect.height, cardRect.top + cardRect.height)
-	})
+			acc.width = Math.max(acc.width, cardRect.left + cardRect.width)
+			acc.height = Math.max(acc.height, cardRect.top + cardRect.height)
+		}
+		catch { }
+
+		return acc
+	}, new DOMRect())
 
 	return {
-		// Add padding of another times the viewport size to the canvas
+		// Automatically expand the canvas after adding a new card
 		top: `${areaRect.height * zoom.value}px`,
 		left: `${areaRect.width * zoom.value}px`,
 		width: '100vw',
@@ -482,11 +485,6 @@ useSeoMeta({ title: board.value.name })
 		@dragover.prevent
 		@drop="onDrop"
 	>
-		<div
-			v-if="board.cards.length > 0"
-			class="area-spacer"
-			:style="areaSpacerStyle"
-		/>
 		<Card
 			v-for="card in board.cards"
 			ref="cardRefs"
@@ -500,6 +498,11 @@ useSeoMeta({ title: board.value.name })
 			@card-delete="onCardDelete"
 			@card-selected="onCardSelected"
 			@selection-clear="clearSelection"
+		/>
+		<div
+			v-if="cardRefs.length > 0"
+			class="area-spacer"
+			:style="areaSpacerStyle"
 		/>
 		<div
 			class="selection"

@@ -14,7 +14,7 @@
 	"dependencies": {
 		"fuse.js": "^7.0.0",
 		"google-auth-library": "^9.5.0",
-		"isomorphic-dompurify": "^1.13.0",
+		"isomorphic-dompurify": "^2.3.0",
 		"nuxt-mongoose": "^1.0.4",
 		"puppeteer-core": "^21.9.0"
 	},
@@ -23,7 +23,7 @@
 		"@vueuse/math": "^10.7.2",
 		"@vueuse/nuxt": "^10.7.2",
 		"nuxt": "^3.9.3",
-		"nuxt-auth-utils": "^0.0.13",
+		"nuxt-auth-utils": "^0.0.14",
 		"nuxt-icon": "^0.6.8",
 		"postcss-html": "^1.6.0",
 		"sass": "^1.70.0",
