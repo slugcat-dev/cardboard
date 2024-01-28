@@ -12,7 +12,7 @@ const rootBoards = computed(() => boards.value?.filter(board => !board.parent))
 			:style="{ opacity: rootBoards?.map(board => board.id).includes(board.id) ? 1 : .5 }"
 		>
 			<NuxtLink class="board-link" :to="board.id">
-				<Icon
+				<IconCSS
 					name="fluent:page-20-regular"
 					size="20px"
 				/>

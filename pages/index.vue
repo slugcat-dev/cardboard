@@ -25,7 +25,7 @@ definePageMeta({
 			</div>
 			<main class="outbox">
 				<div class="empty">
-					<Icon name="gg:software-download" size="64px" />
+					<IconCSS name="gg:software-download" size="64px" />
 					<h1>Inbox</h1>
 				</div>
 				<div class="input">

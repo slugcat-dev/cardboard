@@ -21,9 +21,6 @@ export default defineNuxtConfig({
 			password: ''
 		}
 	},
-	mongoose: {
-		uri: 'mongodb+srv://dev:5BwxpBE7RH0pOltF@dev.ndafsw1.mongodb.net/?retryWrites=true&w=majority'
-	},
 	app: {
 		pageTransition: { name: 'slide' },
 		layoutTransition: { name: 'slide' },

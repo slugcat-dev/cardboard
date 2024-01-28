@@ -28,7 +28,7 @@ const description = computed(() => {
 				draggable="false"
 				loading="lazy"
 			>
-			<Icon
+			<IconCSS
 				v-else
 				name="mdi:earth"
 				class="icon missing"

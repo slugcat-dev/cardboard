@@ -45,7 +45,7 @@ async function onDeleteBoard() {
 		class="sidebar-toggle"
 		@click="settings.sidebar = !settings.sidebar"
 	>
-		<Icon name="akar-icons:sidebar-left" size="1rem" />
+		<IconCSS name="akar-icons:sidebar-left" size="1rem" />
 	</button>
 	<div
 		v-if="board.id"
@@ -56,14 +56,14 @@ async function onDeleteBoard() {
 				class="nav-button"
 				@click="router.back()"
 			>
-				<Icon name="material-symbols:arrow-back-ios-rounded" size="14px" />
+				<IconCSS name="material-symbols:arrow-back-ios-rounded" size="14px" />
 			</a>
 			<a
 				class="nav-button"
 				:class="{ disabled: oldcrumbs.length === 0 }"
 				@click="router.forward()"
 			>
-				<Icon name="material-symbols:arrow-forward-ios-rounded" size="14px" />
+				<IconCSS name="material-symbols:arrow-forward-ios-rounded" size="14px" />
 			</a>
 			<span class="bread-separator">/</span>
 			<div
@@ -98,26 +98,26 @@ async function onDeleteBoard() {
 			Delete Board
 		</button>
 		<button @click="console.log">
-			<Icon name="bi:sun" size="1rem" />
+			<IconCSS name="bi:sun" size="1rem" />
 		</button>
 		<div
 			v-if="false"
 			class="toolbox"
 		>
 			<div class="tool active">
-				<Icon
+				<IconCSS
 					name="material-symbols:text-fields"
 					size="1rem"
 				/>
 			</div>
 			<div class="tool">
-				<Icon
+				<IconCSS
 					name="material-symbols:dashboard"
 					size="1rem"
 				/>
 			</div>
 			<div class="tool">
-				<Icon
+				<IconCSS
 					name="material-symbols:checklist"
 					size="1rem"
 				/>
@@ -128,7 +128,7 @@ async function onDeleteBoard() {
 		v-else
 		class="header-title"
 	>
-		<Icon name="material-symbols:search" size="16px" />
+		<IconCSS name="material-symbols:search" size="16px" />
 		Cardboard<kbd>⌘</kbd><kbd>K</kbd>
 	</div>
 </template>
