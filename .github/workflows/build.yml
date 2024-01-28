@@ -39,6 +39,8 @@ jobs:
         run: pnpm install
 
       - name: Build
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: pnpm run build
 
       - name: Deploy to server
