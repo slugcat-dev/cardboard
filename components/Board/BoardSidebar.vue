@@ -1,9 +1,7 @@
 <script setup lang="ts">
 const session = useUserSession()
 const { user } = session
-const { boards, createBoard } = await useBoards()
 const settings = useSettings()
-const rootBoards = computed(() => boards.value?.filter(board => !board.parent))
 /*
 function match() {
 	return window.matchMedia('(width <= 480px)').matches
@@ -34,35 +32,35 @@ function match() {
 			>
 				Log Out
 			</Btn>
-			<Btn
-				role="primary"
-				icon="mdi:plus"
-				@click="createBoard({ open: true })"
-			>
-				Create Board
-			</Btn>
 		</div>
-		<div class="boards">
-			<strong style="position: sticky; top: 0; left: 0; display: block; width: 100%; padding-left: 1rem; background-color: var(--color-background-secondary);">Your Boards</strong>
-			<div
-				v-for="board of boards"
-				:key="board.id"
-				class="board"
-				:style="{ opacity: rootBoards?.map(board => board.id).includes(board.id) ? 1 : .5 }"
-			>
-				<NuxtLink class="board-link" :to="board.id">
-					<Icon
-						name="fluent:page-20-regular"
-						size="20px"
-					/>
-					{{ board.name }}
-				</NuxtLink>
-			</div>
-		</div>
+		<ClientOnly>
+			<template #fallback>
+				<div class="list-loader">
+					<div class="skeleton-loader" />
+					<div class="skeleton-loader" />
+					<div class="skeleton-loader" />
+					<div class="skeleton-loader" />
+					<div class="skeleton-loader" />
+				</div>
+			</template>
+			<BoardList />
+		</ClientOnly>
 	</div>
 </template>
 
 <style lang="scss">
+.list-loader {
+	display: flex;
+	flex-direction: column;
+	gap: .5rem;
+	padding-inline: 1rem;
+
+	.skeleton-loader {
+		height: 2rem;
+		border-radius: .375rem;
+	}
+}
+
 #sidebar {
 	z-index: 10;
 	display: flex;

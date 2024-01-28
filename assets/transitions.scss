@@ -1,0 +1,42 @@
+
+.slide-leave-active,
+.slide-enter-active,
+.drill-leave-active,
+.drill-enter-active,
+.undrill-leave-active,
+.undrill-enter-active {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	overflow: hidden !important;
+  transition: all .2s cubic-bezier(0, 0, 0, 1);
+}
+
+.slide-enter-from {
+	transform: translateY(2vh);
+	opacity: 0;
+}
+
+.slide-leave-to {
+	opacity: 0;
+}
+
+.drill-enter-from {
+	transform: scale(.5);
+	opacity: 0;
+}
+
+.drill-leave-to {
+	transform: scale(2);
+	opacity: 0;
+}
+
+.undrill-enter-from {
+	transform: scale(2);
+	opacity: 0;
+}
+
+.undrill-leave-to {
+	transform: scale(.5);
+	opacity: 0;
+}

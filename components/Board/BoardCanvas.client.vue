@@ -426,9 +426,6 @@ function zoomF(v: number, event: { clientX: number, clientY: number }, translati
 }
 
 const areaSpacerStyle = computed(() => {
-	if (!process.client)
-		return
-
 	const areaRect = new DOMRect()
 
 	// Find the bottom-righ corner of the bottom-right-most card
@@ -460,6 +457,8 @@ const selectionStyle = computed(() => {
 		opacity: selectionVisible.value ? 1 : 0
 	}
 })
+
+useSeoMeta({ title: board.value.name })
 </script>
 
 <template>
@@ -488,52 +487,34 @@ const selectionStyle = computed(() => {
 			class="area-spacer"
 			:style="areaSpacerStyle"
 		/>
-		<ClientOnly>
-			<template #fallback>
-				<div class="loading">
-					<Icon name="svg-spinners:ring-resize" /> LOADING...
-				</div>
-			</template>
-			<Card
-				v-for="card in board.cards"
-				ref="cardRefs"
-				:key="card.created.toString()"
-				:card="card"
-				:canvas-ref="canvasRef"
-				:selection="selection"
-				:zoom="zoom"
-				@card-move="onCardMove"
-				@card-update="onCardUpdate"
-				@card-delete="onCardDelete"
-				@card-selected="onCardSelected"
-				@selection-clear="clearSelection"
-			/>
-		</ClientOnly>
+		<Card
+			v-for="card in board.cards"
+			ref="cardRefs"
+			:key="card.created.toString()"
+			:card="card"
+			:canvas-ref="canvasRef"
+			:selection="selection"
+			:zoom="zoom"
+			@card-move="onCardMove"
+			@card-update="onCardUpdate"
+			@card-delete="onCardDelete"
+			@card-selected="onCardSelected"
+			@selection-clear="clearSelection"
+		/>
 		<div
 			class="selection"
 			:style="selectionStyle"
 		/>
-		<ContextMenu />
 	</main>
 </template>
 
 <style lang="scss">
-.loading {
-	display: flex;
-	gap: .5rem;
-	align-items: center;
-	justify-content: center;
-	height: 100%;
-	font-weight: bold;
-}
-
 #canvas {
-	position: absolute;
+	position: relative;
 	grid-area: main;
 	width: 100%;
 	height: 100%;
 	overflow: auto;
-	background-attachment: local;
 	user-select: none;
 	touch-action: pan-x pan-y;
 	scroll-behavior: smooth;

@@ -29,7 +29,10 @@ export default defineNuxtConfig({
 		layoutTransition: { name: 'slide' },
 		rootId: 'root'
 	},
-	css: ['~/assets/style.scss'],
+	css: [
+		'~/assets/style.scss',
+		'~/assets/transitions.scss'
+	],
 	experimental: {
 		asyncContext: true
 	}

@@ -36,7 +36,7 @@
 }
 
 /* Dark theme */
-:root.dark {
+:root:not(.light) {
 	--color-text: oklch(85% 0 0deg);
 	--color-text-secondary: oklch(75% 0 0deg);
 	--color-text-tertiary: oklch(65% 0 0deg);
@@ -65,6 +65,15 @@
 	--icon-contrast: .75;
 
 	color-scheme: dark;
+}
+
+body {
+	margin: 0;
+	color: var(--color-text);
+	font-family: Roboto, system-ui, sans-serif;
+	line-height: 1.25em;
+	background-color: var(--color-background);
+	-webkit-tap-highlight-color: transparent;
 }
 
 @media (pointer: coarse) {

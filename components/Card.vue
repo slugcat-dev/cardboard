@@ -85,6 +85,8 @@ function onPointerDown(event: PointerEvent) {
 	pointerDown.value = true
 }
 
+const edgeScroll = { top: 0, left: 0 }
+
 function onPointerMove(event: PointerEvent | WheelEvent) {
 	if (!pointerDown.value)
 		return
@@ -106,6 +108,21 @@ function onPointerMove(event: PointerEvent | WheelEvent) {
 	cancleLongPress()
 
 	const prevPosition = card.position
+
+	// Scroll the canvas when approaching an edge
+	const canvasRect = props.canvasRef.getBoundingClientRect()
+
+	if (event.clientX > canvasRect.left + props.canvasRef.clientWidth - 100)
+		edgeScroll.left = 1
+
+	if (event.clientX < canvasRect.left + 100)
+		edgeScroll.left = -1
+
+	if (event.clientY > canvasRect.top + props.canvasRef.clientHeight - 100)
+		edgeScroll.top = 1
+
+	if (event.clientY < canvasRect.top + 100)
+		edgeScroll.top = -1
 
 	card.position = {
 		x: Math.max((props.canvasRef.scrollLeft + event.clientX - pointerOffset.x) / props.zoom, 0),

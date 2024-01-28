@@ -1,19 +1,15 @@
 <script setup lang="ts">
 const { loggedIn } = useUserSession()
 
-watch(loggedIn, async () => {
+watch(loggedIn, () => {
 	if (!loggedIn.value)
-		await navigateTo('/')
+		navigateTo('/signin')
 })
 
 useSeoMeta({
 	title: 'Cardboard',
 	description: 'Place virtual cards on a virtual canvas virtually anywhere',
-	viewport: {
-		width: 'device-width',
-		initialScale: '1.0',
-		userScalable: 'no'
-	},
+	viewport: { userScalable: 'no' },
 	themeColor: [
 		{
 			media: '(prefers-color-scheme: dark)',
@@ -39,65 +35,3 @@ useHead({
 		<NuxtPage />
 	</NuxtLayout>
 </template>
-
-<style lang="scss">
-body {
-	min-width: 100vw;
-	min-height: 100vh;
-	margin: 0;
-	padding: 0;
-	color: var(--color-text);
-	font-family: Roboto, system-ui, sans-serif;
-	line-height: 1.25em;
-	background-color: var(--color-background);
-	-webkit-tap-highlight-color: transparent;
-}
-
-.slide-leave-active,
-.slide-enter-active,
-.drill-leave-active,
-.drill-enter-active,
-.undrill-leave-active,
-.undrill-enter-active {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	overflow: hidden !important;
-  transition: all .2s cubic-bezier(0, 0, 0, 1);
-}
-
-.slide-enter-active,
-.drill-enter-active,
-.undrill-enter-active {
-	transition: all .2s cubic-bezier(0, 1, 1, 1);
-}
-
-.slide-enter-from {
-	transform: translateY(2vh);
-	opacity: 0;
-}
-
-.slide-leave-to {
-	opacity: 0;
-}
-
-.drill-enter-from {
-	transform: scale(.5);
-	opacity: 0;
-}
-
-.drill-leave-to {
-	transform: scale(2);
-	opacity: 0;
-}
-
-.undrill-enter-from {
-	transform: scale(2);
-	opacity: 0;
-}
-
-.undrill-leave-to {
-	transform: scale(.5);
-	opacity: 0;
-}
-</style>
