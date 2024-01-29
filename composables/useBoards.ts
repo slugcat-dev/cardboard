@@ -1,29 +1,17 @@
-export const useBoardState = createGlobalState(async () => {
-	const route = ref()
-	const {
-		data: boards,
-		execute: fetchBoards
-	} = useFetch<Board[]>('/api/boards', { method: 'GET' })
-
-	await fetchBoards()
-
-	return {
-		route,
-		boards,
-		fetchBoards
-	}
-})
-
 export async function useBoards() {
-	const { route, boards, fetchBoards } = await useBoardState()
-	const board = computed(() => findBoard(route.value.params.board))
+	const boards = useState<Board[]>('boards')
+
+	await callOnce(async () => {
+		const { data } = await useFetch<Board[]>('/api/boards', { method: 'GET' })
+
+		boards.value = data.value ?? []
+	})
+
+	// ! const route = useRoute()
+	const board = computed(() => findBoard(useBreadcrumbs().route.value))
 
 	function findBoard(id: string) {
-		const board = boards.value?.find(board => board.id === id)
-
-		// TODO: this is pretty ugly.
-		// route should never have board as undefined when navigating to a board
-		return board || { id: '', name: '', owner: '', cards: [] }
+		return boards.value.find(board => board.id === id) || { id: '', name: '', owner: '', parent: '', cards: [] }
 	}
 
 	async function createBoard(options: { open: boolean, parent?: string }) {
@@ -32,7 +20,7 @@ export async function useBoards() {
 			body: { parent: options.parent }
 		})
 
-		boards.value?.push(board)
+		boards.value.push(board)
 
 		if (options.open)
 			await navigateTo(`/${board.id}`)
@@ -43,10 +31,12 @@ export async function useBoards() {
 	async function deleteBoard(id: string) {
 		// eslint-disable-next-line no-alert
 		if (!confirm('Do you REALLY want to delete this board?'))
-			return
+			return false
 
 		await $fetch(`/api/boards/${id}`, { method: 'DELETE' })
-		await fetchBoards()
+		boards.value.splice(boards.value.findIndex(board => board.id === id), 1)
+
+		return true
 	}
 
 	return {

@@ -32,8 +32,8 @@ function onBoardNameUpdate() {
 }
 
 async function onDeleteBoard() {
-	await deleteBoard(board.value.id)
-	router.back()
+	if (await deleteBoard(board.value.id))
+		router.back()
 }
 
 // const isDark = useDark({ storageKey: 'color-scheme' })
@@ -41,96 +41,98 @@ async function onDeleteBoard() {
 </script>
 
 <template>
-	<button
-		class="sidebar-toggle"
-		@click="settings.sidebar = !settings.sidebar"
-	>
-		<IconCSS name="akar-icons:sidebar-left" size="1rem" />
-	</button>
-	<div
-		v-if="board.id"
-		class="toolbar"
-	>
-		<div class="breadcrumbs">
-			<a
-				class="nav-button"
-				@click="router.back()"
-			>
-				<IconCSS name="material-symbols:arrow-back-ios-rounded" size="14px" />
-			</a>
-			<a
-				class="nav-button"
-				:class="{ disabled: oldcrumbs.length === 0 }"
-				@click="router.forward()"
-			>
-				<IconCSS name="material-symbols:arrow-forward-ios-rounded" size="14px" />
-			</a>
-			<span class="bread-separator">/</span>
-			<div
-				v-for="bread, index in breadcrumbs"
-				:key="bread.path"
-				class="bread"
-			>
-				<a @click="router.go(-(breadcrumbs.length - index))">{{ bread.name }}</a>
-				<span class="bread-separator">/</span>
-			</div>
-			<div
-				ref="boardNameRef"
-				class="board-name"
-				contenteditable="plaintext-only"
-				@blur="onBoardNameUpdate"
-				@keydown.enter="boardNameRef.blur"
-				@keydown.escape="boardNameRef.blur"
-			>
-				{{ board.name }}
-			</div>
-			<span class="bread-separator">/</span>
-		</div>
-		<label class="option">
-			<input
-				type="checkbox"
-				:checked="settings.grid.snap"
-				@change="settings.grid.snap = ($event.target as HTMLInputElement).checked"
-			>
-			Snap cards to grid
-		</label>
-		<button @click="onDeleteBoard">
-			Delete Board
-		</button>
-		<button @click="console.log">
-			<IconCSS name="bi:sun" size="1rem" />
+	<header id="header">
+		<button
+			class="sidebar-toggle"
+			@click="settings.sidebar = !settings.sidebar"
+		>
+			<IconCSS name="akar-icons:sidebar-left" size="1rem" />
 		</button>
 		<div
-			v-if="false"
-			class="toolbox"
+			v-if="board.id"
+			class="toolbar"
 		>
-			<div class="tool active">
-				<IconCSS
-					name="material-symbols:text-fields"
-					size="1rem"
-				/>
+			<div class="breadcrumbs">
+				<a
+					class="nav-button"
+					@click="router.back()"
+				>
+					<IconCSS name="material-symbols:arrow-back-ios-rounded" size="14px" />
+				</a>
+				<a
+					class="nav-button"
+					:class="{ disabled: oldcrumbs.length === 0 }"
+					@click="router.forward()"
+				>
+					<IconCSS name="material-symbols:arrow-forward-ios-rounded" size="14px" />
+				</a>
+				<span class="bread-separator">/</span>
+				<div
+					v-for="bread, index in breadcrumbs"
+					:key="bread.path"
+					class="bread"
+				>
+					<a @click="router.go(-(breadcrumbs.length - index))">{{ bread.name }}</a>
+					<span class="bread-separator">/</span>
+				</div>
+				<div
+					ref="boardNameRef"
+					class="board-name"
+					contenteditable="plaintext-only"
+					@blur="onBoardNameUpdate"
+					@keydown.enter="boardNameRef.blur"
+					@keydown.escape="boardNameRef.blur"
+				>
+					{{ board.name }}
+				</div>
+				<span class="bread-separator">/</span>
 			</div>
-			<div class="tool">
-				<IconCSS
-					name="material-symbols:dashboard"
-					size="1rem"
-				/>
-			</div>
-			<div class="tool">
-				<IconCSS
-					name="material-symbols:checklist"
-					size="1rem"
-				/>
+			<label class="option">
+				<input
+					type="checkbox"
+					:checked="settings.grid.snap"
+					@change="settings.grid.snap = ($event.target as HTMLInputElement).checked"
+				>
+				Snap cards to grid
+			</label>
+			<button @click="onDeleteBoard">
+				Delete Board
+			</button>
+			<button @click="console.log">
+				<IconCSS name="bi:sun" size="1rem" />
+			</button>
+			<div
+				v-if="false"
+				class="toolbox"
+			>
+				<div class="tool active">
+					<IconCSS
+						name="material-symbols:text-fields"
+						size="1rem"
+					/>
+				</div>
+				<div class="tool">
+					<IconCSS
+						name="material-symbols:dashboard"
+						size="1rem"
+					/>
+				</div>
+				<div class="tool">
+					<IconCSS
+						name="material-symbols:checklist"
+						size="1rem"
+					/>
+				</div>
 			</div>
 		</div>
-	</div>
-	<div
-		v-else
-		class="header-title"
-	>
-		<IconCSS name="material-symbols:search" size="16px" />
-		Cardboard<kbd>⌘</kbd><kbd>K</kbd>
-	</div>
+		<div
+			v-else
+			class="header-title"
+		>
+			<IconCSS name="material-symbols:search" size="16px" />
+			Cardboard<kbd>⌘</kbd><kbd>K</kbd>
+		</div>
+	</header>
 </template>
 
 <style lang="scss">

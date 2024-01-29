@@ -1,14 +1,7 @@
 <template>
 	<div class="app-layout">
 		<BoardSidebar />
-		<header id="header">
-			<ClientOnly>
-				<template #fallback>
-					<div class="skeleton-loader header-loader" />
-				</template>
-				<BoardHeader />
-			</ClientOnly>
-		</header>
+		<BoardHeader />
 		<slot />
 		<ContextMenu />
 	</div>

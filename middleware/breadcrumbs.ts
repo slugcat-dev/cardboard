@@ -1,15 +1,14 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
-	const { breadcrumbs, oldcrumbs, push } = useBreadcrumbs()
-	const { route } = await useBoardState()
+	const { breadcrumbs, oldcrumbs, route, push } = useBreadcrumbs()
 	const { findBoard } = await useBoards()
 
-	route.value = to
+	route.value = to.params.board as string
 
 	if (!from.params.board)
 		push.value = false
 
-	const transitionName = (() => {
-		const fromBoard = findBoard(from.params.board as string)
+	const transitionName = await (async () => {
+		const fromBoard = await findBoard(from.params.board as string)
 		const toBoardId = to.params.board
 		const breadIndex = breadcrumbs.value.findIndex(bread => bread.path === toBoardId)
 

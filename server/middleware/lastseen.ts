@@ -1,4 +1,7 @@
 export default defineEventHandler(async (event) => {
+	if (process.dev)
+		console.log(event.path)
+
 	const { user } = await getUserSession(event)
 
 	if (user)
