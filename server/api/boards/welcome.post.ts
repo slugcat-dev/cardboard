@@ -8,8 +8,8 @@ export default defineEventHandler(async (event) => {
 		{ position: { x: 360, y: 460 }, content: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Kowloon_Walled_City_1991.jpg/800px-Kowloon_Walled_City_1991.jpg', type: 'image', created: now },
 		{ position: { x: 100, y: 240 }, content: 'Join on <a href="https://discord.gg/qPQqbBfvSM">Discord</a> or open an issue on <a href="https://github.com/slugcat-dev/cardboard/issues">GitHub</a>', type: 'text', created: now },
 		{ position: { x: 100, y: 200 }, content: '<h2 style="margin: 0;">Bugs &amp; Feature Requests</h2>', type: 'text', created: now },
-		{ position: { x: 100, y: 40 }, content: '<h2 style="margin:  0;">Welcome</h2>', type: 'text', created: now },
-		{ position: { x: 360, y: 320 }, content: '<h2 style="margin:  0;">Add Images And Links</h2>', type: 'text', created: now },
+		{ position: { x: 100, y: 40 }, content: '<h2 style="margin: 0;">Welcome</h2>', type: 'text', created: now },
+		{ position: { x: 360, y: 320 }, content: '<h2 style="margin: 0;">Add Images And Links</h2>', type: 'text', created: now },
 		{ position: { x: 360, y: 360 }, content: 'Just <u>drag</u> them onto the board or <u>paste</u> them into a new card!', type: 'text', created: now }
 	]
 	const cards = await CardSchema.create(templateCards)

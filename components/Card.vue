@@ -172,10 +172,20 @@ function onContextMenu(event: MouseEvent) {
 
 	switch (card.type) {
 		case 'text':
-			typeSpecificEntries.push({
-				name: 'Copy Text',
-				handler: () => navigator.clipboard.writeText(card.content)
-			})
+			typeSpecificEntries.push(
+				{
+					name: 'Copy Text',
+					handler: () => navigator.clipboard.writeText(card.content)
+				},
+				{
+					name: 'Make h1',
+					handler: () => {
+						card.content = `<h2 style="margin: 0;">${card.content}</h2>`
+
+						updateCard(true)
+					}
+				}
+			)
 			break
 		case 'image':
 			typeSpecificEntries.push(

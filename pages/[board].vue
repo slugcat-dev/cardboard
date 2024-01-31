@@ -19,6 +19,7 @@ let pointerDown: boolean
 
 // Fetch board cards
 if (!board.value.cards) {
+	// TODO: make first fetch on client
 	const { data } = await useFetch<{ cards: Card[] }>(`/api/boards/${board.value.id}`, { method: 'GET', pick: ['cards'] })
 
 	board.value.cards = data.value?.cards || []
@@ -527,6 +528,7 @@ useSeoMeta({ title: board.value.name })
 	user-select: none;
 	touch-action: pan-x pan-y;
 	scroll-behavior: smooth;
+	overscroll-behavior: contain;
 
 	.area-spacer {
 		position: absolute;
