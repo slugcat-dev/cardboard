@@ -48,7 +48,7 @@ defineExpose({ activate })
 
 <template>
 	<div class="tasklist">
-		<h2 class="name">
+		<h1 class="name">
 			<div
 				ref="listNameRef"
 				contenteditable="plaintext-only"
@@ -58,7 +58,7 @@ defineExpose({ activate })
 			>
 				{{ card.content.title }}
 			</div>
-		</h2>
+		</h1>
 		<ul>
 			<li
 				v-for="task, index in card.content.tasks"

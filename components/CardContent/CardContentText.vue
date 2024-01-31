@@ -141,11 +141,16 @@ defineExpose({ activate })
 	/>
 </template>
 
-<style>
+<style lang="scss">
 .card-text {
 	min-height: 2.125rem;
 	padding: calc(.5rem - 1px);
 	font-size: .875rem;
 	outline: none;
+
+	& h1 {
+		margin: 0;
+		font-size: 1.125rem;
+	}
 }
 </style>
