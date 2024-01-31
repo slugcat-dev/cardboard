@@ -68,7 +68,7 @@ defineExpose({ activate })
 				<input
 					type="checkbox"
 					:value="task.done"
-					@change="toggleTask($event, index)"
+					@change="event => toggleTask(event, index)"
 				>
 				{{ task.content }}
 			</li>

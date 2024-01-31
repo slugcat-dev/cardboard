@@ -3,10 +3,7 @@ import type CardComponent from './Card.vue'
 import { suppressNextClick } from '~/utils'
 
 const canvasRef = ref()
-// Create a non-reactive copy of the board that doesn't update instantly
-// because we want to use page transitions
-const { board: boardRef, createBoard } = await useBoards()
-const board = ref(boardRef.value)
+const {	board, createBoard } = await useBoards()
 const cardRefs: Ref<InstanceType<typeof CardComponent>[]> = ref([])
 const { macOS, metaKey } = useKeys()
 const selection = ref()
@@ -19,6 +16,15 @@ let pointerClickPos: Position
 let prevScroll: Position
 let prevActiveElement: Element | null
 let pointerDown: boolean
+
+// Fetch board cards
+if (!board.value.cards) {
+	const { data } = await useFetch<{ cards: Card[] }>(`/api/boards/${board.value.id}`, { method: 'GET', pick: ['cards'] })
+
+	board.value.cards = data.value?.cards || []
+}
+
+const cards = ref(board.value.cards)
 
 defineShortcuts({
 	'home': () => canvasRef.value.scrollTo({
@@ -45,7 +51,7 @@ defineShortcuts({
 
 		// TODO: This is a bad idea, I can smell it
 		// eslint-disable-next-line no-alert
-		if (selectedCards.length === board.value.cards.length && !confirm('Are you sure you want to delete ALL cards on this board?'))
+		if (selectedCards.length === cards.value.length && !confirm('Are you sure you want to delete ALL cards on this board?'))
 			return
 
 		await $fetch(`/api/boards/${board.value.id}/cards/many`, {
@@ -54,7 +60,7 @@ defineShortcuts({
 		})
 
 		selectedCards.forEach(id =>
-			board.value.cards.splice(board.value.cards.findIndex(card => card.id === id), 1)
+			cards.value.splice(cards.value.findIndex(card => card.id === id), 1)
 		)
 
 		selectedCards = []
@@ -93,9 +99,6 @@ function onPointerDown(event: PointerEvent) {
 		// eslint-disable-next-line no-alert
 		return alert('Annotation is currently not supported')
 	}
-
-	if (event.target !== canvasRef.value)
-		return
 
 	if (metaKey.value) {
 		selection.value = new DOMRect(
@@ -220,9 +223,6 @@ function distance(touches: TouchList) {
 
 // Create a new text card when you doubleclick or tap the canvas
 async function onClick(event: MouseEvent) {
-	if (event.target !== canvasRef.value)
-		return
-
 	clearSelection()
 
 	// TODO: pointerType can be undefined
@@ -246,7 +246,7 @@ async function onClick(event: MouseEvent) {
 			}
 		})
 
-		board.value.cards.push(card)
+		cards.value.push(card)
 
 		// Navigate to the new board
 		setTimeout(async () => {
@@ -276,7 +276,7 @@ async function onClick(event: MouseEvent) {
 					position,
 					content: ''
 				}
-		const index = board.value.cards.push(data) - 1
+		const index = cards.value.push(data) - 1
 
 		// Wait until the DOM has updated
 		await nextTick()
@@ -325,7 +325,7 @@ function onDrop(event: DragEvent) {
 
 			waiting.value = false
 
-			board.value.cards.push(card)
+			cards.value.push(card)
 		})
 	}
 
@@ -349,11 +349,11 @@ function onCardMove(id: string, prevPosition: Position, newPosition: Position) {
 	const dY = newPosition.y - prevPosition.y
 
 	selectedCards.filter(selected => selected !== id).forEach((selected) => {
-		const index = board.value.cards.findIndex(card => card.id === selected)
+		const index = cards.value.findIndex(card => card.id === selected)
 
-		board.value.cards[index].position = {
-			x: board.value.cards[index].position.x + dX,
-			y: board.value.cards[index].position.y + dY
+		cards.value[index].position = {
+			x: cards.value[index].position.x + dX,
+			y: cards.value[index].position.y + dY
 		}
 	})
 }
@@ -368,7 +368,7 @@ async function onCardUpdate(card: Card) {
 
 	await $fetch(`/api/boards/${board.value.id}/cards/many`, {
 		method: 'PUT',
-		body: board.value.cards
+		body: cards.value
 			.filter(card => selectedCards.includes(card.id))
 			.map((card) => {
 				return {
@@ -383,7 +383,7 @@ async function onCardDelete(id: string) {
 	if (id !== 'create')
 		await $fetch(`/api/boards/${board.value.id}/cards/${id}`, { method: 'DELETE' })
 
-	board.value.cards.splice(board.value.cards.findIndex(card => card.id === id), 1)
+	cards.value.splice(cards.value.findIndex(card => card.id === id), 1)
 }
 
 function onCardSelected(id: string, selected: boolean) {
@@ -434,7 +434,7 @@ const areaSpacerStyle = computed(() => {
 			acc.width = Math.max(acc.width, cardRect.left + cardRect.width)
 			acc.height = Math.max(acc.height, cardRect.top + cardRect.height)
 		}
-		catch { }
+		catch {}
 
 		return acc
 	}, new DOMRect())
@@ -476,7 +476,7 @@ useSeoMeta({ title: board.value.name })
 		ref="canvasRef"
 		:class="{ selecting: metaKey }"
 		:style="{ cursor: pointerMoved && !selectionVisible ? 'move' : waiting ? 'progress' : 'default' }"
-		@pointerdown.left="onPointerDown"
+		@pointerdown.self.left="onPointerDown"
 		@pointermove="onPointerMove"
 		@pointerup="onPointerUp"
 		@pointerleave="onPointerUp"
@@ -485,14 +485,14 @@ useSeoMeta({ title: board.value.name })
 		@touchmove="onTouchMove"
 		@touchend="onTouchEnd"
 		@touchcancel="onTouchEnd"
-		@click="onClick"
+		@click.self="onClick"
 		@wheel="onWheel"
 		@dragenter.prevent
 		@dragover.prevent
 		@drop="onDrop"
 	>
 		<Card
-			v-for="card in board.cards"
+			v-for="card in cards"
 			ref="cardRefs"
 			:key="card.created.toString()"
 			:card="card"

@@ -91,7 +91,7 @@ async function onDeleteBoard() {
 				<input
 					type="checkbox"
 					:checked="settings.grid.snap"
-					@change="settings.grid.snap = ($event.target as HTMLInputElement).checked"
+					@change="(event) => settings.grid.snap = (event.target as HTMLInputElement).checked"
 				>
 				Snap cards to grid
 			</label>

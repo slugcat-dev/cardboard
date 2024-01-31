@@ -13,12 +13,7 @@ definePageMeta({
 	<div class="dash">
 		<div>
 			<h1 class="welcome">
-				<span style="font-weight: normal">Hello,</span>
-				<img
-					class="profile-picture"
-					:src="user.picture"
-				>
-				{{ user.name }}
+				Hey {{ user.name }}!
 			</h1>
 			<div class="text-secondary">
 				User ID: {{ user.id }}
@@ -51,7 +46,7 @@ definePageMeta({
 	display: flex;
 	gap: .5ch;
 	align-items: center;
-	font-size: 2.5rem;
+	font-size: 1.5rem;
 }
 
 .profile-picture {

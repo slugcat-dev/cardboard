@@ -36,6 +36,13 @@ function match() {
 			>
 				Log Out
 			</Btn>
+			<Btn
+				role="primary"
+				icon="mdi:plus"
+				@click="createBoard({ open: true })"
+			>
+				Create Board
+			</Btn>
 		</div>
 		<div class="boards">
 			<div
@@ -49,17 +56,15 @@ function match() {
 						name="fluent:page-20-regular"
 						size="20px"
 					/>
-					{{ board.name }}
+					<IconCSS
+						name="fluent:page-20-filled"
+						size="20px"
+					/>
+					<span>
+						{{ board.name }}
+					</span>
 				</NuxtLink>
 			</div>
-			<Btn
-				role="primary"
-				style=" margin-top: 1rem; margin-left: 1rem;"
-				icon="mdi:plus"
-				@click="createBoard({ open: true })"
-			>
-				Create Board
-			</Btn>
 		</div>
 	</div>
 </template>
@@ -82,8 +87,10 @@ function match() {
 	display: flex;
 	flex-direction: column;
 	grid-area: sidebar;
+	gap: 1rem;
 	width: 240px;
 	margin-left: 0;
+	padding: .5rem;
 	overflow-y: auto;
 	background-color: var(--color-background-secondary);
 	border-right: 1px solid var(--color-background-secondary);
@@ -116,7 +123,6 @@ function match() {
 		flex-wrap: wrap;
 		gap: 1rem .5rem;
 		align-items: center;
-		padding: 1rem;
 		padding-top: .5rem;
 		font-weight: bold;
 		font-size: .875rem;
@@ -143,42 +149,49 @@ function match() {
 		flex-direction: column;
 		overflow-y: scroll;
 
-		&:not(:hover) {
-			&::-webkit-scrollbar {
-				width: 0;
-				height: 0;
-			}
+		&::-webkit-scrollbar {
+			width: 0;
+			height: 0;
 		}
-	}
-}
-
-.board {
-	border-top: 1px solid var(--color-border);
-
-	&:has(.router-link-active),
-	&:has(.router-link-active) + .board {
-		border-color: var(--color-background);
-	}
-
-	&:last-child:has(.router-link-active) {
-		border-bottom: 1px solid var(--color-background);
 	}
 }
 
 .board-link {
 	display: block;
-	padding: .5rem 1rem;
+	padding: .5rem;
 	overflow: hidden;
 	color: currentcolor;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+	border-radius: .375rem;
+
+	span {
+		vertical-align: middle;
+	}
+
+	span:last-child {
+		margin-left: .25rem;
+	}
 
 	&:hover {
 		text-decoration: none;
+		background-color: #8882;
+	}
+
+	:nth-child(2) {
+		display: none;
 	}
 
 	&.router-link-active {
-		background-color: var(--color-background-tertiary);
+		background-color: #8884;
+
+		:first-child {
+			display: none;
+		}
+
+		:nth-child(2) {
+			display: inline-block;
+		}
 	}
 
 	&:not(.router-link-active) {

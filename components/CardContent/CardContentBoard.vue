@@ -2,7 +2,6 @@
 const { card } = defineProps(['card'])
 const { findBoard } = await useBoards()
 const board = findBoard(card.content)
-const previewCards = board.cards.filter(card => card.position.x < 1920 && card.position.y < 1080)
 
 function onNavigate() {
 	const { push } = useBreadcrumbs()

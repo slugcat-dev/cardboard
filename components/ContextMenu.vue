@@ -3,13 +3,6 @@ import type { Point } from 'puppeteer-core'
 
 const { contextMenu } = useContextMenu()
 
-function onClose(event: PointerEvent) {
-	if (!event.target.classList.contains('context-menu-overlay'))
-		return
-
-	contextMenu.value = undefined
-}
-
 function fhandler(handler: Function) {
 	handler()
 
@@ -35,7 +28,7 @@ const menuStyle = computed(() => {
 	<div
 		v-if="contextMenu"
 		class="context-menu-overlay"
-		@pointerdown.prevent="onClose"
+		@pointerdown.self.prevent="() => { contextMenu = undefined }"
 	/>
 	<div
 		v-if="contextMenu"
