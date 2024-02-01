@@ -31,7 +31,7 @@ useHead({
 </script>
 
 <template>
-	<<NuxtLayout>
+	<NuxtLayout>
 		<NuxtPage />
 	</NuxtLayout>
 </template>
