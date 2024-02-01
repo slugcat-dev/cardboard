@@ -240,7 +240,6 @@ async function onClick(event: MouseEvent) {
 			body: {
 				card: {
 					type: 'board',
-					created: new Date(),
 					position,
 					content: newBoard.id
 				}
@@ -263,7 +262,6 @@ async function onClick(event: MouseEvent) {
 			? {
 					id: 'create',
 					type: 'tasklist',
-					created: new Date(),
 					position,
 					content: {
 						title: 'Tasklist',
@@ -273,7 +271,6 @@ async function onClick(event: MouseEvent) {
 			: {
 					id: 'create',
 					type: 'text',
-					created: new Date(),
 					position,
 					content: ''
 				}
@@ -317,7 +314,6 @@ function onDrop(event: DragEvent) {
 				body: {
 					card: {
 						type: 'image',
-						created: new Date(),
 						position: getMousePos(event),
 						content: data
 					}
@@ -495,7 +491,7 @@ useSeoMeta({ title: board.value.name })
 		<Card
 			v-for="card in cards"
 			ref="cardRefs"
-			:key="card.created.toString()"
+			:key="card.createdAt.toString()"
 			:card="card"
 			:canvas-ref="canvasRef"
 			:selection="selection"

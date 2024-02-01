@@ -38,7 +38,7 @@ function onInput() {
 		>
 		<div
 			v-for="card in filteredCards"
-			:key="card.item.created.toString()"
+			:key="card.item.id"
 			:style="{ borderBottom: '1px solid grey' }"
 		>
 			{{ card.item.content }}

@@ -7,10 +7,6 @@ export const CardSchema = defineMongooseModel({
 			type: String,
 			required: true
 		},
-		created: {
-			type: Date,
-			required: true
-		},
 		position: {
 			x: {
 				type: Number,
@@ -26,5 +22,8 @@ export const CardSchema = defineMongooseModel({
 			required: true
 		}
 	},
-	options: { toJSON: { virtuals: true } }
+	options: {
+		timestamps: true,
+		toJSON: { virtuals: true }
+	}
 })

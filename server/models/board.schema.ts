@@ -22,5 +22,8 @@ export const BoardSchema = defineMongooseModel({
 			ref: CardSchema
 		}]
 	},
-	options: { toJSON: { virtuals: true } }
+	options: {
+		timestamps: true,
+		toJSON: { virtuals: true }
+	}
 })

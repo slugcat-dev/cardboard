@@ -6,9 +6,10 @@ type Position = {
 type Card = {
 	id: string
 	type: 'text' | 'link' | 'image' | 'tasklist' | 'board'
-	created: Date
 	position: Position
 	content: any
+	createdAt: Date
+	updatedAt: Date
 }
 
 type Board = {
@@ -17,6 +18,8 @@ type Board = {
 	owner: string
 	parent?: string
 	cards: Card[]
+	createdAt: Date
+	updatedAt: Date
 }
 
 type User = {
@@ -24,6 +27,7 @@ type User = {
 	email: string
 	name: string
 	picture: string
+	createdAt: Date
 }
 
 type Bread = {

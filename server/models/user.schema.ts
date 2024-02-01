@@ -20,5 +20,11 @@ export const UserSchema = defineMongooseModel({
 			required: false
 		}
 	},
-	options: { toJSON: { virtuals: true } }
+	options: {
+		timestamps: {
+			createdAt: true,
+			updatedAt: false
+		},
+		toJSON: { virtuals: true }
+	}
 })
