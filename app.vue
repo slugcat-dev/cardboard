@@ -31,10 +31,7 @@ useHead({
 </script>
 
 <template>
-	<div>
-		maintenance
-	</div>
-	<!-- <NuxtLayout>
+	<<NuxtLayout>
 		<NuxtPage />
-	</NuxtLayout> -->
+	</NuxtLayout>
 </template>
