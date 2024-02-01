@@ -491,7 +491,7 @@ useSeoMeta({ title: board.value.name })
 		<Card
 			v-for="card in cards"
 			ref="cardRefs"
-			:key="card.createdAt.toString()"
+			:key="card.id"
 			:card="card"
 			:canvas-ref="canvasRef"
 			:selection="selection"

@@ -65,6 +65,15 @@ function match() {
 					</span>
 				</NuxtLink>
 			</div>
+			<div style="color:var(--color-danger)">
+				<h2>
+					Important
+				</h2>
+				<b>»Help, some of my data is gone!«</b>
+				<br>
+				<br>
+				<a href="https://gist.github.com/slugcat-dev/44edda28ed7eb93e020687c280122b60" style="color:var(--color-danger); text-decoration: underline;">Read what happened</a>
+			</div>
 		</div>
 	</div>
 </template>
