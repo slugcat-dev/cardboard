@@ -2,7 +2,7 @@
 const router = useRouter()
 const settings = useSettings()
 const boardNameRef = ref()
-const { board, deleteBoard } = await useBoards()
+const { board, createBoard, deleteBoard } = await useBoards()
 const { breadcrumbs, oldcrumbs } = useBreadcrumbs()
 
 defineShortcuts({
@@ -43,6 +43,18 @@ function toggleBoardFav() {
 async function onDeleteBoard() {
 	if (await deleteBoard(board.value.id))
 		router.back()
+}
+
+async function makeBoard() {
+	const newBoard = await createBoard({ open: false, parent: board.value.id })
+
+	setTimeout(async () => {
+		const { push } = useBreadcrumbs()
+
+		push.value = true
+
+		await navigateTo(`/${newBoard.id}`)
+	}, 400)
 }
 
 // const isDark = useDark({ storageKey: 'color-scheme' })
@@ -115,6 +127,12 @@ async function onDeleteBoard() {
 			</button>
 			<button @click="console.log">
 				<IconCSS name="bi:sun" size="1rem" />
+			</button>
+			<button
+				@click="makeBoard"
+			>
+				<IconCSS name="mdi:plus" size="1rem" />
+				Create Board
 			</button>
 			<div
 				v-if="false"

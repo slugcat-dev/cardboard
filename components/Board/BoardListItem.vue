@@ -7,7 +7,7 @@ const { boards } = await useBoards()
 <template>
 	<NuxtLink
 		class="board-link"
-		:style="{ marginLeft: `${indent * 1.25}rem` }"
+		:style="{ paddingLeft: `${(indent + .5)}rem` }"
 		:to="board.id"
 		@keydown.f2="console.log('rename board')"
 	>
