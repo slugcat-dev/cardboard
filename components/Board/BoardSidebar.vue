@@ -3,9 +3,6 @@ const session = useUserSession()
 const { user } = session
 const settings = useSettings()
 
-const { boards, createBoard } = await useBoards()
-const rootBoards = computed(() => boards.value?.filter(board => !board.parent))
-
 /*
 function match() {
 	return window.matchMedia('(width <= 480px)').matches
@@ -36,45 +33,8 @@ function match() {
 			>
 				Log Out
 			</Btn>
-			<Btn
-				role="primary"
-				icon="mdi:plus"
-				@click="createBoard({ open: true })"
-			>
-				Create Board
-			</Btn>
 		</div>
-		<div class="boards">
-			<div
-				v-for="board of boards"
-				:key="board.id"
-				class="board"
-				:style="{ opacity: rootBoards?.map(board => board.id).includes(board.id) ? 1 : .5 }"
-			>
-				<NuxtLink class="board-link" :to="board.id">
-					<IconCSS
-						name="fluent:page-20-regular"
-						size="20px"
-					/>
-					<IconCSS
-						name="fluent:page-20-filled"
-						size="20px"
-					/>
-					<span>
-						{{ board.name }}
-					</span>
-				</NuxtLink>
-			</div>
-			<div style="color:var(--color-danger)">
-				<h2>
-					Important
-				</h2>
-				<b>»Help, some of my data is gone!«</b>
-				<br>
-				<br>
-				<a href="https://gist.github.com/slugcat-dev/44edda28ed7eb93e020687c280122b60" style="color:var(--color-danger); text-decoration: underline;">Read what happened</a>
-			</div>
-		</div>
+		<BoardList />
 	</div>
 </template>
 
@@ -152,59 +112,6 @@ function match() {
 			background-color: var(--color-scrollbar);
 			border-radius: 100%;
 		}
-	}
-
-	.boards {
-		flex-direction: column;
-		overflow-y: scroll;
-
-		&::-webkit-scrollbar {
-			width: 0;
-			height: 0;
-		}
-	}
-}
-
-.board-link {
-	display: block;
-	padding: .5rem;
-	overflow: hidden;
-	color: currentcolor;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	border-radius: .375rem;
-
-	span {
-		vertical-align: middle;
-	}
-
-	span:last-child {
-		margin-left: .25rem;
-	}
-
-	&:hover {
-		text-decoration: none;
-		background-color: #8882;
-	}
-
-	:nth-child(2) {
-		display: none;
-	}
-
-	&.router-link-active {
-		background-color: #8884;
-
-		:first-child {
-			display: none;
-		}
-
-		:nth-child(2) {
-			display: inline-block;
-		}
-	}
-
-	&:not(.router-link-active) {
-		color: var(--color-text-tertiary);
 	}
 }
 </style>

@@ -31,6 +31,15 @@ function onBoardNameUpdate() {
 	})
 }
 
+function toggleBoardFav() {
+	board.value.fav = !board.value.fav
+
+	$fetch(`/api/boards/${board.value.id}`, {
+		method: 'PUT',
+		body: { fav: board.value.fav }
+	})
+}
+
 async function onDeleteBoard() {
 	if (await deleteBoard(board.value.id))
 		router.back()
@@ -97,6 +106,12 @@ async function onDeleteBoard() {
 			</label>
 			<button @click="onDeleteBoard">
 				Delete Board
+			</button>
+			<button
+				v-if="!board.parent"
+				@click="toggleBoardFav"
+			>
+				<IconCSS :name="board.fav ? 'mdi:star' : 'mdi:star-outline'" size="1rem" />
 			</button>
 			<button @click="console.log">
 				<IconCSS name="bi:sun" size="1rem" />

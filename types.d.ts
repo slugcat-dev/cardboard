@@ -9,17 +9,18 @@ type Card = {
 	position: Position
 	content: any
 	createdAt: Date
-	updatedAt: Date
+	updatedAt?: Date
 }
 
 type Board = {
 	id: string
 	name: string
 	owner: string
-	parent?: string
 	cards: Card[]
+	parent?: string
+	fav?: boolean
 	createdAt: Date
-	updatedAt: Date
+	updatedAt?: Date
 }
 
 type User = {

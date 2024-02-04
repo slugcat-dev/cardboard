@@ -12,15 +12,19 @@ export const BoardSchema = defineMongooseModel({
 			type: String,
 			required: true
 		},
+		cards: [{
+			type: Schema.Types.ObjectId,
+			ref: CardSchema
+		}],
 		parent: {
 			type: Schema.Types.ObjectId,
 			ref: 'Board',
 			required: false
 		},
-		cards: [{
-			type: Schema.Types.ObjectId,
-			ref: CardSchema
-		}]
+		fav: {
+			type: Boolean,
+			required: false
+		}
 	},
 	options: {
 		timestamps: true,

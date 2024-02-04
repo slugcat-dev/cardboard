@@ -1,7 +1,6 @@
 export async function useBoards() {
 	const boards = useState<Board[]>('boards')
 
-
 	async function fetchBoards() {
 		const { data } = await useFetch<Board[]>('/api/boards', { method: 'GET' })
 
@@ -14,7 +13,7 @@ export async function useBoards() {
 	const board = computed(() => findBoard(useBreadcrumbs().route.value))
 
 	function findBoard(id: string) {
-		return boards.value.find(board => board.id === id) || { id: '', name: '', owner: '', parent: '', cards: [] }
+		return boards.value.find(board => board.id === id) || { id: '', name: '', owner: '', parent: '', cards: [], createdAt: new Date() }
 	}
 
 	async function createBoard(options: { open: boolean, parent?: string }) {
