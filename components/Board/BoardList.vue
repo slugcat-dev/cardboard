@@ -97,6 +97,7 @@ const noFavRootBoards = computed(() => rootBoards.value.filter(board => !board.f
 
 	&.router-link-active {
 		background-color: #8884;
+		box-shadow: 0 0 0 1px oklch(40% 0 0deg / 30%) inset;
 
 		:first-child {
 			display: none;

@@ -32,7 +32,7 @@ export async function useBoards() {
 
 	async function deleteBoard(id: string) {
 		// eslint-disable-next-line no-alert
-		if (!confirm('Do you REALLY want to delete this board?'))
+		if (!confirm('Do you REALLY want to DELETE THIS BOARD AND ALL THE BOARDS it contains? This action is irreversible!'))
 			return false
 
 		await $fetch(`/api/boards/${id}`, { method: 'DELETE' })

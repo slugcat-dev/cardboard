@@ -1,3 +1,5 @@
+import type { Model } from 'mongoose'
+
 export default defineEventHandler(async (event) => {
 	const { user } = await requireUserSession(event)
 	const board = await BoardSchema.findById(getRouterParams(event).board)
@@ -16,9 +18,17 @@ export default defineEventHandler(async (event) => {
 		})
 	}
 
-	await CardSchema.deleteMany({ $or: [
-		{ _id: { $in: board.cards } },
-		{ content: board.id }
-	] })
-	await board.deleteOne()
+	// Recursivley delete all child boards
+	async function deleteBoard(board: any) {
+		const childBoards = await BoardSchema.find({ parent: board.id })
+
+		await CardSchema.deleteMany({ $or: [
+			{ _id: { $in: board.cards } },
+			{ content: board.id }
+		] })
+		await board.deleteOne()
+		await Promise.all(childBoards.map(deleteBoard))
+	}
+
+	await deleteBoard(board)
 })
