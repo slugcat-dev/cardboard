@@ -1,11 +1,14 @@
 export async function useBoards() {
 	const boards = useState<Board[]>('boards')
 
-	await callOnce(async () => {
+
+	async function fetchBoards() {
 		const { data } = await useFetch<Board[]>('/api/boards', { method: 'GET' })
 
 		boards.value = data.value ?? []
-	})
+	}
+
+	await callOnce(fetchBoards)
 
 	// ! const route = useRoute()
 	const board = computed(() => findBoard(useBreadcrumbs().route.value))
@@ -34,7 +37,7 @@ export async function useBoards() {
 			return false
 
 		await $fetch(`/api/boards/${id}`, { method: 'DELETE' })
-		boards.value.splice(boards.value.findIndex(board => board.id === id), 1)
+		await fetchBoards()
 
 		return true
 	}
