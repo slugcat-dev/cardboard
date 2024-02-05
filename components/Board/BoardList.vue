@@ -54,62 +54,11 @@ const noFavRootBoards = computed(() => rootBoards.value.filter(board => !board.f
 .boards {
 	display: flex;
 	flex-direction: column;
-	overflow-y: scroll;
 
 	.section {
 		padding-left: .5rem;
 		font-weight: bold;
 		opacity: .5;
-	}
-
-	&::-webkit-scrollbar {
-		width: 0;
-		height: 0;
-	}
-}
-
-.board-link {
-	display: block;
-	padding: .25rem .5rem;
-	overflow: hidden;
-	color: currentcolor;
-	font-size: .875rem;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	border-radius: .375rem;
-
-	span {
-		vertical-align: middle;
-	}
-
-	span:last-child {
-		margin-left: .25rem;
-	}
-
-	&:hover {
-		text-decoration: none;
-		background-color: #8882;
-	}
-
-	:nth-child(2) {
-		display: none;
-	}
-
-	&.router-link-active {
-		background-color: #8884;
-		box-shadow: 0 0 0 1px oklch(40% 0 0deg / 30%) inset;
-
-		:first-child {
-			display: none;
-		}
-
-		:nth-child(2) {
-			display: inline-block;
-		}
-	}
-
-	&:not(.router-link-active) {
-		color: var(--color-text-tertiary);
 	}
 }
 </style>

@@ -46,6 +46,7 @@ async function onDeleteBoard() {
 }
 
 async function makeBoard() {
+	return alert('No')
 	const newBoard = await createBoard({ open: false, parent: board.value.id })
 
 	setTimeout(async () => {

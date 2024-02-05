@@ -416,7 +416,7 @@ defineExpose({ activate, alignToGrid, getSizeRect })
 	position: absolute;
 	width: max-content;
 	background-color: var(--color-background-secondary);
-	border: 1px solid var(--color-border);
+	border: 1px solid oklch(40% 0 0deg / 10%);
 	border-radius: .25rem;
 	box-shadow: var(--shadow-card);
 	transform-origin: top left;
