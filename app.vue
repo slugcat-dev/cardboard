@@ -9,7 +9,11 @@ watch(loggedIn, () => {
 useSeoMeta({
 	title: 'Cardboard',
 	description: 'Place virtual cards on a virtual canvas virtually anywhere',
-	viewport: { userScalable: 'no' },
+	viewport: {
+		width: 'device-width',
+		initialScale: '1.0',
+		userScalable: 'no'
+	},
 	themeColor: [
 		{
 			media: '(prefers-color-scheme: dark)',
