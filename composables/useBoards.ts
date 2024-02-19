@@ -9,8 +9,15 @@ export async function useBoards() {
 
 	await callOnce(fetchBoards)
 
-	// ! const route = useRoute()
+	// ! TODO const route = useRoute()
 	const board = computed(() => findBoard(useBreadcrumbs().route.value))
+
+	// Fetch board cards
+	if (!board.value.cards) {
+		const { data } = await useFetch<{ cards: Card[] }>(`/api/boards/${board.value.id}`, { method: 'GET', pick: ['cards'] })
+
+		board.value.cards = data.value?.cards || []
+	}
 
 	function findBoard(id: string) {
 		return boards.value.find(board => board.id === id) || { id: '', name: '', owner: '', parent: '', cards: [], createdAt: new Date() }

@@ -11,11 +11,11 @@ const { boards } = await useBoards()
 		:to="board.id"
 		@keydown.f2="console.log('rename board')"
 	>
-		<IconCSS
+		<ClientIcon
 			name="fluent:page-20-regular"
 			size="20px"
 		/>
-		<IconCSS
+		<ClientIcon
 			name="fluent:page-20-filled"
 			size="20px"
 		/>
@@ -34,6 +34,7 @@ const { boards } = await useBoards()
 <style lang="scss">
 .board-link {
 	display: block;
+	margin-bottom: .125rem;
 	padding: .25rem .5rem;
 	overflow: hidden;
 	color: currentcolor;
@@ -50,19 +51,18 @@ const { boards } = await useBoards()
 		margin-left: .25rem;
 	}
 
-	&:hover {
-		text-decoration: none;
-		background-color: #8882;
-	}
-
 	:nth-child(2) {
 		display: none;
 	}
 
+	&:hover,
 	&.router-link-active {
-		background-color: #8884;
-		box-shadow: 0 0 0 1px oklch(40% 0 0deg / 30%) inset;
+		text-decoration: none;
+		background-color: #8882;
+		box-shadow: 0 0 0 1px oklch(40% 0 0deg / 10%) inset;
+	}
 
+	&.router-link-active {
 		:first-child {
 			display: none;
 		}
@@ -72,7 +72,7 @@ const { boards } = await useBoards()
 		}
 	}
 
-	&:not(.router-link-active) {
+	&:not(.router-link-active, :hover) {
 		color: var(--color-text-tertiary);
 	}
 }

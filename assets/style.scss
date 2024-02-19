@@ -1,7 +1,7 @@
-/* Import Google fonts: Roboto, JetBrains Mono */
+// Import Google fonts: Roboto, JetBrains Mono
 @import 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap';
 
-/* Default (light) theme */
+// Default (light) theme
 :root {
 	--color-text: oklch(0% 0 0deg);
 	--color-text-secondary: oklch(40% 0 0deg);
@@ -24,7 +24,7 @@
 	--color-border: #0002;
 	--color-scrollbar: oklch(60% 0 0deg);
 
-	/* TODO */
+	// TODO
 	--color-shadow-ui: #00000010;
 	--shadow-card: 2px 2px 6px var(--color-shadow-ui);
 	--color-favicon: #f3f3f3;
@@ -35,13 +35,13 @@
 	accent-color: var(--color-accent);
 }
 
-/* Dark theme */
+// Dark theme
 :root:not(.light) {
 	--color-text: oklch(85% 0 0deg);
 	--color-text-secondary: oklch(75% 0 0deg);
 	--color-text-tertiary: oklch(65% 0 0deg);
-	--color-background: oklch(20% 0 0deg);
-	--color-background-secondary: oklch(25% 0 0deg);
+	--color-background: oklch(23.5% 0 0deg);
+	--color-background-secondary: oklch(26.86% 0 0deg);
 	--color-background-tertiary: oklch(30% 0 0deg);
 	--color-accent: oklch(80% .125 250deg);
 	--color-accent-50: oklch(80% .125 250deg / 50%);
@@ -58,7 +58,7 @@
 	--color-border: #8881;
 	--color-scrollbar: oklch(40% 0 0deg);
 
-	/* TODO */
+	// TODO
 	--color-shadow-ui: #00000040;
 	--color-favicon: #404040;
 	--color-icon-shadow: #00000060;
@@ -136,4 +136,14 @@ button,
 input {
 	font-size: .75rem;
 	font-family: inherit;
+}
+
+.flex-row {
+	display: flex;
+	flex-direction: row;
+}
+
+.flex-column {
+	display: flex;
+	flex-direction: column;
 }

@@ -24,6 +24,7 @@ function onBoardNameUpdate() {
 	}
 
 	board.value.name = name
+	document.title = name
 
 	$fetch(`/api/boards/${board.value.id}`, {
 		method: 'PUT',
@@ -47,15 +48,6 @@ async function onDeleteBoard() {
 
 async function makeBoard() {
 	return alert('No')
-	const newBoard = await createBoard({ open: false, parent: board.value.id })
-
-	setTimeout(async () => {
-		const { push } = useBreadcrumbs()
-
-		push.value = true
-
-		await navigateTo(`/${newBoard.id}`)
-	}, 400)
 }
 
 // const isDark = useDark({ storageKey: 'color-scheme' })
@@ -68,7 +60,7 @@ async function makeBoard() {
 			class="sidebar-toggle"
 			@click="settings.sidebar = !settings.sidebar"
 		>
-			<IconCSS name="akar-icons:sidebar-left" size="1rem" />
+			<ClientIcon name="f7:sidebar-left" size="1rem" />
 		</button>
 		<div
 			v-if="board.id"
@@ -79,14 +71,14 @@ async function makeBoard() {
 					class="nav-button"
 					@click="router.back()"
 				>
-					<IconCSS name="material-symbols:arrow-back-ios-rounded" size="14px" />
+					<ClientIcon name="material-symbols:arrow-back-ios-rounded" size="14px" />
 				</a>
 				<a
 					class="nav-button"
 					:class="{ disabled: oldcrumbs.length === 0 }"
 					@click="router.forward()"
 				>
-					<IconCSS name="material-symbols:arrow-forward-ios-rounded" size="14px" />
+					<ClientIcon name="material-symbols:arrow-forward-ios-rounded" size="14px" />
 				</a>
 				<span class="bread-separator">/</span>
 				<div
@@ -124,15 +116,15 @@ async function makeBoard() {
 				v-if="!board.parent"
 				@click="toggleBoardFav"
 			>
-				<IconCSS :name="board.fav ? 'mdi:star' : 'mdi:star-outline'" size="1rem" />
+				<ClientIcon :name="board.fav ? 'mdi:star' : 'mdi:star-outline'" size="1rem" />
 			</button>
 			<button @click="console.log">
-				<IconCSS name="bi:sun" size="1rem" />
+				<ClientIcon name="lucide:sun" size="1rem" />
 			</button>
 			<button
 				@click="makeBoard"
 			>
-				<IconCSS name="mdi:plus" size="1rem" />
+				<ClientIcon name="lucide:plus" size="1rem" />
 				Create Board
 			</button>
 			<div
@@ -140,19 +132,19 @@ async function makeBoard() {
 				class="toolbox"
 			>
 				<div class="tool active">
-					<IconCSS
+					<ClientIcon
 						name="material-symbols:text-fields"
 						size="1rem"
 					/>
 				</div>
 				<div class="tool">
-					<IconCSS
+					<ClientIcon
 						name="material-symbols:dashboard"
 						size="1rem"
 					/>
 				</div>
 				<div class="tool">
-					<IconCSS
+					<ClientIcon
 						name="material-symbols:checklist"
 						size="1rem"
 					/>
@@ -163,7 +155,7 @@ async function makeBoard() {
 			v-else
 			class="header-title"
 		>
-			<IconCSS name="material-symbols:search" size="16px" />
+			<ClientIcon name="material-symbols:search" size="16px" />
 			Cardboard<kbd>⌘</kbd><kbd>K</kbd>
 		</div>
 	</header>
@@ -200,6 +192,14 @@ async function makeBoard() {
 }
 
 #header {
+	z-index: 10;
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+	padding: .5rem 1rem;
+	background-color: var(--color-background);
+	user-select: none;
+
 	.breadcrumbs {
 		display: flex;
 		align-items: center;

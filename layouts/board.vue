@@ -8,7 +8,7 @@
 </template>
 
 <style lang="scss">
-/* stylelint-disable declaration-block-no-redundant-longhand-properties */
+// stylelint-disable declaration-block-no-redundant-longhand-properties
 
 body {
 	overflow: hidden;
@@ -46,18 +46,5 @@ body {
 	grid-template-rows: 41px auto;
 	grid-template-columns: min-content auto;
 	height: 100vh;
-}
-
-#header {
-	z-index: 10;
-	display: flex;
-	gap: 1rem;
-	align-items: center;
-	padding: .5rem 1rem;
-	background-color: var(--color-background-secondary);
-	border-bottom: 1px solid var(--color-border);
-	box-shadow: 0 2px 4px var(--color-shadow-ui);
-  clip-path: inset(0 0 -6px 0);
-	user-select: none;
 }
 </style>

@@ -18,7 +18,7 @@ function onNavigate() {
 			{{ board.name }}
 		</a>
 		<img
-			src="~/assets/images/miniboard.png"
+			src="/images/miniboard.png"
 			draggable="false"
 		>
 	</div>

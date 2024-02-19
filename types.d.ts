@@ -8,7 +8,7 @@ type Card = {
 	type: 'text' | 'link' | 'image' | 'tasklist' | 'board'
 	position: Position
 	content: any
-	createdAt: Date
+	createdAt?: Date
 	updatedAt?: Date
 }
 

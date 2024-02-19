@@ -9,10 +9,9 @@ const noFavRootBoards = computed(() => rootBoards.value.filter(board => !board.f
 	<div class="boards">
 		<div
 			v-if="favRootBoards.length !== 0"
-			class="favs"
-			:style="{ marginBottom: noFavRootBoards.length === 0 ? 0 : '1rem' }"
+			:style="{ marginBottom: noFavRootBoards.length === 0 ? 0 : '.875rem' }"
 		>
-			<div class="section text-secondary">
+			<div class="section-title text-secondary">
 				Favourites
 			</div>
 			<BoardListItem
@@ -22,11 +21,8 @@ const noFavRootBoards = computed(() => rootBoards.value.filter(board => !board.f
 				:indent="0"
 			/>
 		</div>
-		<div
-			v-if="noFavRootBoards.length !== 0"
-			class="nofavs"
-		>
-			<div class="section text-secondary">
+		<div v-if="noFavRootBoards.length !== 0">
+			<div class="section-title text-secondary">
 				Your Boards
 			</div>
 			<BoardListItem
@@ -40,8 +36,8 @@ const noFavRootBoards = computed(() => rootBoards.value.filter(board => !board.f
 			class="board-link"
 			@click="createBoard({ open: true })"
 		>
-			<IconCSS
-				name="mdi:plus"
+			<ClientIcon
+				name="lucide:plus"
 				size="20px"
 			/>
 			<div />
@@ -55,10 +51,10 @@ const noFavRootBoards = computed(() => rootBoards.value.filter(board => !board.f
 	display: flex;
 	flex-direction: column;
 
-	.section {
+	.section-title {
 		padding-left: .5rem;
 		font-weight: bold;
-		opacity: .5;
+		opacity: .75;
 	}
 }
 </style>

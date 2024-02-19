@@ -62,21 +62,9 @@ function match() {
 	padding: .5rem;
 	overflow-y: auto;
 	background-color: var(--color-background-secondary);
-	border-right: 1px solid var(--color-background-secondary);
-	box-shadow: 2px 0 4px var(--color-shadow-ui);
+	border-right: 1px solid var(--color-border);
 	transition: margin-left .2s, box-shadow .2s;
 	user-select: none;
-
-	&::after {
-		position: fixed;
-		top: 40px;
-		left: 239px;
-		width: 1px;
-		height: 100vh;
-		background-color: var(--color-border);
-		transition: left .2s;
-		content: '';
-	}
 
 	&.hidden{
 		margin-left: -240px;
