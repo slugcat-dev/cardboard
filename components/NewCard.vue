@@ -4,6 +4,7 @@
 const { card, canvas, selection } = defineProps(['card', 'canvas', 'selection'])
 const cardRef = ref()
 const pointer = reactive({
+	type: 'unknown',
 	down: false,
 	downPos: { x: 0, y: 0 },
 	pos: { x: 0, y: 0 },
@@ -50,6 +51,7 @@ function onPointerDown(event: PointerEvent) {
 
 	const cardRect = cardRef.value.getBoundingClientRect()
 
+	pointer.type = event.pointerType
 	pointer.down = true
 	pointer.downPos = toPos(event)
 	pointer.offset = {
@@ -87,7 +89,9 @@ function onPointerMove(event: PointerEvent) {
 
 function onPointerUp() {
 	if (pointer.moved) {
-		suppressClick() // TODO
+		if (pointer.type === 'mouse')
+			suppressClick()
+
 		updateCard(selection, card)
 	}
 

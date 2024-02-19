@@ -153,7 +153,8 @@ function onPointerMove(event: PointerEvent) {
 
 function onPointerUp() {
 	if (pointer.moved) {
-		suppressClick() // TODO
+		if (pointer.type === 'mouse')
+			suppressClick()
 
 		// Make scrolling feel like it has inertia on touch devices
 		function kineticScrollStep() {
