@@ -1,0 +1,217 @@
+<!-- eslint-disable vue/no-mutating-props -->
+
+<script setup lang="ts">
+const { card, canvas, selection } = defineProps(['card', 'canvas', 'selection'])
+const cardRef = ref()
+const pointer = reactive({
+	down: false,
+	downPos: { x: 0, y: 0 },
+	pos: { x: 0, y: 0 },
+	offset: {
+		x: 0,
+		y: 0,
+		zoom: 1
+	},
+	moved: false
+})
+const selected = ref(false)
+let longPressTimeout: ReturnType<typeof setTimeout> | undefined
+
+onBeforeUnmount(() => clearTimeout(longPressTimeout))
+
+// Update card position on scroll while dragging
+watch(canvas, () => updateCardPos())
+
+// Card selection
+watch(() => selection.rect, () => {
+	const cardRect = toCanvasRect(canvas, cardRef.value.getBoundingClientRect())
+
+	// Check if the selection rect intersects with the card rect
+	// eslint-disable-next-line no-cond-assign
+	if (selected.value !== (selected.value = selection.rect && !(
+		selection.rect.right < cardRect.left
+		|| selection.rect.left > cardRect.right
+		|| selection.rect.bottom < cardRect.top
+		|| selection.rect.top > cardRect.bottom
+	))) {
+		if (selected.value)
+			selection.cards.push(card)
+		else
+			selection.cards.splice(selection.cards.indexOf(card), 1)
+	}
+})
+
+// Scroll the canvas when dragging a card near the edge
+watch(pointer, () => animateEdgeScroll(canvas, pointer.pos, pointer.moved))
+
+function onPointerDown(event: PointerEvent) {
+	if (!canvas.cardDragAllowed)
+		return
+
+	const cardRect = cardRef.value.getBoundingClientRect()
+
+	pointer.down = true
+	pointer.downPos = toPos(event)
+	pointer.offset = {
+		x: event.clientX - cardRect.left,
+		y: event.clientY - cardRect.top,
+		zoom: canvas.smoothZoom - 1
+	}
+
+	if (!selected.value)
+		selection.rect = undefined
+
+	// Workaround for the contextmenu event which is not implemented in iOS Safari
+	if (navigator.vendor.includes('Apple') && 'ontouchstart' in window) {
+		clearTimeout(longPressTimeout)
+
+		// TODO: Call context menu function here
+		longPressTimeout = setTimeout(() => deleteCard(selection, cardRef, card), 500)
+	}
+}
+
+function onPointerMove(event: PointerEvent) {
+	if (!pointer.down || !canvas.cardDragAllowed)
+		return
+
+	pointer.pos = toPos(event)
+
+	if (!(pointer.moved || moveThreshold(pointer.downPos, pointer.pos, window.matchMedia('(pointer: coarse)').matches ? 10 : 4)))
+		return
+
+	pointer.moved = true
+
+	clearTimeout(longPressTimeout)
+	updateCardPos()
+}
+
+function onPointerUp() {
+	if (pointer.moved) {
+		suppressClick() // TODO
+		updateCard(selection, card)
+	}
+
+	pointer.down = false
+	pointer.moved = false
+
+	clearTimeout(longPressTimeout)
+}
+
+// TODO: Display custom ContextMenu
+function onContextMenu(event: MouseEvent) {
+	event.preventDefault()
+	deleteCard(selection, cardRef, card)
+}
+
+function updateCardPos() {
+	// Calling onPointerUp here once when a gesture is performed on the canvas to prevent the crad from glitching around
+	if (!canvas.cardDragAllowed)
+		return onPointerUp()
+
+	if (!pointer.down)
+		return
+
+	const prevPosition = card.position
+
+	card.position = toCanvasPos(canvas, {
+		x: pointer.pos.x - pointer.offset.x * (canvas.smoothZoom - pointer.offset.zoom),
+		y: pointer.pos.y - pointer.offset.y * (canvas.smoothZoom - pointer.offset.zoom)
+	})
+
+	if (selection.cards.length !== 0) {
+		selection.cards.filter((selected: Card) => selected !== card).forEach((c: Card) => {
+			c.position = {
+				x: c.position.x + card.position.x - prevPosition.x,
+				y: c.position.y + card.position.y - prevPosition.y
+			}
+		})
+	}
+}
+
+// TODO -> content component
+const contentRef = ref()
+
+onMounted(() => {
+	if (card.id === 'create')
+		activate()
+})
+
+// If card active dont drag???
+function activate() {
+	contentRef.value.contentEditable = true
+	contentRef.value.focus()
+}
+
+function onBlur() {
+	contentRef.value.contentEditable = false
+}
+</script>
+
+<template>
+	<div
+		ref="cardRef"
+		class="card"
+		:class="{
+			'pointer-down': pointer.down,
+			selected
+		}"
+		:style="{
+			translate: `${card.position.x}px ${card.position.y}px`,
+			cursor: canvas.select ? 'default' : pointer.down ? 'grabbing' : 'grab'
+		}"
+
+		@pointerdown.left="onPointerDown"
+		@pointermove="onPointerMove"
+		@pointerup="onPointerUp"
+		@pointerleave="onPointerUp"
+		@pointercancel="onPointerUp"
+
+		@click.left="activate"
+		@contextmenu="onContextMenu"
+	>
+		<div ref="contentRef" contenteditable="false" @blur="onBlur" v-html="card.content" />
+	</div>
+</template>
+
+<style lang="scss">
+.card {
+	position: absolute;
+	width: max-content;
+
+	&.pointer-down {
+		z-index: 1;
+
+		// Prevent the cursor from leaving the hitbox when moving really fast
+		&::before {
+			position: fixed;
+			content: '';
+			inset: -100vh -100vw;
+		}
+	}
+
+	&.selected {
+		z-index: 1;
+
+		& > div {
+			border-color: var(--color-accent-50);
+		}
+	}
+
+	&.deleted {
+		scale: .75;
+		opacity: 0;
+		transition: .1s;
+	}
+
+	// TODO -> content component
+	/* stylelint-disable-next-line no-descending-specificity */
+	& > div {
+		display: block;
+		padding: .5rem;
+		background-color: #222;
+		border: 2px solid var(--color-border);
+		border-radius: .25rem;
+		transition: color .2s;
+	}
+}
+</style>

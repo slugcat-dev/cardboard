@@ -1,0 +1,6 @@
+export default defineEventHandler((event) => {
+	// Don't worry this doesn't have any use to you
+	setCookie(event, 'session', 'Fe26.2**17a16358fc04b3e280f2c50e0b0825c791f885df83cba71de5d2fc69145c081a*BLJeq2XHF86guLbRtrxaew*fJPxnwAbKMnjxI0b9u6kDpgS3SgkbCnyGNTsY8qVeGXdtA2OwQIburaovGDKov4RWgGOXGWbvMOBynycM_Mmv0a6zMHPCPpeQvDjLGrZP-lpLuhlyZou57SVb1Mu9Mb42D1qHotU940ik5OQElOaEBGKqkhC6JTXSu13g0JcEpJcg1atEVv8jICVRdcA5JQJwjeijzQ0c__BnjoUYYCOwiTxLPRkvzFShoW8zwMVtZNX6a9LRNLKxbj2xbnhkYktUyB207NzsH05ij2kbdT8L7RPEnf7hkxVo1up1eJaWkusEwiVmw222O-Cqa2mMsT4*1710761845975*285283db58a2921793c9cd9a2c8c859bc7cb4a642b9154941513fbcbcecee0f9*N2gAOj2kyRV1S5NvvdYqWHD_REQx7t8EoIy5t0_p2Oc')
+
+	return sendRedirect(event, '/')
+})

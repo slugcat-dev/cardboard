@@ -1,462 +1,48 @@
 <script setup lang="ts">
-import type CardComponent from './Card.vue'
-import { suppressNextClick } from '~/utils'
-
 const canvasRef = ref()
-const {	board, createBoard } = await useBoards()
-const cardRefs: Ref<InstanceType<typeof CardComponent>[]> = ref([])
-const { macOS, metaKey } = useKeys()
-const selection = ref()
-const selectionVisible = ref(false)
-const pointerMoved = ref(false)
-const zoom = ref(1)
-let selectedCards: string[] = []
-let pointerType: string
-let pointerClickPos: Position
-let prevScroll: Position
-let prevActiveElement: Element | null
-let pointerDown: boolean
-
-// Fetch board cards
-if (!board.value.cards) {
-	// TODO: make first fetch on client
-	const { data } = await useFetch<{ cards: Card[] }>(`/api/boards/${board.value.id}`, { method: 'GET', pick: ['cards'] })
-
-	board.value.cards = data.value?.cards || []
+const pointer = reactive({
+	type: 'unknown',
+	down: false,
+	downPos: { x: 0, y: 0 },
+	pos: { x: 0, y: 0 },
+	moved: false,
+	gesture: false
+})
+const gesture = {
+	initialTouches: new Array<Position>(),
+	initialZoom: 1,
+	prevTranslation: { x: 0, y: 0 }
 }
+const canvas = reactive({
+	ref: canvasRef,
+	scroll: {
+		x: 0,
+		y: 0,
+		smoothX: 0,
+		smoothY: 0,
+		velocity: { x: 0, y: 0 }
+	},
+	zoom: 1,
+	smoothZoom: 1,
+	select: false,
+	cardDragAllowed: computed(() => !pointer.down && !pointer.gesture)
+})
+const selection = reactive({
+	rect: process.client ? new DOMRect() : undefined,
+	cards: new Array<Card>(),
+	visible: false
+})
+const gridSize = computed(() => {
+	let value = 20 * canvas.smoothZoom
 
+	// Adjust the grid density to the zoom level
+	while (value <= 10) value *= 2
+	while (value >= 30) value /= 2
+
+	return value
+})
+const {	board } = await useBoards()
 const cards = ref(board.value.cards)
-
-defineShortcuts({
-	'home': () => canvasRef.value.scrollTo({
-		top: 0,
-		left: 0
-	}),
-	'end': () => canvasRef.value.scrollTo({
-		top: canvasRef.value.scrollHeight,
-		left: canvasRef.value.scrollWidth
-	}),
-	// Select all cards
-	'meta_a': () => {
-		selection.value = new DOMRect(
-			0,
-			0,
-			canvasRef.value.scrollWidth,
-			canvasRef.value.scrollHeight
-		)
-	},
-	// Delete all selected cards
-	'shift_delete': async () => {
-		if (selectedCards.length === 0)
-			return
-
-		// TODO: This is a bad idea, I can smell it
-		// eslint-disable-next-line no-alert
-		if (selectedCards.length === cards.value.length && !confirm('Are you sure you want to delete ALL cards on this board?'))
-			return
-
-		await $fetch(`/api/boards/${board.value.id}/cards/many`, {
-			method: 'DELETE',
-			body: selectedCards
-		})
-
-		selectedCards.forEach(id =>
-			cards.value.splice(cards.value.findIndex(card => card.id === id), 1)
-		)
-
-		selectedCards = []
-	},
-	// Zoom
-	'meta_+': () => zoomF(zoom.value * 1.2, {
-		clientX: window.innerWidth / 2,
-		clientY: window.innerHeight / 2
-	}),
-	'meta_-': () => zoomF(zoom.value * .8, {
-		clientX: window.innerWidth / 2,
-		clientY: window.innerHeight / 2
-	})
-})
-
-function onPointerDown(event: PointerEvent) {
-	// Save event data for following input events
-	const canvasRect = canvasRef.value.getBoundingClientRect()
-
-	pointerType = event.pointerType
-	pointerClickPos = {
-		x: event.clientX,
-		y: event.clientY
-	}
-	prevScroll = {
-		x: canvasRef.value.scrollLeft,
-		y: canvasRef.value.scrollTop
-	}
-	prevActiveElement = document.activeElement
-
-	if (pointerType === 'pen') {
-		event.stopImmediatePropagation()
-		event.preventDefault()
-		event.stopPropagation()
-
-		// eslint-disable-next-line no-alert
-		return alert('Annotation is currently not supported')
-	}
-
-	if (metaKey.value) {
-		selection.value = new DOMRect(
-			pointerClickPos.x - canvasRect.left + canvasRef.value.scrollLeft,
-			pointerClickPos.y - canvasRect.top + canvasRef.value.scrollTop
-		)
-		selectionVisible.value = true
-	}
-
-	pointerDown = true
-}
-
-// Pan the canvas when dragging with the mouse / select area
-function onPointerMove(event: PointerEvent) {
-	if (!pointerDown || pointerType !== 'mouse')
-		return
-
-	const dX = pointerClickPos.x - event.clientX
-	const dY = pointerClickPos.y - event.clientY
-	const pointerMoveThreshold = 4
-
-	if (Math.abs(dX) > pointerMoveThreshold || Math.abs(dY) > pointerMoveThreshold) {
-		pointerMoved.value = true
-
-		if (selectionVisible.value) {
-			const scrollDistance = {
-				x: canvasRef.value.scrollLeft - prevScroll.x,
-				y: canvasRef.value.scrollTop - prevScroll.y
-			}
-
-			selection.value = new DOMRect(
-				selection.value.x,
-				selection.value.y,
-				scrollDistance.x - dX,
-				scrollDistance.y - dY
-			)
-		}
-		else {
-			canvasRef.value.scroll({
-				top: canvasRef.value.scrollTop - event.movementY,
-				left: canvasRef.value.scrollLeft - event.movementX,
-				behavior: 'instant'
-			})
-		}
-	}
-}
-
-function onPointerUp() {
-	// Suppress the following click event if the canvas was panned
-	if (pointerMoved.value)
-		suppressNextClick()
-
-	pointerMoved.value = false
-	selectionVisible.value = false
-	pointerDown = false
-}
-
-// Zoom on touch enabled devices
-let gesture = false
-let initialTouches: TouchList
-let initialZoom = 1
-let prevTranslation: Position
-
-function onTouchStart(event: TouchEvent) {
-	gesture = event.touches.length === 2
-
-	if (gesture) {
-		event.preventDefault()
-
-		initialTouches = event.touches
-		initialZoom = zoom.value
-		prevTranslation = { x: 0, y: 0 }
-	}
-}
-
-function onTouchMove(event: TouchEvent) {
-	if (!gesture)
-		return
-
-	event.preventDefault()
-
-	const initialMidpoint = midpoint(initialTouches)
-	const currentMidpoint = midpoint(event.touches)
-	const transform = {
-		scale: distance(event.touches) / distance(initialTouches),
-		translation: {
-			x: currentMidpoint.x - initialMidpoint.x,
-			y: currentMidpoint.y - initialMidpoint.y
-		},
-		origin: initialMidpoint
-	}
-	const translationDelta = {
-		x: transform.translation.x - prevTranslation.x,
-		y: transform.translation.y - prevTranslation.y
-	}
-
-	zoomF(initialZoom * transform.scale, {
-		clientX: transform.origin.x + transform.translation.x,
-		clientY: transform.origin.y + transform.translation.y
-	}, translationDelta)
-
-	prevTranslation = transform.translation
-}
-
-function onTouchEnd() {
-	gesture = false
-}
-
-function midpoint(touches: TouchList) {
-	return {
-		x: (touches[0].clientX + touches[1].clientX) / 2,
-		y: (touches[0].clientY + touches[1].clientY) / 2
-	}
-}
-
-function distance(touches: TouchList) {
-	return Math.hypot(
-		touches[1].clientX - touches[0].clientX,
-		touches[1].clientY - touches[0].clientY
-	)
-}
-
-// Create a new text card when you doubleclick or tap the canvas
-async function onClick(event: MouseEvent) {
-	clearSelection()
-
-	// TODO: pointerType can be undefined
-	// TODO: intercept click on android when tasklist is focused
-	if (prevActiveElement?.className === 'card-text' || (pointerType === 'mouse' && event.detail < 2))
-		return
-
-	const position = getMousePos(event)
-
-	if (metaKey.value) {
-		const newBoard = await createBoard({ open: false, parent: board.value.id })
-		const card = await $fetch<Card>(`/api/boards/${board.value.id}/cards`, {
-			method: 'POST',
-			body: {
-				card: {
-					type: 'board',
-					position,
-					content: newBoard.id
-				}
-			}
-		})
-
-		cards.value.push(card)
-
-		// Navigate to the new board
-		setTimeout(async () => {
-			const { push } = useBreadcrumbs()
-
-			push.value = true
-
-			await navigateTo(`/${newBoard.id}`)
-		}, 400)
-	}
-	else {
-		const data: Card = event.shiftKey
-			? {
-					id: 'create',
-					type: 'tasklist',
-					position,
-					content: {
-						title: 'Tasklist',
-						tasks: []
-					}
-				}
-			: {
-					id: 'create',
-					type: 'text',
-					position,
-					content: ''
-				}
-		const index = cards.value.push(data) - 1
-
-		// Wait until the DOM has updated
-		await nextTick()
-		cardRefs.value[index].alignToGrid()
-		cardRefs.value[index].activate(event)
-	}
-}
-
-// Zoom using the mouse wheel
-function onWheel(event: WheelEvent) {
-	if (!event.ctrlKey && !event.metaKey)
-		return
-
-	event.preventDefault()
-
-	const zoomDelta = -(macOS ? event.deltaY / 100 : Math.sign(event.deltaY) / 10)
-
-	zoomF(zoom.value + zoom.value * zoomDelta, event)
-}
-
-// Drop images onto the board
-const waiting = ref(false)
-
-function onDrop(event: DragEvent) {
-	const files = event.dataTransfer?.files
-
-	if (files) {
-		Array.prototype.forEach.call(files, async (file) => {
-			if (!file.type.startsWith('image'))
-				return
-
-			waiting.value = true
-
-			const data = await readDropFile(file)
-			const card = await $fetch<Card>(`/api/boards/${board.value.id}/cards`, {
-				method: 'POST',
-				body: {
-					card: {
-						type: 'image',
-						position: getMousePos(event),
-						content: data
-					}
-				}
-			})
-
-			waiting.value = false
-
-			cards.value.push(card)
-		})
-	}
-
-	event.preventDefault()
-}
-
-function readDropFile(file: File) {
-	return new Promise<string>((resolve) => {
-		const reader = new FileReader()
-
-		reader.addEventListener('load', () => resolve(reader.result as string))
-		reader.readAsDataURL(file)
-	})
-}
-
-function onCardMove(id: string, prevPosition: Position, newPosition: Position) {
-	if (selectedCards.length === 0)
-		return
-
-	const dX = newPosition.x - prevPosition.x
-	const dY = newPosition.y - prevPosition.y
-
-	selectedCards.filter(selected => selected !== id).forEach((selected) => {
-		const index = cards.value.findIndex(card => card.id === selected)
-
-		cards.value[index].position = {
-			x: cards.value[index].position.x + dX,
-			y: cards.value[index].position.y + dY
-		}
-	})
-}
-
-async function onCardUpdate(card: Card) {
-	if (selectedCards.length === 0) {
-		return await $fetch(`/api/boards/${board.value.id}/cards/${card.id}`, {
-			method: 'PUT',
-			body: card
-		})
-	}
-
-	await $fetch(`/api/boards/${board.value.id}/cards/many`, {
-		method: 'PUT',
-		body: cards.value
-			.filter(card => selectedCards.includes(card.id))
-			.map((card) => {
-				return {
-					id: card.id,
-					position: card.position
-				}
-			})
-	})
-}
-
-async function onCardDelete(id: string) {
-	if (id !== 'create')
-		await $fetch(`/api/boards/${board.value.id}/cards/${id}`, { method: 'DELETE' })
-
-	cards.value.splice(cards.value.findIndex(card => card.id === id), 1)
-}
-
-function onCardSelected(id: string, selected: boolean) {
-	if (selected && !selectedCards.includes(id))
-		selectedCards.push(id)
-	else if (!selected && selectedCards.includes(id))
-		selectedCards.splice(selectedCards.indexOf(id), 1)
-}
-
-function clearSelection() {
-	selection.value = new DOMRect(-1, -1)
-	selectedCards = []
-}
-
-function getMousePos(event: { clientX: number, clientY: number }) {
-	const canvasRect = canvasRef.value.getBoundingClientRect()
-
-	return {
-		x: (canvasRef.value.scrollLeft + event.clientX - canvasRect.left) / zoom.value,
-		y: (canvasRef.value.scrollTop + event.clientY - canvasRect.top) / zoom.value
-	}
-}
-
-// TODO: rename
-function zoomF(v: number, event: { clientX: number, clientY: number }, translation: Position = { x: 0, y: 0 }) {
-	const prevMousePos = getMousePos(event)
-
-	zoom.value = v
-	zoom.value = Math.max(Math.min(zoom.value, 2), .2)
-
-	const mousePos = getMousePos(event)
-	const dX = (prevMousePos.x - mousePos.x) * zoom.value
-	const dY = (prevMousePos.y - mousePos.y) * zoom.value
-
-	canvasRef.value.scrollTo({
-		top: canvasRef.value.scrollTop + dY - translation.y,
-		left: canvasRef.value.scrollLeft + dX - translation.x,
-		behavior: 'instant'
-	})
-}
-
-const areaSpacerStyle = computed(() => {
-	// Find the bottom-righ corner of the bottom-right-most card
-	const areaRect = cardRefs.value.reduce((acc, card) => {
-		try {
-			const cardRect = card.getSizeRect()
-
-			acc.width = Math.max(acc.width, cardRect.left + cardRect.width)
-			acc.height = Math.max(acc.height, cardRect.top + cardRect.height)
-		}
-		catch {}
-
-		return acc
-	}, new DOMRect())
-
-	return {
-		// Automatically expand the canvas after adding a new card
-		top: `${areaRect.height * zoom.value}px`,
-		left: `${areaRect.width * zoom.value}px`,
-		width: '100vw',
-		height: '100vh'
-	}
-})
-
-const selectionStyle = computed(() => {
-	if (!selection.value)
-		return { display: 'none' }
-
-	return {
-		top: `${selection.value.top}px`,
-		left: `${selection.value.left}px`,
-		width: `${Math.abs(selection.value.width)}px`,
-		height: `${Math.abs(selection.value.height)}px`,
-		opacity: selectionVisible.value ? 1 : 0
-	}
-})
 
 definePageMeta({
 	middleware: ['auth', 'breadcrumbs'],
@@ -464,80 +50,388 @@ definePageMeta({
 	layout: 'board'
 })
 
-useSeoMeta({ title: board.value.name })
+// Listen for paste events on the entire document
+useEventListener('paste', (event: ClipboardEvent) => {
+	if (event.target === document.body && event.clipboardData)
+		handleDataTransfer(event.clipboardData)
+})
+
+// Update the selection rect on scroll
+watch(canvas, () => updateSelectionRect())
+watch(pointer, () => {
+	// Prevent panning while a gesture is performed
+	if (pointer.gesture)
+		return onPointerUp()
+
+	// Scroll the canvas when selecting cards near the edge
+	animateEdgeScroll(canvas, pointer.pos, canvas.select && pointer.moved)
+})
+
+function onWheelScroll(event: WheelEvent) {
+	// Prevent scrolling while panning the canvas
+	if (pointer.down && !canvas.select)
+		return
+
+	const isMouseWheel = !isTrackpad(event)
+	let deltaX = event.deltaX
+	let deltaY = event.deltaY
+
+	// Swap axes when holding shift
+	if (event.shiftKey)
+		[deltaX, deltaY] = [deltaY, deltaX]
+
+	if (isMouseWheel)
+		(deltaX = Math.sign(deltaX) * 100, deltaY = Math.sign(deltaY) * 100)
+
+	canvas.scroll.x -= deltaX
+	canvas.scroll.y -= deltaY
+
+	if (isMouseWheel)
+		animateSmoothScroll(canvas)
+	else {
+		canvas.scroll.smoothX = canvas.scroll.x
+		canvas.scroll.smoothY = canvas.scroll.y
+	}
+}
+
+function onWheelZoom(event: WheelEvent) {
+	// Prevent zooming while panning the canvas
+	if (pointer.down && !canvas.select)
+		return
+
+	const isMouseWheel = !isTrackpad(event)
+	const delta = isMouseWheel ? Math.sign(event.deltaY) * .2 : event.deltaY / 100
+
+	setCanvasZoom(canvas.zoom - delta, toPos(event))
+
+	if (isMouseWheel)
+		animateSmoothScroll(canvas)
+	else {
+		canvas.scroll.smoothX = canvas.scroll.x
+		canvas.scroll.smoothY = canvas.scroll.y
+		canvas.smoothZoom = canvas.zoom
+	}
+}
+
+function onPointerDown(event: PointerEvent) {
+	if (pointer.gesture)
+		return
+
+	pointer.type = event.pointerType
+	pointer.down = true
+	pointer.downPos = toPos(event)
+	canvas.select = macOS ? event.metaKey : event.ctrlKey
+
+	if (canvas.select)
+		selection.rect = undefined
+}
+
+function onPointerMove(event: PointerEvent) {
+	if (!pointer.down || pointer.gesture)
+		return
+
+	pointer.pos = toPos(event)
+
+	if (!(pointer.moved || moveThreshold(pointer.downPos, pointer.pos, 4)))
+		return
+
+	pointer.moved = true
+
+	if (canvas.select)
+		return updateSelectionRect()
+
+	// Pan the canvas
+	canvas.scroll.x += event.movementX
+	canvas.scroll.y += event.movementY
+	canvas.scroll.smoothX = canvas.scroll.x
+	canvas.scroll.smoothY = canvas.scroll.y
+	canvas.scroll.velocity = {
+		x: event.movementX,
+		y: event.movementY
+	}
+}
+
+function onPointerUp() {
+	if (pointer.moved) {
+		suppressClick() // TODO
+
+		// Make scrolling feel like it has inertia on touch devices
+		function kineticScrollStep() {
+			canvas.scroll.x += canvas.scroll.velocity.x
+			canvas.scroll.y += canvas.scroll.velocity.y
+			canvas.scroll.smoothX = canvas.scroll.x
+			canvas.scroll.smoothY = canvas.scroll.y
+			canvas.scroll.velocity.x *= .95
+			canvas.scroll.velocity.y *= .95
+
+			if ((Math.abs(canvas.scroll.velocity.x) > .25 || Math.abs(canvas.scroll.velocity.y) > .25) && !pointer.down)
+				requestAnimationFrame(kineticScrollStep)
+		}
+
+		if (pointer.type === 'touch' && moveThreshold(canvas.scroll.velocity, { x: 0, y: 0 }, 4) && !pointer.gesture)
+			requestAnimationFrame(kineticScrollStep)
+	}
+
+	pointer.down = false
+	pointer.moved = false
+	canvas.select = false
+	selection.visible = false
+}
+
+function onTouchStart(event: TouchEvent) {
+	const touches = toPosArray(event.touches)
+
+	pointer.gesture = touches.length >= 2
+
+	if (!pointer.gesture)
+		return
+
+	gesture.initialTouches = touches
+	gesture.initialZoom = canvas.smoothZoom
+	gesture.prevTranslation = { x: 0, y: 0 }
+}
+
+function onTouchMove(event: TouchEvent) {
+	if (!pointer.gesture)
+		return
+
+	const touches = toPosArray(event.touches)
+	const origin = midpoint(gesture.initialTouches)
+	const currentMidpoint = midpoint(touches)
+	const transform = {
+		scale: distance(touches) / distance(gesture.initialTouches),
+		translation: {
+			x: currentMidpoint.x - origin.x,
+			y: currentMidpoint.y - origin.y
+		}
+	}
+	const translationDelta = {
+		x: transform.translation.x - gesture.prevTranslation.x,
+		y: transform.translation.y - gesture.prevTranslation.y
+	}
+
+	setCanvasZoom(gesture.initialZoom * transform.scale, {
+		x: origin.x + transform.translation.x,
+		y: origin.y + transform.translation.y
+	}, true)
+
+	canvas.scroll.x += translationDelta.x
+	canvas.scroll.y += translationDelta.y
+	canvas.scroll.smoothX = canvas.scroll.x
+	canvas.scroll.smoothY = canvas.scroll.y
+	canvas.smoothZoom = canvas.zoom
+	gesture.prevTranslation = transform.translation
+}
+
+function onTouchEnd(event: TouchEvent) {
+	// As long as there are still more than two touch points, the gesture isn't done
+	onTouchStart(event)
+
+	// Elastic zoom
+	if (!pointer.gesture && (canvas.zoom > 2 || canvas.zoom < .2)) {
+		const rect = canvas.ref.getBoundingClientRect()
+
+		setCanvasZoom(canvas.zoom, {
+			x: rect.width / 2,
+			y: rect.height / 2
+		})
+		animateSmoothScroll(canvas, 300)
+	}
+}
+
+function onClick(event: MouseEvent) {
+	selection.rect = undefined
+
+	// Require double click to create cards when using a mouse
+	if (pointer.type === 'mouse' && event.detail < 2)
+		return
+
+	// TODO: card creation -> cards.ts
+	cards.value.push({
+		id: 'create',
+		type: 'text',
+		position: toCanvasPos(canvas, event),
+		content: ''
+	})
+}
+
+function onDrop(event: DragEvent) {
+	if (!event.dataTransfer)
+		return
+
+	handleDataTransfer(event.dataTransfer)
+}
+
+// Zoom and adjust scroll to the pointer position
+function setCanvasZoom(zoom: number, adjust: Position, elastic = false) {
+	const prevPointerPos = toCanvasPos(canvas, adjust, false)
+
+	if (elastic) {
+		if (zoom > 2)
+			zoom = 2 + Math.log(zoom - 1)
+		if (zoom < .2)
+			zoom = (zoom / 0.2) ** Math.E * 0.1 + 0.1
+	}
+	else
+		zoom = Math.max(Math.min(zoom, 2), .2)
+
+	canvas.zoom = zoom
+
+	const pointerPos = toCanvasPos(canvas, adjust, false)
+	const dX = (prevPointerPos.x - pointerPos.x) * canvas.zoom
+	const dY = (prevPointerPos.y - pointerPos.y) * canvas.zoom
+
+	canvas.scroll.x -= dX
+	canvas.scroll.y -= dY
+}
+
+function updateSelectionRect() {
+	if (!canvas.select || !pointer.moved)
+		return
+
+	if (!selection.rect) {
+		const downPos = toCanvasPos(canvas, pointer.downPos)
+
+		selection.rect = new DOMRect(downPos.x, downPos.y, 0, 0)
+		selection.visible = true
+	}
+
+	const mousePos = toCanvasPos(canvas, pointer.pos)
+
+	selection.rect = new DOMRect(
+		selection.rect.x,
+		selection.rect.y,
+		mousePos.x - selection.rect.x,
+		mousePos.y - selection.rect.y
+	)
+}
+
+// Handle pasted and dropped data
+async function handleDataTransfer(dataTransfer: DataTransfer) {
+	const files = Array.from(dataTransfer.files)
+	const items = Array.from(dataTransfer.items)
+
+	files.forEach(async (file, index) => {
+		// TODO: upload file, create card
+		// File inherits from Blob
+		// eslint-disable-next-line no-console
+		console.log(index, file.name, file.type, 'Size:', file.size)
+	})
+
+	if (files.length !== 0)
+		return
+
+	items.forEach(async (item, index) => {
+		// TODO: create cards
+		// eslint-disable-next-line no-console
+		console.log(index, item.type, 'Size:', dataTransfer.getData(item.type).length)
+	})
+}
 </script>
 
 <template>
-	<main
-		id="canvas"
+	<div
 		ref="canvasRef"
-		:class="{ selecting: metaKey }"
-		:style="{ cursor: pointerMoved && !selectionVisible ? 'move' : waiting ? 'progress' : 'default' }"
-		@pointerdown.self.left="onPointerDown"
+		class="canvas-wrapper"
+		:style="{ cursor: pointer.down && pointer.moved && !selection.visible ? 'move' : 'default' }"
+
+		@wheel.exact.prevent="onWheelScroll"
+		@wheel.shift.exact.prevent="onWheelScroll"
+		@wheel.ctrl.prevent="onWheelZoom"
+		@wheel.meta.prevent="onWheelZoom"
+
+		@pointerdown.left.self="onPointerDown"
+		@pointerdown.middle.self="onPointerDown"
 		@pointermove="onPointerMove"
 		@pointerup="onPointerUp"
 		@pointerleave="onPointerUp"
 		@pointercancel="onPointerUp"
+
 		@touchstart="onTouchStart"
 		@touchmove="onTouchMove"
 		@touchend="onTouchEnd"
 		@touchcancel="onTouchEnd"
-		@click.self="onClick"
-		@wheel="onWheel"
-		@dragenter.prevent
-		@dragover.prevent
-		@drop="onDrop"
+
+		@click.left.self="onClick"
+
+		@dragenter.stop.prevent
+		@dragover.stop.prevent
+		@drop.stop.prevent="onDrop"
 	>
-		<Card
-			v-for="card in cards"
-			ref="cardRefs"
-			:key="card.id"
-			:card="card"
-			:canvas-ref="canvasRef"
-			:selection="selection"
-			:zoom="zoom"
-			@card-move="onCardMove"
-			@card-update="onCardUpdate"
-			@card-delete="onCardDelete"
-			@card-selected="onCardSelected"
-			@selection-clear="clearSelection"
-		/>
+		<svg class="canvas-background">
+			<pattern
+				id="dot-pattern"
+				patternUnits="userSpaceOnUse"
+				:x="canvas.scroll.smoothX"
+				:y="canvas.scroll.smoothY"
+				:width="gridSize"
+				:height="gridSize"
+			>
+				<circle cx=".75" cy=".75" r=".75" />
+			</pattern>
+			<rect x="0" y="0" width="100%" height="100%" fill="url(#dot-pattern)" />
+		</svg>
 		<div
-			v-if="cardRefs.length > 0"
-			class="area-spacer"
-			:style="areaSpacerStyle"
-		/>
-		<div
-			class="selection"
-			:style="selectionStyle"
-		/>
-	</main>
+			class="canvas"
+			:class="{ overview: canvas.smoothZoom < 0.5 }"
+			:style="{
+				translate: `${canvas.scroll.smoothX}px ${canvas.scroll.smoothY}px`,
+				scale: canvas.smoothZoom
+			}"
+		>
+			<div
+				class="selection-rect"
+				:style="{
+					width: `${Math.abs(selection.rect?.width || 0)}px`,
+					height: `${Math.abs(selection.rect?.height || 0)}px`,
+					translate: `${selection.rect?.left || 0}px ${selection.rect?.top || 0}px`,
+					borderWidth: `${1 / canvas.zoom}px`,
+					opacity: selection.visible ? 1 : 0
+				}"
+			/>
+			<NewCard
+				v-for="card in cards"
+				:key="card.id"
+				:card="card"
+				:canvas="canvas"
+				:selection="selection"
+			/>
+		</div>
+	</div>
 </template>
 
 <style lang="scss">
-#canvas {
-	position: relative;
+.canvas-wrapper {
+	position: absolute;
 	grid-area: main;
 	width: 100%;
 	height: 100%;
-	overflow: auto;
+	overflow: clip; // 'hidden' would make the browser scroll when typing in a card that overflows the view
 	user-select: none;
-	touch-action: pan-x pan-y;
-	scroll-behavior: smooth;
-	overscroll-behavior: contain;
+	touch-action: none;
 
-	.area-spacer {
+	.canvas-background {
 		position: absolute;
-		z-index: -1;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+
+		circle {
+			fill: #363636;
+		}
 	}
 
-	.selection {
+	.canvas {
 		position: absolute;
-		z-index: 1;
-		background-color: var(--color-accent-25);
-		border: 1px solid var(--color-accent);
-		transition: opacity .2s;
-		pointer-events: none;
+
+		.selection-rect {
+			position: absolute;
+			background-color: var(--color-accent-25);
+			border: 1px solid var(--color-accent);
+			transition: opacity .2s;
+			pointer-events: none;
+		}
 	}
 }
 </style>
