@@ -18,7 +18,8 @@ export default defineNuxtConfig({
 		},
 		session: {
 			name: 'session',
-			password: ''
+			password: '',
+			maxAge: 86400 * 30
 		}
 	},
 	app: {
