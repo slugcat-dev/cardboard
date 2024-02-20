@@ -1,9 +1,9 @@
-type Position = {
+interface Position {
 	x: number
 	y: number
 }
 
-type Card = {
+interface Card {
 	id: string
 	type: 'text' | 'link' | 'image' | 'tasklist' | 'board'
 	position: Position
@@ -12,7 +12,7 @@ type Card = {
 	updatedAt?: Date
 }
 
-type Board = {
+interface Board {
 	id: string
 	name: string
 	owner: string
@@ -23,7 +23,7 @@ type Board = {
 	updatedAt?: Date
 }
 
-type User = {
+interface User {
 	id: string
 	email: string
 	name: string
@@ -31,24 +31,24 @@ type User = {
 	createdAt: Date
 }
 
-type Bread = {
+interface Bread {
 	path: string
 	name: string
 }
 
-type ContextMenuEntry = {
+interface ContextMenuEntry {
 	name: string
 	handler: Function
 	role?: 'danger'
 }
 
-type ContextMenuOptions = {
+interface ContextMenuOptions {
 	position: Position
 	entries: ContextMenuEntry[]
 }
 
 declare module '#auth-utils' {
-	type UserSession = {
+	interface UserSession {
 		user: User
 	}
 }

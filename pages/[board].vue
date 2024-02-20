@@ -43,6 +43,7 @@ const gridSize = computed(() => {
 })
 const {	board } = await useBoards()
 const cards = ref(board.value.cards)
+let activeElement: Element | null
 
 definePageMeta({
 	middleware: ['auth', 'breadcrumbs'],
@@ -121,6 +122,7 @@ function onPointerDown(event: PointerEvent) {
 	pointer.down = true
 	pointer.downPos = toPos(event)
 	canvas.select = macOS ? event.metaKey : event.ctrlKey
+	activeElement = document.activeElement
 
 	if (canvas.select)
 		selection.rect = undefined
@@ -244,7 +246,7 @@ function onClick(event: MouseEvent) {
 	selection.rect = undefined
 
 	// Require double click to create cards when using a mouse
-	if (pointer.type === 'mouse' && event.detail < 2)
+	if (activeElement !== document.body || (pointer.type === 'mouse' && event.detail < 2))
 		return
 
 	// TODO: card creation -> cards.ts

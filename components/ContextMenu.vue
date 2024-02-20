@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Point } from 'puppeteer-core'
-
 const { contextMenu } = useContextMenu()
 
 function fhandler(handler: Function) {
