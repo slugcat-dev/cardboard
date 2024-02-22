@@ -17,7 +17,7 @@ const { progress, isLoading } = useLoadingIndicator()
   z-index: 15;
   width: 100vw;
   background-color: var(--color-background-secondary);
-	transition: .2s;
+	transition: all .2s;
 
   div {
     height: inherit;

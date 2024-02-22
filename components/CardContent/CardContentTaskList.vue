@@ -121,7 +121,7 @@ defineExpose({ activate })
 				overflow: clip;
 				transform: scale(.75);
 				opacity: 0;
-				transition: .2s .6s, margin-top .2s .8s;
+				transition: all .2s .6s, margin-top .2s .8s;
 			}
 
 			& input {
@@ -152,7 +152,7 @@ defineExpose({ activate })
 					&::before {
 						visibility: visible;
 						opacity: 0;
-						transition: .4s, opacity .2s .2s;
+						transition: all .4s, opacity .2s .2s;
 						inset: -.5rem;
 					}
 				}

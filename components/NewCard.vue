@@ -1,8 +1,11 @@
 <!-- eslint-disable vue/no-mutating-props -->
 
 <script setup lang="ts">
+import { CardContentText } from '#components'
+
 const { card, canvas, selection } = defineProps(['card', 'canvas', 'selection'])
 const cardRef = ref()
+const contentRef = ref()
 const pointer = reactive({
 	type: 'unknown',
 	down: false,
@@ -46,7 +49,7 @@ watch(() => selection.rect, () => {
 watch(pointer, () => animateEdgeScroll(canvas, pointer.pos, pointer.moved))
 
 function onPointerDown(event: PointerEvent) {
-	if (!canvas.cardDragAllowed)
+	if (!canvas.cardDragAllowed || contentRef.value.active)
 		return
 
 	const cardRect = cardRef.value.getBoundingClientRect()
@@ -68,7 +71,11 @@ function onPointerDown(event: PointerEvent) {
 		clearTimeout(longPressTimeout)
 
 		// TODO: Call context menu function here
-		longPressTimeout = setTimeout(() => deleteCard(selection, cardRef, card), 500)
+		longPressTimeout = setTimeout(() => {
+			suppressClick()
+
+			onContextMenu(event)
+		}, 500)
 	}
 }
 
@@ -78,7 +85,7 @@ function onPointerMove(event: PointerEvent) {
 
 	pointer.pos = toPos(event)
 
-	if (!(pointer.moved || moveThreshold(pointer.downPos, pointer.pos, window.matchMedia('(pointer: coarse)').matches ? 10 : 4)))
+	if (!(pointer.moved || moveThreshold(pointer.downPos, pointer.pos, isPointerCoarse() ? 10 : 4)))
 		return
 
 	pointer.moved = true
@@ -103,8 +110,18 @@ function onPointerUp() {
 
 // TODO: Display custom ContextMenu
 function onContextMenu(event: MouseEvent) {
+	if (contentRef.value.active)
+		return
+
 	event.preventDefault()
 	deleteCard(selection, cardRef, card)
+}
+
+function getContentComponent() {
+	switch (card.type) {
+		case 'text': return CardContentText
+		default: return CardContentText
+	}
 }
 
 function updateCardPos() {
@@ -131,24 +148,6 @@ function updateCardPos() {
 		})
 	}
 }
-
-// TODO -> content component
-const contentRef = ref()
-
-onMounted(() => {
-	if (card.id === 'create')
-		activate()
-})
-
-// If card active dont drag???
-function activate() {
-	contentRef.value.contentEditable = true
-	contentRef.value.focus()
-}
-
-function onBlur() {
-	contentRef.value.contentEditable = false
-}
 </script>
 
 <template>
@@ -161,7 +160,7 @@ function onBlur() {
 		}"
 		:style="{
 			translate: `${card.position.x}px ${card.position.y}px`,
-			cursor: canvas.select ? 'default' : pointer.down ? 'grabbing' : 'grab'
+			cursor: contentRef?.active ? 'auto' : canvas.select ? 'default' : pointer.down ? 'grabbing' : 'grab'
 		}"
 
 		@pointerdown.left="onPointerDown"
@@ -170,10 +169,13 @@ function onBlur() {
 		@pointerleave="onPointerUp"
 		@pointercancel="onPointerUp"
 
-		@click.left="activate"
 		@contextmenu="onContextMenu"
 	>
-		<div ref="contentRef" contenteditable="false" @blur="onBlur" v-html="card.content" />
+		<component
+			:is="getContentComponent()"
+			ref="contentRef"
+			:card="card"
+		/>
 	</div>
 </template>
 
@@ -188,6 +190,7 @@ function onBlur() {
 		// Prevent the cursor from leaving the hitbox when moving really fast
 		&::before {
 			position: fixed;
+			z-index: -1;
 			content: '';
 			inset: -100vh -100vw;
 		}
@@ -195,27 +198,12 @@ function onBlur() {
 
 	&.selected {
 		z-index: 1;
-
-		& > div {
-			border-color: var(--color-accent-50);
-		}
 	}
 
 	&.deleted {
-		scale: .75;
 		opacity: 0;
-		transition: .1s;
-	}
-
-	// TODO -> content component
-	/* stylelint-disable-next-line no-descending-specificity */
-	& > div {
-		display: block;
-		padding: .5rem;
-		background-color: #222;
-		border: 2px solid var(--color-border);
-		border-radius: .25rem;
-		transition: color .2s;
+		transition: opacity .1s, scale .1s;
+		scale: .75;
 	}
 }
 </style>

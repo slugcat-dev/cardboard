@@ -1,156 +1,119 @@
+<!-- eslint-disable vue/no-mutating-props -->
+
 <script setup lang="ts">
-import { convert, getMouseEventCaretRange } from '~/utils'
+const { card } = defineProps(['card'])
+const contentRef = ref()
+const active = ref(false)
 
-const props = defineProps(['card'])
-const emit = defineEmits(['contentUpdate'])
-const { card } = props
-const textRef = ref()
-const { shiftKey } = useKeys()
+// Activate new cards
+onMounted(() => {
+	if (card.id === 'create')
+		activate()
+})
 
-function activate(event: PointerEvent | MouseEvent) {
-	textRef.value.contentEditable = true
+function onBlur(event?: Event) {
+	if (event?.type !== 'blur')
+		contentRef.value.blur()
 
-	textRef.value.focus()
+	active.value = false
+	contentRef.value.contentEditable = false
 
-	if (!isEmpty())
-		selectRange(getMouseEventCaretRange(event))
+	// Delete empty cards
+	if (isEmpty())
+		return // TODO
+
+	card.content = contentRef.value.innerHTML
+
+	updateCard(card)
 }
 
-// Highlight "todo" in text cards
-function onInput() {
-	const content = textRef.value.innerHTML
+function onKeyDownDel() {
+	if (isEmpty())
+		onBlur()
+}
 
-	if (!content.match(/^todo:?(?:&nbsp;|\s)$/i))
+function activate(event?: MouseEvent) {
+	if (active.value)
 		return
 
-	const regex = /todo:?/gim
-	let match
+	active.value = true
+	contentRef.value.contentEditable = true
+	contentRef.value.focus()
 
-	// eslint-disable-next-line no-cond-assign
-	while ((match = regex.exec(content)) !== null) {
-		const selection = window.getSelection()
-		const prevRange = selection?.getRangeAt(0).cloneRange()
-		const hiliteRange = document.createRange()
-
-		hiliteRange.setStart(textRef.value.firstChild, match.index)
-		hiliteRange.setEnd(textRef.value.firstChild, match[0].length)
-		selectRange(hiliteRange)
-		document.execCommand('styleWithCSS', false, 'true')
-		document.execCommand('foreColor', false, 'black')
-		document.execCommand('hiliteColor', false, '#ffaa00')
-		document.execCommand('bold', false)
-		selectRange(prevRange)
-	}
+	if (event)
+		moveCaretWhereClicked(event)
 }
 
-function onBlur() {
-	if (!textRef.value)
-		return emit('contentUpdate', true)
+function moveCaretWhereClicked(event: MouseEvent | MouseEvent & { rangeOffset: number, rangeParent: Node }) {
+	const range = (() => {
+	// Firefox-only, not documented on MDN
+		if ('rangeOffset' in event) {
+			const range = document.createRange()
 
-	textRef.value.contentEditable = false
-	card.content = textRef.value.innerHTML
+			range.setStart(event.rangeParent, event.rangeOffset)
+			range.collapse(true)
 
-	emit('contentUpdate', true, isEmpty())
-}
-
-async function onPaste(event: ClipboardEvent) {
-	event.preventDefault()
-
-	const clipboardItems = event.clipboardData?.items
-	const clipboardText = event.clipboardData?.getData('text/plain')
-	let imageData
-
-	for (const item of clipboardItems || []) {
-		if (!item.type.includes('image'))
-			continue
-
-		const image = item.getAsFile()
-		imageData = await blobToBase64(image)
-
-		break
-	}
-
-	if (imageData && isEmpty()) {
-		card.type = 'image'
-
-		document.execCommand('insertText', false, imageData)
-		textRef.value.blur()
-
-		return
-	}
-
-	if (!shiftKey.value && isEmpty() && /^https?:\/\/\S+?\.\S+$/gi.test(clipboardText || '')) {
-		document.execCommand('insertText', false, clipboardText)
-
-		try {
-			new URL(clipboardText || '').toString()
-
-			textRef.value.blur()
-
-			return
+			return range
 		}
-		catch {}
+
+		// Deprecated in favor of caretPositionFromPoint, but supported by every browser except Firefox (which is the only to support the new method)
+		return document.caretRangeFromPoint(event.clientX, event.clientY) ?? document.createRange()
+	})()
+
+	// Move the caret to the start or end of the clicked word
+	if (isPointerCoarse()) {
+		const text = range.startContainer.textContent || ''
+		let start = range.startOffset
+		let end = range.startOffset
+
+		while (start > 0 && !/\s|\W/.test(text.charAt(start - 1))) start--
+		while (end < text.length && !/\s|\W/.test(text.charAt(end))) end++
+
+		range.setStart(range.startContainer, end - range.startOffset <= range.startOffset - start ? end : start)
+		range.collapse(true)
 	}
 
-	document.execCommand('insertText', false, clipboardText)
-}
-
-function selectRange(range: Range | undefined) {
-	if (!range)
-		return
-
-	const selection = window.getSelection()
-
-	selection?.removeAllRanges()
-	selection?.addRange(range)
+	selectRange(range)
 }
 
 function isEmpty() {
-	return textRef.value.textContent.trim().length === 0
+	return contentRef.value.textContent.trim().length === 0
 }
 
-function blobToBase64(blob: Blob | null) {
-	return new Promise((resolve: (result: string | null) => void) => {
-		const reader = new FileReader()
-
-		reader.onloadend = () => resolve(reader.result as string)
-
-		if (blob)
-			reader.readAsDataURL(blob)
-		else
-			resolve(null)
-	})
-}
-
-defineExpose({ activate })
+defineExpose({ active })
 </script>
 
 <template>
 	<div
-		ref="textRef"
-		class="card-text"
+		ref="contentRef"
+		class="card-content"
 		contenteditable="false"
 		spellcheck="false"
-		@keydown.enter.exact="textRef.blur"
-		@keydown.escape="(e) => { e.stopPropagation(); textRef.blur(); }"
-		@keydown.delete="() => { if (isEmpty()) textRef.blur() }"
-		@input="onInput"
+		@click.left.exact="activate"
 		@blur="onBlur"
-		@paste="onPaste"
+		@keydown.escape="onBlur"
+		@keydown.delete="onKeyDownDel"
 		v-html="card.content"
 	/>
 </template>
 
 <style lang="scss">
-.card-text {
-	min-height: 2.125rem;
-	padding: calc(.5rem - 1px);
-	font-size: .875rem;
-	outline: none;
+.card-content {
+	display: block;
+	min-height: 2.5rem;
+	padding: .5rem;
+	background-color: #222;
+	border: 2px solid var(--color-border);
+	border-radius: .25rem;
+	transition: color .2s;
 
-	& h1 {
-		margin: 0;
-		font-size: 1.125rem;
+	&:focus-visible {
+		border-color: var(--color-accent);
+		outline: none;
 	}
+}
+
+.card.selected > .card-content {
+	border-color: var(--color-accent-50);
 }
 </style>

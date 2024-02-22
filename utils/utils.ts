@@ -1,4 +1,8 @@
-export const macOS = process.client && navigator.userAgent.includes('Macintosh')
+export const isMacOS = process.client && navigator.userAgent.includes('Macintosh')
+
+export function isPointerCoarse() {
+	return window.matchMedia('(pointer: coarse)').matches
+}
 
 // Detect if a trackpad is used
 // See https://stackoverflow.com/q/10744645/13505160
@@ -90,11 +94,9 @@ export function distance(positions: Position[]) {
 	return sum / positions.length
 }
 
-/*
-export function distance(positions: Position[]) {
-	return Math.hypot(
-		positions[1].x - positions[0].x,
-		positions[1].y - positions[0].y
-	)
+export function selectRange(range: Range) {
+	const selection = window.getSelection()
+
+	selection?.removeAllRanges()
+	selection?.addRange(range)
 }
-*/

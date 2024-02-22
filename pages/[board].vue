@@ -103,7 +103,7 @@ function onWheelZoom(event: WheelEvent) {
 	const isMouseWheel = !isTrackpad(event)
 	const delta = isMouseWheel ? Math.sign(event.deltaY) * .2 : event.deltaY / 100
 
-	setCanvasZoom(canvas.zoom - delta, toPos(event))
+	setCanvasZoom(canvas.zoom * (1 - delta), toPos(event))
 
 	if (isMouseWheel)
 		animateSmoothScroll(canvas)
@@ -121,7 +121,7 @@ function onPointerDown(event: PointerEvent) {
 	pointer.type = event.pointerType
 	pointer.down = true
 	pointer.downPos = toPos(event)
-	canvas.select = macOS ? event.metaKey : event.ctrlKey
+	canvas.select = isMacOS ? event.metaKey : event.ctrlKey
 	activeElement = document.activeElement
 
 	if (canvas.select)
@@ -134,7 +134,7 @@ function onPointerMove(event: PointerEvent) {
 
 	pointer.pos = toPos(event)
 
-	if (!(pointer.moved || moveThreshold(pointer.downPos, pointer.pos, 4)))
+	if (!(pointer.moved || moveThreshold(pointer.downPos, pointer.pos, isPointerCoarse() ? 10 : 4)))
 		return
 
 	pointer.moved = true
@@ -249,7 +249,6 @@ function onClick(event: MouseEvent) {
 	if (activeElement !== document.body || (pointer.type === 'mouse' && event.detail < 2))
 		return
 
-	// TODO: card creation -> cards.ts
 	cards.value.push({
 		id: 'create',
 		type: 'text',
