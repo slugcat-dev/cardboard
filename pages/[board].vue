@@ -30,7 +30,13 @@ const canvas = reactive({
 const selection = reactive({
 	rect: process.client ? new DOMRect() : undefined,
 	cards: new Array<Card>(),
-	visible: false
+	visible: false,
+	cleared: 0,
+	clear() {
+		selection.rect = undefined
+		selection.cards = []
+		selection.cleared++
+	}
 })
 const gridSize = computed(() => {
 	let value = 20 * canvas.smoothZoom
@@ -125,7 +131,7 @@ function onPointerDown(event: PointerEvent) {
 	activeElement = document.activeElement
 
 	if (canvas.select)
-		selection.rect = undefined
+		selection.clear()
 }
 
 function onPointerMove(event: PointerEvent) {
@@ -243,7 +249,7 @@ function onTouchEnd(event: TouchEvent) {
 }
 
 function onClick(event: MouseEvent) {
-	selection.rect = undefined
+	selection.clear()
 
 	// Require double click to create cards when using a mouse
 	if (activeElement !== document.body || (pointer.type === 'mouse' && event.detail < 2))

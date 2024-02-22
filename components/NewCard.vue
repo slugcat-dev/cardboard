@@ -27,22 +27,22 @@ onBeforeUnmount(() => clearTimeout(longPressTimeout))
 watch(canvas, () => updateCardPos())
 
 // Card selection
-watch(() => selection.rect, () => {
+watch(selection, () => {
 	const cardRect = toCanvasRect(canvas, cardRef.value.getBoundingClientRect())
 
 	// Check if the selection rect intersects with the card rect
-	// eslint-disable-next-line no-cond-assign
-	if (selected.value !== (selected.value = selection.rect && !(
+	selected.value = selection.rect && !(
 		selection.rect.right < cardRect.left
 		|| selection.rect.left > cardRect.right
 		|| selection.rect.bottom < cardRect.top
 		|| selection.rect.top > cardRect.bottom
-	))) {
-		if (selected.value)
-			selection.cards.push(card)
-		else
-			selection.cards.splice(selection.cards.indexOf(card), 1)
-	}
+	)
+}, { deep: false })
+watch(selected, () => {
+	if (selected.value)
+		selection.cards.push(card)
+	else
+		selection.cards.splice(selection.cards.indexOf(card), 1)
 })
 
 // Scroll the canvas when dragging a card near the edge
@@ -64,7 +64,7 @@ function onPointerDown(event: PointerEvent) {
 	}
 
 	if (!selected.value)
-		selection.rect = undefined
+		selection.clear()
 
 	// Workaround for the contextmenu event which is not implemented in iOS Safari
 	if (navigator.vendor.includes('Apple') && 'ontouchstart' in window) {
@@ -77,6 +77,10 @@ function onPointerDown(event: PointerEvent) {
 			onContextMenu(event)
 		}, 500)
 	}
+}
+
+function onPointerDownSelect() {
+	selected.value = !selected.value
 }
 
 function onPointerMove(event: PointerEvent) {
@@ -99,7 +103,10 @@ function onPointerUp() {
 		if (pointer.type === 'mouse')
 			suppressClick()
 
-		updateCard(selection, card)
+		if (selection.cards.length > 1)
+			updateMany(selection.cards)
+		else
+			updateCard({ id: card.id, position: card.position })
 	}
 
 	pointer.down = false
@@ -114,7 +121,7 @@ function onContextMenu(event: MouseEvent) {
 		return
 
 	event.preventDefault()
-	deleteCard(selection, cardRef, card)
+	delCard()
 }
 
 function getContentComponent() {
@@ -139,7 +146,7 @@ function updateCardPos() {
 		y: pointer.pos.y - pointer.offset.y * (canvas.smoothZoom - pointer.offset.zoom)
 	})
 
-	if (selection.cards.length !== 0) {
+	if (selection.cards.length > 1) {
 		selection.cards.filter((selected: Card) => selected !== card).forEach((c: Card) => {
 			c.position = {
 				x: c.position.x + card.position.x - prevPosition.x,
@@ -147,6 +154,19 @@ function updateCardPos() {
 			}
 		})
 	}
+}
+
+// TODO: rename
+function delCard() {
+	if (selection.cards.length > 1) {
+		deleteMany(selection.cards)
+		selection.clear()
+
+		return
+	}
+
+	cardRef.value.classList.add('deleted')
+	setTimeout(() => deleteCard(card), 200)
 }
 </script>
 
@@ -163,7 +183,9 @@ function updateCardPos() {
 			cursor: contentRef?.active ? 'auto' : canvas.select ? 'default' : pointer.down ? 'grabbing' : 'grab'
 		}"
 
-		@pointerdown.left="onPointerDown"
+		@pointerdown.left.exact="onPointerDown"
+		@pointerdown.left.ctrl.exact="onPointerDownSelect"
+		@pointerdown.left.meta.exact="onPointerDownSelect"
 		@pointermove="onPointerMove"
 		@pointerup="onPointerUp"
 		@pointerleave="onPointerUp"
