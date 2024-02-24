@@ -60,7 +60,7 @@ const menuStyle = computed(() => {
 	display: flex;
 	flex-direction: column;
 	padding: .25rem;
-	background-color: color-mix(in srgb, var(--color-background-secondary), transparent 40%);
+	background-color: color-mix(in oklab, var(--color-background-secondary), transparent 40%);
 	border: 1px solid var(--color-scrollbar);
 	border-radius: .375rem;
 	box-shadow: var(--shadow-card);

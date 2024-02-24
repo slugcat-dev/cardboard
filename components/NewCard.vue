@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/no-mutating-props -->
 
 <script setup lang="ts">
-import { CardContentText } from '#components'
+import { CardContentImage, CardContentText } from '#components'
 
 const { card, canvas, selection } = defineProps(['card', 'canvas', 'selection'])
 const cardRef = ref()
@@ -70,17 +70,12 @@ function onPointerDown(event: PointerEvent) {
 	if (navigator.vendor.includes('Apple') && 'ontouchstart' in window) {
 		clearTimeout(longPressTimeout)
 
-		// TODO: Call context menu function here
 		longPressTimeout = setTimeout(() => {
 			suppressClick()
 
 			onContextMenu(event)
 		}, 500)
 	}
-}
-
-function onPointerDownSelect() {
-	selected.value = !selected.value
 }
 
 function onPointerMove(event: PointerEvent) {
@@ -127,6 +122,7 @@ function onContextMenu(event: MouseEvent) {
 function getContentComponent() {
 	switch (card.type) {
 		case 'text': return CardContentText
+		case 'image': return CardContentImage
 		default: return CardContentText
 	}
 }
@@ -175,6 +171,7 @@ function delCard() {
 		ref="cardRef"
 		class="card"
 		:class="{
+			'content-active': contentRef?.active,
 			'pointer-down': pointer.down,
 			selected
 		}"
@@ -184,8 +181,8 @@ function delCard() {
 		}"
 
 		@pointerdown.left.exact="onPointerDown"
-		@pointerdown.left.ctrl.exact="onPointerDownSelect"
-		@pointerdown.left.meta.exact="onPointerDownSelect"
+		@pointerdown.left.ctrl.exact="selected = !selected"
+		@pointerdown.left.meta.exact="selected = !selected"
 		@pointermove="onPointerMove"
 		@pointerup="onPointerUp"
 		@pointerleave="onPointerUp"
@@ -197,6 +194,7 @@ function delCard() {
 			:is="getContentComponent()"
 			ref="contentRef"
 			:card="card"
+			@activate="selection.clear"
 		/>
 	</div>
 </template>
@@ -206,20 +204,18 @@ function delCard() {
 	position: absolute;
 	width: max-content;
 
-	&.pointer-down {
-		z-index: 1;
-
-		// Prevent the cursor from leaving the hitbox when moving really fast
-		&::before {
-			position: fixed;
-			z-index: -1;
-			content: '';
-			inset: -100vh -100vw;
-		}
-	}
-
+	&.content-active,
+	&.pointer-down,
 	&.selected {
 		z-index: 1;
+	}
+
+	// Prevent the cursor from leaving the hitbox when moving really fast
+	&.pointer-down::before {
+		position: fixed;
+		z-index: -1;
+		content: '';
+		inset: -100vh -100vw;
 	}
 
 	&.deleted {

@@ -2,25 +2,24 @@
 
 <script setup lang="ts">
 const { card } = defineProps(['card'])
+const emit = defineEmits(['activate'])
 const contentRef = ref()
 const active = ref(false)
 
 // Activate new cards
-onMounted(() => {
-	if (card.id === 'create')
-		activate()
-})
+if (card.id === 'create')
+	onMounted(activate)
 
-function onBlur(event?: Event) {
+async function onBlur(event?: Event) {
 	if (event?.type !== 'blur')
-		contentRef.value.blur()
+		return contentRef.value.blur()
 
 	active.value = false
 	contentRef.value.contentEditable = false
 
 	// Delete empty cards
 	if (isEmpty())
-		return // TODO
+		return deleteCard(card)
 
 	card.content = contentRef.value.innerHTML
 
@@ -38,7 +37,9 @@ function activate(event?: MouseEvent) {
 
 	active.value = true
 	contentRef.value.contentEditable = true
+
 	contentRef.value.focus()
+	emit('activate')
 
 	if (event)
 		moveCaretWhereClicked(event)
@@ -86,7 +87,7 @@ defineExpose({ active })
 <template>
 	<div
 		ref="contentRef"
-		class="card-content"
+		class="card-content-text"
 		contenteditable="false"
 		spellcheck="false"
 		@click.left.exact="activate"
@@ -98,14 +99,15 @@ defineExpose({ active })
 </template>
 
 <style lang="scss">
-.card-content {
+.card-content-text {
 	display: block;
-	min-height: 2.5rem;
-	padding: .5rem;
+	min-height: 2.25rem;
+	padding: .375rem;
+	font-size: .875rem;
 	background-color: #222;
 	border: 2px solid var(--color-border);
-	border-radius: .25rem;
-	transition: color .2s;
+	border-radius: .375rem;
+	box-shadow: var(--shadow-card);
 
 	&:focus-visible {
 		border-color: var(--color-accent);
@@ -113,7 +115,7 @@ defineExpose({ active })
 	}
 }
 
-.card.selected > .card-content {
+.card.selected > .card-content-text {
 	border-color: var(--color-accent-50);
 }
 </style>

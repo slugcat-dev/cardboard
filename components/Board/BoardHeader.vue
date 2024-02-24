@@ -192,7 +192,6 @@ async function makeBoard() {
 }
 
 #header {
-	z-index: 10;
 	display: flex;
 	gap: 1rem;
 	align-items: center;
@@ -251,7 +250,7 @@ async function makeBoard() {
 			&:focus-visible {
 				border-radius: .25rem;
 				outline: none;
-				box-shadow: 0 0 0 2px var(--color-accent);
+				outline: 2px solid var(--color-accent);
 			}
 		}
 	}

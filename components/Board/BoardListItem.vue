@@ -59,7 +59,8 @@ const { boards } = await useBoards()
 	&.router-link-active {
 		text-decoration: none;
 		background-color: #8882;
-		box-shadow: 0 0 0 1px oklch(40% 0 0deg / 10%) inset;
+		outline: 1px solid oklch(40% 0 0deg / 10%);
+		outline-offset: -1px;
 	}
 
 	&.router-link-active {
