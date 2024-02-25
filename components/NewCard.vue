@@ -4,6 +4,7 @@
 import { CardContentImage, CardContentText } from '#components'
 
 const { card, canvas, selection } = defineProps(['card', 'canvas', 'selection'])
+const { animateEdgeScroll, stopEdgeScroll } = useSmoothScroll(canvas)
 const cardRef = ref()
 const contentRef = ref()
 const pointer = reactive({
@@ -24,7 +25,16 @@ let longPressTimeout: ReturnType<typeof setTimeout> | undefined
 onBeforeUnmount(() => clearTimeout(longPressTimeout))
 
 // Update card position on scroll while dragging
-watch(canvas, () => updateCardPos())
+watch(canvas, () => {
+	if (pointer.moved)
+		updateCardPos()
+})
+
+// Scroll the canvas when dragging a card near the edge
+watch(pointer, () => {
+	if (pointer.moved)
+		animateEdgeScroll(pointer.pos)
+})
 
 // Card selection
 watch(selection, () => {
@@ -44,9 +54,6 @@ watch(selected, () => {
 	else
 		selection.cards.splice(selection.cards.indexOf(card), 1)
 })
-
-// Scroll the canvas when dragging a card near the edge
-watch(pointer, () => animateEdgeScroll(canvas, pointer.pos, pointer.moved))
 
 function onPointerDown(event: PointerEvent) {
 	if (!canvas.cardDragAllowed || contentRef.value.active)
@@ -99,15 +106,16 @@ function onPointerUp() {
 			suppressClick()
 
 		if (selection.cards.length > 1)
-			updateMany(selection.cards)
+			fetchUpdateMany(selection.cards)
 		else
-			updateCard({ id: card.id, position: card.position })
+			fetchUpdateCard({ id: card.id, position: card.position })
 	}
 
 	pointer.down = false
 	pointer.moved = false
 
 	clearTimeout(longPressTimeout)
+	stopEdgeScroll()
 }
 
 // TODO: Display custom ContextMenu
@@ -116,7 +124,7 @@ function onContextMenu(event: MouseEvent) {
 		return
 
 	event.preventDefault()
-	delCard()
+	deleteCard()
 }
 
 function getContentComponent() {
@@ -152,17 +160,16 @@ function updateCardPos() {
 	}
 }
 
-// TODO: rename
-function delCard() {
+function deleteCard() {
 	if (selection.cards.length > 1) {
-		deleteMany(selection.cards)
+		fetchDeleteMany(selection.cards)
 		selection.clear()
 
 		return
 	}
 
 	cardRef.value.classList.add('deleted')
-	setTimeout(() => deleteCard(card), 200)
+	setTimeout(() => fetchDeleteCard(card), 200)
 }
 </script>
 

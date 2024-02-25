@@ -14,25 +14,25 @@
 	"dependencies": {
 		"fuse.js": "^7.0.0",
 		"google-auth-library": "^9.6.3",
-		"isomorphic-dompurify": "^2.3.0",
+		"isomorphic-dompurify": "^2.4.0",
 		"nuxt-mongoose": "^1.0.5",
 		"puppeteer-core": "^21.11.0"
 	},
 	"devDependencies": {
 		"@antfu/eslint-config": "^2.6.4",
-		"@vueuse/math": "^10.7.2",
-		"@vueuse/nuxt": "^10.7.2",
-		"nuxt": "^3.10.2",
+		"@vueuse/math": "^10.8.0",
+		"@vueuse/nuxt": "^10.8.0",
+		"nuxt": "^3.10.3",
 		"nuxt-auth-utils": "^0.0.14",
 		"nuxt-icon": "^0.6.8",
 		"postcss-html": "^1.6.0",
-		"sass": "^1.71.0",
+		"sass": "^1.71.1",
 		"stylelint": "^16.2.1",
 		"stylelint-config-rational-order": "^0.1.2",
 		"stylelint-config-standard-scss": "^13.0.0",
 		"stylelint-config-standard-vue": "^1.0.0",
 		"stylelint-order": "^6.0.4",
 		"vue": "^3.4.19",
-		"vue-router": "^4.2.5"
+		"vue-router": "^4.3.0"
 	}
 }

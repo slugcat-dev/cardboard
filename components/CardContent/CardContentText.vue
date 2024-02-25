@@ -19,17 +19,57 @@ async function onBlur(event?: Event) {
 
 	// Delete empty cards
 	if (isEmpty())
-		return deleteCard(card)
+		return fetchDeleteCard(card)
 
 	card.content = contentRef.value.innerHTML
 
-	updateCard(card)
+	fetchUpdateCard(card)
 }
 
 function onKeyDownDel() {
 	if (isEmpty())
 		onBlur()
 }
+
+// TODO ---
+async function onPaste(event: ClipboardEvent) {
+	if (!event.clipboardData)
+		return
+
+	const files = Array.from(event.clipboardData.files)
+
+	if (files.length > 0) {
+		event.preventDefault()
+
+		if (!isEmpty() || !files[0].type.startsWith('image'))
+			return
+
+		const url = await blobToBase64(files[0])
+
+		card.content = url
+		card.type = 'image'
+
+		fetchUpdateCard(card)
+
+		// TODO: multiple files
+		// TODO: other types than img
+		// TODO: send this part of func to canvas paste handler instead and del card
+	}
+}
+
+function blobToBase64(blob: Blob | null) {
+	return new Promise((resolve: (result: string | null) => void) => {
+		const reader = new FileReader()
+
+		reader.onloadend = () => resolve(reader.result as string)
+
+		if (blob)
+			reader.readAsDataURL(blob)
+		else
+			resolve(null)
+	})
+}
+// TODO ---
 
 function activate(event?: MouseEvent) {
 	if (active.value)
@@ -94,6 +134,7 @@ defineExpose({ active })
 		@blur="onBlur"
 		@keydown.escape="onBlur"
 		@keydown.delete="onKeyDownDel"
+		@paste="onPaste"
 		v-html="card.content"
 	/>
 </template>

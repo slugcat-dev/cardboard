@@ -21,7 +21,7 @@ defineExpose({ active })
 		loading="lazy"
 		@click.left.exact="activate"
 	>
-	<Teleport to="#overlay">
+	<Teleport to="body">
 		<Transition name="image-preview">
 			<div
 				v-if="active"
@@ -43,6 +43,7 @@ defineExpose({ active })
 	max-width: 550px;
 	height: auto;
 	max-height: 350px;
+	background-color: var(--color-background);
 	border-radius: .375rem;
 	outline: 2px solid var(--color-border);
 	outline-offset: -2px;
@@ -56,6 +57,7 @@ defineExpose({ active })
 
 .image-preview {
 	position: fixed;
+	z-index: 1;
 	display: flex;
 	align-items: center;
 	justify-content: center;

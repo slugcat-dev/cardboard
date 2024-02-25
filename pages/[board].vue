@@ -9,7 +9,7 @@ const pointer = reactive({
 	gesture: false
 })
 const gesture = {
-	initialTouches: new Array<Position>(),
+	initialTouches: [] as Position[],
 	initialZoom: 1,
 	prevTranslation: { x: 0, y: 0 }
 }
@@ -25,11 +25,12 @@ const canvas = reactive({
 	zoom: 1,
 	smoothZoom: 1,
 	select: false,
+	waiting: false,
 	cardDragAllowed: computed(() => !pointer.down && !pointer.gesture)
 })
 const selection = reactive({
 	rect: process.client ? new DOMRect() : undefined,
-	cards: new Array<Card>(),
+	cards: [] as Card[],
 	visible: false,
 	cleared: 0,
 	clear() {
@@ -47,6 +48,11 @@ const gridSize = computed(() => {
 
 	return value
 })
+const {
+	animateSmoothScroll,
+	animateEdgeScroll,
+	stopEdgeScroll
+} = useSmoothScroll(canvas)
 const {	board } = await useBoards()
 const cards = ref(board.value.cards)
 let activeElement: Element | null
@@ -56,11 +62,16 @@ definePageMeta({
 	pageTransition: { name: 'slide' },
 	layout: 'board'
 })
+onMounted(resetPointerPos)
 
 // Listen for paste events on the entire document
-useEventListener('paste', (event: ClipboardEvent) => {
+useEventListener('paste', async (event: ClipboardEvent) => {
+	canvas.waiting = true
+
 	if (event.target === document.body && event.clipboardData)
-		handleDataTransfer(event.clipboardData)
+		await handleDataTransfer(event.clipboardData, toCanvasPos(canvas, pointer.pos))
+
+	canvas.waiting = false
 })
 
 // Update the selection rect on scroll
@@ -71,7 +82,8 @@ watch(pointer, () => {
 		return onPointerUp()
 
 	// Scroll the canvas when selecting cards near the edge
-	animateEdgeScroll(canvas, pointer.pos, canvas.select && pointer.moved)
+	if (canvas.select && pointer.moved)
+		animateEdgeScroll(pointer.pos)
 })
 
 function onWheelScroll(event: WheelEvent) {
@@ -94,7 +106,7 @@ function onWheelScroll(event: WheelEvent) {
 	canvas.scroll.y -= deltaY
 
 	if (isMouseWheel)
-		animateSmoothScroll(canvas)
+		animateSmoothScroll()
 	else {
 		canvas.scroll.smoothX = canvas.scroll.x
 		canvas.scroll.smoothY = canvas.scroll.y
@@ -112,7 +124,7 @@ function onWheelZoom(event: WheelEvent) {
 	setCanvasZoom(canvas.zoom * (1 - delta), toPos(event))
 
 	if (isMouseWheel)
-		animateSmoothScroll(canvas)
+		animateSmoothScroll()
 	else {
 		canvas.scroll.smoothX = canvas.scroll.x
 		canvas.scroll.smoothY = canvas.scroll.y
@@ -135,12 +147,9 @@ function onPointerDown(event: PointerEvent) {
 }
 
 function onPointerMove(event: PointerEvent) {
-	if (!pointer.down || pointer.gesture)
-		return
-
 	pointer.pos = toPos(event)
 
-	if (!(pointer.moved || moveThreshold(pointer.downPos, pointer.pos, isPointerCoarse() ? 10 : 4)))
+	if (!pointer.down || pointer.gesture || (!pointer.moved && moveThreshold(pointer.downPos, pointer.pos, isPointerCoarse() ? 10 : 4)))
 		return
 
 	pointer.moved = true
@@ -159,7 +168,10 @@ function onPointerMove(event: PointerEvent) {
 	}
 }
 
-function onPointerUp() {
+function onPointerUp(event?: PointerEvent) {
+	if (event?.type !== 'pointerup')
+		resetPointerPos()
+
 	if (pointer.moved) {
 		if (pointer.type === 'mouse')
 			suppressClick()
@@ -185,6 +197,8 @@ function onPointerUp() {
 	pointer.moved = false
 	canvas.select = false
 	selection.visible = false
+
+	stopEdgeScroll()
 }
 
 function onTouchStart(event: TouchEvent) {
@@ -244,7 +258,7 @@ function onTouchEnd(event: TouchEvent) {
 			x: rect.width / 2,
 			y: rect.height / 2
 		})
-		animateSmoothScroll(canvas, 300)
+		animateSmoothScroll(300)
 	}
 }
 
@@ -263,11 +277,24 @@ function onClick(event: MouseEvent) {
 	})
 }
 
-function onDrop(event: DragEvent) {
-	if (!event.dataTransfer)
-		return
+async function onDrop(event: DragEvent) {
+	canvas.waiting = true
 
-	handleDataTransfer(event.dataTransfer)
+	if (event.dataTransfer)
+		await handleDataTransfer(event.dataTransfer, toCanvasPos(canvas, toPos(event)))
+
+	canvas.waiting = false
+}
+
+// Reset the pointer position to the top left corner of the canvas when the pointer goes out of bounds
+// This position is used for the placement of new cards when pasting content
+function resetPointerPos() {
+	const canvasRect = canvasRef.value.getBoundingClientRect()
+
+	pointer.pos = {
+		x: canvasRect.x + 20,
+		y: canvasRect.y + 20
+	}
 }
 
 // Zoom and adjust scroll to the pointer position
@@ -313,35 +340,13 @@ function updateSelectionRect() {
 		mousePos.y - selection.rect.y
 	)
 }
-
-// Handle pasted and dropped data
-async function handleDataTransfer(dataTransfer: DataTransfer) {
-	const files = Array.from(dataTransfer.files)
-	const items = Array.from(dataTransfer.items)
-
-	files.forEach(async (file, index) => {
-		// TODO: upload file, create card
-		// File inherits from Blob
-		// eslint-disable-next-line no-console
-		console.log(index, file.name, file.type, 'Size:', file.size)
-	})
-
-	if (files.length !== 0)
-		return
-
-	items.forEach(async (item, index) => {
-		// TODO: create cards
-		// eslint-disable-next-line no-console
-		console.log(index, item.type, 'Size:', dataTransfer.getData(item.type).length)
-	})
-}
 </script>
 
 <template>
 	<div
 		ref="canvasRef"
 		class="canvas-wrapper"
-		:style="{ cursor: pointer.down && pointer.moved && !selection.visible ? 'move' : 'default' }"
+		:style="{ cursor: canvas.waiting ? 'progress' : pointer.down && pointer.moved && !selection.visible ? 'move' : 'default' }"
 
 		@wheel.exact.prevent="onWheelScroll"
 		@wheel.shift.exact.prevent="onWheelScroll"

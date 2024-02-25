@@ -38,5 +38,4 @@ useHead({
 	<NuxtLayout>
 		<NuxtPage />
 	</NuxtLayout>
-	<div id="overlay" />
 </template>
