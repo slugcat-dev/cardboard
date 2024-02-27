@@ -1,29 +1,16 @@
 <script setup lang="ts">
-const props = defineProps(['card'])
-const { card } = props
+const { card } = defineProps(['card'])
 
 const title = computed(() => {
 	return `${card.content.siteName && !card.content.title.includes(card.content.siteName) ? `${card.content.siteName} - ` : ''}${card.content.title || card.content.domain}`
 })
-
-const description = computed(() => {
-	return card.content.description || (card.content.title ? card.content.domain : card.content.url)
-})
 </script>
 
 <template>
-	<div class="card-link-embed">
-		<div class="image-container">
+	<div class="card-content-link">
+		<div class="favicon">
 			<img
 				v-if="card.content.favicon"
-				class="icon-glow"
-				:src="card.content.favicon"
-				draggable="false"
-				loading="lazy"
-			>
-			<img
-				v-if="card.content.favicon"
-				class="icon"
 				:src="card.content.favicon"
 				draggable="false"
 				loading="lazy"
@@ -31,10 +18,9 @@ const description = computed(() => {
 			<ClientIcon
 				v-else
 				name="mdi:earth"
-				class="icon missing"
 			/>
 		</div>
-		<div class="text-content">
+		<div class="text">
 			<NuxtLink
 				class="title text-strong"
 				:to="card.content.url"
@@ -42,64 +28,50 @@ const description = computed(() => {
 			>
 				{{ title }}
 			</NuxtLink>
-			<div class="description text-secondary">
-				{{ description }}
+			<div class="text text-secondary">
+				{{ card.content.domain }}
 			</div>
 		</div>
 	</div>
 </template>
 
 <style lang="scss">
-.card-link-embed {
+.card-content-link {
 	display: flex;
-	gap: .5rem;
+	gap: .375rem;
 	align-items: center;
-	width: 274px;
-	padding: calc(.5rem - 1px);
+	width: 250px;
+	padding: .375rem;
+	font-size: .875rem;
+	background-color: #222;
+	border: 2px solid var(--color-border);
+	border-radius: .375rem;
+	box-shadow: var(--shadow-card);
 
-	.image-container {
-		position: relative;
-		width: 1.75rem;
-		height: 1.75rem;
-		padding: .375rem;
-		background-color: var(--color-favicon);
-		border-radius: .5rem;
-		box-shadow: 0 0 4px var(--color-icon-shadow);
+	.favicon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		background-color: #333;
+		border-radius: .375rem;
+		box-shadow: var(--shadow-card);
 
-		&:has(.missing) {
-			background-color: var(--color-accent-25);
-		}
-
-		.icon-glow {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 1.75rem;
-			height: 1.75rem;
-			border-radius: .5rem;
-			filter: blur(16px) contrast(var(--icon-contrast, 1)) saturate(2);
-			clip-path: fill-box;
-			-webkit-touch-callout: none;
-		}
-
-		.icon {
-			display: block;
+		img,
+		svg {
 			width: 1rem;
 			height: 1rem;
-			border-radius: .125rem;
-			filter: drop-shadow(0 0 4px var(--color-icon-shadow));
-			-webkit-touch-callout: none;
 		}
 	}
 
-	.text-content {
+	.text {
 		display: flex;
 		flex-direction: column;
 		width: calc(100% - 2.5rem);
-		font-size: .875rem;
 
 		.title,
-		.description {
+		.text {
 			width: fit-content;
 			max-width: 100%;
 			overflow: hidden;
@@ -108,13 +80,12 @@ const description = computed(() => {
 		}
 
 		.title {
-			color: var(--color-text);
-
-			&:not(:hover, :focus-visible) {
-				text-decoration: none;
-			}
+			color: currentcolor;
 		}
-
 	}
+}
+
+.card.selected > .card-content-link {
+	border-color: var(--color-accent-50);
 }
 </style>

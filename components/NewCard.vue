@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/no-mutating-props -->
 
 <script setup lang="ts">
-import { CardContentImage, CardContentText } from '#components'
+import { CardContentImage, CardContentLink, CardContentText } from '#components'
 
 const { card, canvas, selection } = defineProps(['card', 'canvas', 'selection'])
 const { animateEdgeScroll, stopEdgeScroll } = useSmoothScroll(canvas)
@@ -56,7 +56,7 @@ watch(selected, () => {
 })
 
 function onPointerDown(event: PointerEvent) {
-	if (!canvas.cardDragAllowed || contentRef.value.active)
+	if (!canvas.cardDragAllowed || contentRef.value.active || (event.target as Element).tagName === 'A')
 		return
 
 	const cardRect = cardRef.value.getBoundingClientRect()
@@ -131,6 +131,7 @@ function getContentComponent() {
 	switch (card.type) {
 		case 'text': return CardContentText
 		case 'image': return CardContentImage
+		case 'link': return CardContentLink
 		default: return CardContentText
 	}
 }
@@ -188,13 +189,13 @@ function deleteCard() {
 		}"
 
 		@pointerdown.left.exact="onPointerDown"
-		@pointerdown.left.ctrl.exact="selected = !selected"
-		@pointerdown.left.meta.exact="selected = !selected"
 		@pointermove="onPointerMove"
 		@pointerup="onPointerUp"
 		@pointerleave="onPointerUp"
 		@pointercancel="onPointerUp"
 
+		@click.left.ctrl.exact="selected = !selected"
+		@click.left.meta.exact="selected = !selected"
 		@contextmenu="onContextMenu"
 	>
 		<component
