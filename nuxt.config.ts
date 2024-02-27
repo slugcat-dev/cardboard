@@ -31,6 +31,9 @@ export default defineNuxtConfig({
 		'~/assets/style.scss',
 		'~/assets/transitions.scss'
 	],
+	experimental: {
+		asyncContext: true
+	},
 	vite: {
 		build: {
 			target: 'esnext'
