@@ -159,6 +159,11 @@ defineExpose({ active })
 		border-color: var(--color-accent);
 		outline: none;
 	}
+
+	h1 {
+		margin: 0;
+		font-size: 1.25rem;
+	}
 }
 
 .card.selected > .card-content-text {
