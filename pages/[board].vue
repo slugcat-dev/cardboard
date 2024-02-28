@@ -63,6 +63,65 @@ definePageMeta({
 	layout: 'board'
 })
 onMounted(resetPointerPos)
+useSeoMeta({ title: board.value.name })
+defineHotkeys({
+	'home': () => {
+		canvas.scroll.x = 0
+		canvas.scroll.y = 0
+		canvas.zoom = 1
+
+		animateSmoothScroll(500)
+	},
+	// TODO: overview
+	'end': () => { },
+	'arrowright': () => keyboardPan(100, 0),
+	'arrowleft': () => keyboardPan(-100, 0),
+	'arrowdown': () => keyboardPan(0, 100),
+	'arrowup': () => keyboardPan(0, -100),
+	'meta +': () => keyboardZoom(-.2),
+	'meta -': () => keyboardZoom(.2),
+	'meta space': () => {
+		cards.value.push({
+			id: 'create',
+			type: 'text',
+			position: toCanvasPos(canvas, pointer.pos),
+			content: ''
+		})
+	},
+	'meta a': () => selection.rect = new DOMRect(-Infinity, -Infinity, Infinity, Infinity),
+	'delete': deleteCards,
+	'backspace': deleteCards
+})
+
+function keyboardZoom(delta: number) {
+	const canvasRect = canvas.ref.getBoundingClientRect()
+	const center = {
+		x: canvasRect.x + canvasRect.width / 2,
+		y: canvasRect.x + canvasRect.width / 2
+	}
+
+	setCanvasZoom(canvas.zoom * (1 - delta), center)
+	animateSmoothScroll()
+}
+
+function keyboardPan(dX: number, dY: number) {
+	canvas.scroll.x -= dX
+	canvas.scroll.y -= dY
+
+	animateSmoothScroll()
+}
+
+function deleteCards() {
+	if (selection.cards.length === 0)
+		return
+
+	// eslint-disable-next-line no-alert
+	if (!confirm(`Are you sure you want to delete ${selection.cards.length} cards?`))
+		return
+
+	fetchDeleteMany(selection.cards)
+	selection.clear()
+}
 
 // Listen for paste events on the entire document
 useEventListener('paste', async (event: ClipboardEvent) => {
@@ -289,7 +348,10 @@ async function onDrop(event: DragEvent) {
 // Reset the pointer position to the top left corner of the canvas when the pointer goes out of bounds
 // This position is used for the placement of new cards when pasting content
 function resetPointerPos() {
-	const canvasRect = canvasRef.value.getBoundingClientRect()
+	if (!canvas.ref)
+		return
+
+	const canvasRect = canvas.ref.getBoundingClientRect()
 
 	pointer.pos = {
 		x: canvasRect.x + 20,

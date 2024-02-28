@@ -1,4 +1,18 @@
 export const isMacOS = process.client && navigator.userAgent.includes('Macintosh')
+export const usingInput = ref(false)
+
+watchEffect(() => {
+	const activeElement = useActiveElement()
+	const tagName = activeElement.value?.tagName.toLowerCase()
+	const contentEditable = activeElement.value?.contentEditable.toLowerCase()
+
+	usingInput.value = (
+		tagName === 'input'
+		|| tagName === 'textarea'
+		|| contentEditable === 'true'
+		|| contentEditable === 'plaintext-only'
+	)
+})
 
 export function isPointerCoarse() {
 	return window.matchMedia('(pointer: coarse)').matches

@@ -31,6 +31,12 @@ function onKeyDownDel() {
 		onBlur()
 }
 
+function onKeyDownEsc(event: KeyboardEvent) {
+	// Prevent navigation
+	event.stopPropagation()
+	onBlur()
+}
+
 // TODO ---
 async function onPaste(event: ClipboardEvent) {
 	if (!event.clipboardData)
@@ -132,7 +138,7 @@ defineExpose({ active })
 		spellcheck="false"
 		@click.left.exact="activate"
 		@blur="onBlur"
-		@keydown.escape="onBlur"
+		@keydown.escape="onKeyDownEsc"
 		@keydown.delete="onKeyDownDel"
 		@paste="onPaste"
 		v-html="card.content"

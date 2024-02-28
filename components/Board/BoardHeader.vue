@@ -5,7 +5,7 @@ const boardNameRef = ref()
 const { board, createBoard, deleteBoard } = await useBoards()
 const { breadcrumbs, oldcrumbs } = useBreadcrumbs()
 
-defineShortcuts({
+defineHotkeys({
 	escape: () => {
 		if (breadcrumbs.value.length === 0)
 			return

@@ -24,12 +24,12 @@ let longPressTimeout: ReturnType<typeof setTimeout> | undefined
 
 onBeforeUnmount(() => clearTimeout(longPressTimeout))
 
+// Update card position on scroll while dragging
 watch(canvas, () => {
-	// Update card position on scroll while dragging
 	if (pointer.moved)
 		updateCardPos()
 
-	if (!canvas.cardDragAllowed)
+	if (pointer.down && !canvas.cardDragAllowed)
 		onPointerUp()
 })
 
@@ -59,7 +59,7 @@ watch(selected, () => {
 })
 
 function onPointerDown(event: PointerEvent) {
-	if (!canvas.cardDragAllowed || contentRef.value.active || (event.target as Element).tagName === 'A')
+	if (!cardInteractionAllowed(event))
 		return
 
 	const cardRect = cardRef.value.getBoundingClientRect()
@@ -82,7 +82,6 @@ function onPointerDown(event: PointerEvent) {
 
 		longPressTimeout = setTimeout(() => {
 			suppressClick()
-
 			onContextMenu(event)
 		}, 500)
 	}
@@ -120,7 +119,7 @@ function onPointerUp() {
 
 // TODO: Display custom ContextMenu
 function onContextMenu(event: MouseEvent) {
-	if (contentRef.value.active)
+	if (!cardInteractionAllowed(event))
 		return
 
 	event.preventDefault()
@@ -156,6 +155,14 @@ function updateCardPos() {
 			}
 		})
 	}
+}
+
+function cardInteractionAllowed(event: Event) {
+	return (
+		(event.target as Element).tagName !== 'A'
+		&& canvas.cardDragAllowed
+		&& !contentRef.value.active
+	)
 }
 
 function deleteCard() {

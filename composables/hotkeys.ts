@@ -1,0 +1,42 @@
+export interface HotkeysConfig {
+	[key: string]: Function
+}
+
+export function defineHotkeys(config: HotkeysConfig) {
+	const hotkeys = Object.entries(config).map(([key, handler]) => {
+		const keySplit = key.toLowerCase().split(' ')
+		const hotkey = {
+			handler,
+			key: keySplit.filter(k => !['ctrl', 'meta', 'shift', 'alt'].includes(k)).join().replace(/^space/i, ' '),
+			ctrlKey: keySplit.includes('ctrl'),
+			metaKey: keySplit.includes('meta'),
+			shiftKey: keySplit.includes('shift'),
+			altKey: keySplit.includes('alt')
+		}
+
+		// Convert meta to ctrl for non-MacOS
+		if (!isMacOS && hotkey.metaKey && !hotkey.ctrlKey) {
+			hotkey.metaKey = false
+			hotkey.ctrlKey = true
+		}
+
+		return hotkey
+	})
+
+	useEventListener('keydown', (event: KeyboardEvent) => {
+		for (const hotkey of hotkeys) {
+			if (
+				usingInput.value
+				|| event.key.toLowerCase() !== hotkey.key
+				|| event.ctrlKey !== hotkey.ctrlKey
+				|| event.metaKey !== hotkey.metaKey
+				|| event.shiftKey !== hotkey.shiftKey
+				|| event.altKey !== hotkey.altKey
+			)
+				continue
+
+			event.preventDefault()
+			hotkey.handler()
+		}
+	})
+}
