@@ -24,10 +24,13 @@ let longPressTimeout: ReturnType<typeof setTimeout> | undefined
 
 onBeforeUnmount(() => clearTimeout(longPressTimeout))
 
-// Update card position on scroll while dragging
 watch(canvas, () => {
+	// Update card position on scroll while dragging
 	if (pointer.moved)
 		updateCardPos()
+
+	if (!canvas.cardDragAllowed)
+		onPointerUp()
 })
 
 // Scroll the canvas when dragging a card near the edge
@@ -86,12 +89,9 @@ function onPointerDown(event: PointerEvent) {
 }
 
 function onPointerMove(event: PointerEvent) {
-	if (!pointer.down || !canvas.cardDragAllowed)
-		return
-
 	pointer.pos = toPos(event)
 
-	if (!(pointer.moved || moveThreshold(pointer.downPos, pointer.pos, isPointerCoarse() ? 10 : 4)))
+	if (!pointer.down || !(pointer.moved || moveThreshold(pointer.downPos, pointer.pos, isPointerCoarse() ? 10 : 4)))
 		return
 
 	pointer.moved = true
@@ -140,9 +140,6 @@ function updateCardPos() {
 	// Calling onPointerUp here once when a gesture is performed on the canvas to prevent the crad from glitching around
 	if (!canvas.cardDragAllowed)
 		return onPointerUp()
-
-	if (!pointer.down)
-		return
 
 	const prevPosition = card.position
 

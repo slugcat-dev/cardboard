@@ -76,15 +76,6 @@ useEventListener('paste', async (event: ClipboardEvent) => {
 
 // Update the selection rect on scroll
 watch(canvas, () => updateSelectionRect())
-watch(pointer, () => {
-	// Prevent panning while a gesture is performed
-	if (pointer.gesture)
-		return onPointerUp()
-
-	// Scroll the canvas when selecting cards near the edge
-	if (canvas.select && pointer.moved)
-		animateEdgeScroll(pointer.pos)
-})
 
 function onWheelScroll(event: WheelEvent) {
 	// Prevent scrolling while panning the canvas
@@ -149,13 +140,19 @@ function onPointerDown(event: PointerEvent) {
 function onPointerMove(event: PointerEvent) {
 	pointer.pos = toPos(event)
 
-	if (!pointer.down || pointer.gesture || (!pointer.moved && moveThreshold(pointer.downPos, pointer.pos, isPointerCoarse() ? 10 : 4)))
+	if (!pointer.down || !(pointer.moved || moveThreshold(pointer.downPos, pointer.pos, isPointerCoarse() ? 10 : 4)))
 		return
 
 	pointer.moved = true
 
-	if (canvas.select)
-		return updateSelectionRect()
+	if (canvas.select) {
+		updateSelectionRect()
+
+		// Scroll the canvas when selecting cards near the edge
+		animateEdgeScroll(pointer.pos)
+
+		return
+	}
 
 	// Pan the canvas
 	canvas.scroll.x += event.movementX
@@ -185,11 +182,11 @@ function onPointerUp(event?: PointerEvent) {
 			canvas.scroll.velocity.x *= .95
 			canvas.scroll.velocity.y *= .95
 
-			if ((Math.abs(canvas.scroll.velocity.x) > .25 || Math.abs(canvas.scroll.velocity.y) > .25) && !pointer.down)
+			if ((Math.abs(canvas.scroll.velocity.x) > .25 || Math.abs(canvas.scroll.velocity.y) > .25) && !(pointer.down || pointer.gesture))
 				requestAnimationFrame(kineticScrollStep)
 		}
 
-		if (pointer.type === 'touch' && moveThreshold(canvas.scroll.velocity, { x: 0, y: 0 }, 4) && !pointer.gesture)
+		if (pointer.type === 'touch' && moveThreshold(canvas.scroll.velocity, { x: 0, y: 0 }, 4))
 			requestAnimationFrame(kineticScrollStep)
 	}
 
@@ -208,6 +205,9 @@ function onTouchStart(event: TouchEvent) {
 
 	if (!pointer.gesture)
 		return
+
+	if (pointer.down)
+		onPointerUp()
 
 	gesture.initialTouches = touches
 	gesture.initialZoom = canvas.smoothZoom
