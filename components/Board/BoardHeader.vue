@@ -2,7 +2,7 @@
 const router = useRouter()
 const settings = useSettings()
 const boardNameRef = ref()
-const { board, createBoard, deleteBoard } = await useBoards()
+const { board, deleteBoard } = await useBoards()
 const { breadcrumbs, oldcrumbs } = useBreadcrumbs()
 
 defineHotkeys({
@@ -11,10 +11,21 @@ defineHotkeys({
 			return
 
 		router.back()
+	},
+	f2: () => {
+		const range = document.createRange()
+		const textNode = boardNameRef.value.childNodes[0]
+
+		range.setStart(textNode, 0)
+		range.setEnd(textNode, textNode.textContent.length - 1)
+		selectRange(range)
+		boardNameRef.value.focus()
 	}
 })
 
 function onBoardNameUpdate() {
+	window.getSelection()?.removeAllRanges()
+
 	const name = boardNameRef.value.textContent
 
 	if (name.length === 0) {

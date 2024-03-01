@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { createCard } from '~/utils/cards.tmp'
+
 const canvasRef = ref()
 const pointer = reactive({
 	type: 'unknown',
@@ -25,7 +27,6 @@ const canvas = reactive({
 	zoom: 1,
 	smoothZoom: 1,
 	select: false,
-	waiting: false,
 	cardDragAllowed: computed(() => !pointer.down && !pointer.gesture)
 })
 const selection = reactive({
@@ -80,14 +81,7 @@ defineHotkeys({
 	'arrowup': () => keyboardPan(0, -100),
 	'meta +': () => keyboardZoom(-.2),
 	'meta -': () => keyboardZoom(.2),
-	'meta space': () => {
-		cards.value.push({
-			id: 'create',
-			type: 'text',
-			position: toCanvasPos(canvas, pointer.pos),
-			content: ''
-		})
-	},
+	'space': () => createCard({ position: toCanvasPos(canvas, pointer.pos) }),
 	'meta a': () => selection.rect = new DOMRect(-Infinity, -Infinity, Infinity, Infinity),
 	'delete': deleteCards,
 	'backspace': deleteCards
@@ -125,12 +119,8 @@ function deleteCards() {
 
 // Listen for paste events on the entire document
 useEventListener('paste', async (event: ClipboardEvent) => {
-	canvas.waiting = true
-
 	if (event.target === document.body && event.clipboardData)
 		await handleDataTransfer(event.clipboardData, toCanvasPos(canvas, pointer.pos))
-
-	canvas.waiting = false
 })
 
 // Update the selection rect on scroll
@@ -328,21 +318,12 @@ function onClick(event: MouseEvent) {
 	if (activeElement !== document.body || (pointer.type === 'mouse' && event.detail < 2))
 		return
 
-	cards.value.push({
-		id: 'create',
-		type: 'text',
-		position: toCanvasPos(canvas, event),
-		content: ''
-	})
+	createCard({ position: toCanvasPos(canvas, pointer.pos) })
 }
 
 async function onDrop(event: DragEvent) {
-	canvas.waiting = true
-
 	if (event.dataTransfer)
 		await handleDataTransfer(event.dataTransfer, toCanvasPos(canvas, toPos(event)))
-
-	canvas.waiting = false
 }
 
 // Reset the pointer position to the top left corner of the canvas when the pointer goes out of bounds
@@ -408,7 +389,7 @@ function updateSelectionRect() {
 	<div
 		ref="canvasRef"
 		class="canvas-wrapper"
-		:style="{ cursor: canvas.waiting ? 'progress' : pointer.down && pointer.moved && !selection.visible ? 'move' : 'default' }"
+		:style="{ cursor: pointer.down && pointer.moved && !selection.visible ? 'move' : 'default' }"
 
 		@wheel.exact.prevent="onWheelScroll"
 		@wheel.shift.exact.prevent="onWheelScroll"

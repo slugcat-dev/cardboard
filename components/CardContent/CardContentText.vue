@@ -7,7 +7,7 @@ const contentRef = ref()
 const active = ref(false)
 
 // Activate new cards
-if (card.id === 'create')
+if (card.id === 'new:empty')
 	onMounted(activate)
 
 async function onBlur(event?: Event) {

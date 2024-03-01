@@ -26,11 +26,11 @@ onBeforeUnmount(() => clearTimeout(longPressTimeout))
 
 // Update card position on scroll while dragging
 watch(canvas, () => {
+	if (pointer.down && !cardInteractionAllowed())
+		return onPointerUp()
+
 	if (pointer.moved)
 		updateCardPos()
-
-	if (pointer.down && !canvas.cardDragAllowed)
-		onPointerUp()
 })
 
 // Scroll the canvas when dragging a card near the edge
@@ -136,10 +136,6 @@ function getContentComponent() {
 }
 
 function updateCardPos() {
-	// Calling onPointerUp here once when a gesture is performed on the canvas to prevent the crad from glitching around
-	if (!canvas.cardDragAllowed)
-		return onPointerUp()
-
 	const prevPosition = card.position
 
 	card.position = toCanvasPos(canvas, {
@@ -157,11 +153,14 @@ function updateCardPos() {
 	}
 }
 
-function cardInteractionAllowed(event: Event) {
+function cardInteractionAllowed(event?: Event) {
+	const targetAllowed = !(event && (event.target as Element).tagName === 'A')
+
 	return (
-		(event.target as Element).tagName !== 'A'
+		targetAllowed
 		&& canvas.cardDragAllowed
 		&& !contentRef.value.active
+		&& card.id
 	)
 }
 
@@ -189,7 +188,7 @@ function deleteCard() {
 		}"
 		:style="{
 			translate: `${card.position.x}px ${card.position.y}px`,
-			cursor: contentRef?.active ? 'auto' : canvas.select ? 'default' : pointer.down ? 'grabbing' : 'grab'
+			cursor: !card.id ? 'wait' : contentRef?.active ? 'auto' : canvas.select ? 'default' : pointer.down ? 'grabbing' : 'grab'
 		}"
 
 		@pointerdown.left.exact="onPointerDown"

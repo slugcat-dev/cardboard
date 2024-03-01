@@ -1,19 +1,17 @@
 // TODO ---
-const {	board } = await useBoards()
-
 // Handle pasted and dropped data
 export async function handleDataTransfer(dataTransfer: DataTransfer, position: Position) {
-	const files = Array.from(dataTransfer.files)
+	// const files = Array.from(dataTransfer.files)
 	const items = Array.from(dataTransfer.items)
 
 	for (const file of dataTransfer.files) {
 		if (file.type.startsWith('image')) {
-			board.value.cards.push(await fetchUpdateCard({
-				id: 'create',
+			createCard({
+				id: 'new:create',
 				type: 'image',
 				position,
 				content: await blobToBase64(file)
-			}))
+			})
 		}
 	}
 
@@ -22,12 +20,12 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 
 	items.forEach(async (item) => {
 		if (item.type === 'text/plain') {
-			board.value.cards.push(await fetchUpdateCard({
-				id: 'create',
-				type: 'text',
-				position,
-				content: dataTransfer.getData('text/plain')
-			}))
+			// The text will be pasted into the card immediately after it is focused
+			// Bad idea, but I'll leave it this way for now
+			createCard({
+				id: 'new:empty',
+				position
+			})
 		}
 	})
 }
@@ -44,4 +42,3 @@ function blobToBase64(blob: Blob | null) {
 			resolve(null)
 	})
 }
-// TODO ---

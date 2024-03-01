@@ -79,7 +79,7 @@ export function toCanvasRect(canvas: any, rect: DOMRect) {
 }
 
 export function toPos(event: { clientX: number, clientY: number }) {
-	return { x: event.clientX, y: event.clientY, ...event }
+	return { x: event.clientX, y: event.clientY }
 }
 
 export function toPosArray(touches: TouchList) {

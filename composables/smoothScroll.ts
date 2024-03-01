@@ -91,7 +91,6 @@ export function useSmoothScroll(canvas: any) {
 			else if (edgeScroll.distances.right < threshold)
 				canvas.scroll.x -= (threshold - edgeScroll.distances.right) * scrollSpeed
 
-			// This probably is technically wrong and very costly, but it feels smoother
 			animateSmoothScroll()
 
 			if (edgeScroll.active)

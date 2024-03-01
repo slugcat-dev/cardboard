@@ -1,7 +1,21 @@
 const {	board } = await useBoards()
 
+export async function createCard(card: Partial<Omit<Card, 'id'> & { id: 'new:empty' | 'new:create' }> & { position: Position }) {
+	card = {
+		id: 'new:empty',
+		type: 'text',
+		content: '',
+		...card
+	}
+
+	const index = board.value.cards.push(card as Card)
+
+	if (card.id === 'new:create')
+		await fetchUpdateCard(board.value.cards[index - 1])
+}
+
 export async function fetchUpdateCard(card: Partial<Card>) {
-	if (card.id === 'create') {
+	if (card.id?.startsWith('new')) {
 		delete card.id
 
 		const { id } = await $fetch<Card>(`/api/boards/${board.value.id}/cards`, {
@@ -30,7 +44,7 @@ export async function fetchUpdateMany(cards: Card[]) {
 export async function fetchDeleteCard(card: Card) {
 	board.value.cards.splice(board.value.cards.findIndex(c => c.id === card.id), 1)
 
-	if (card.id !== 'create')
+	if (!card.id.startsWith('new'))
 		await $fetch(`/api/boards/${board.value.id}/cards/${card.id}`, { method: 'DELETE' })
 }
 
