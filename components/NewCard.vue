@@ -33,12 +33,6 @@ watch(canvas, () => {
 		updateCardPos()
 })
 
-// Scroll the canvas when dragging a card near the edge
-watch(pointer, () => {
-	if (pointer.moved)
-		animateEdgeScroll(pointer.pos)
-})
-
 // Card selection
 watch(selection, () => {
 	const cardRect = toCanvasRect(canvas, cardRef.value.getBoundingClientRect())
@@ -97,6 +91,7 @@ function onPointerMove(event: PointerEvent) {
 
 	clearTimeout(longPressTimeout)
 	updateCardPos()
+	animateEdgeScroll(pointer.pos)
 }
 
 function onPointerUp() {

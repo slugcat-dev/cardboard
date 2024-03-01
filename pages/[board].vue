@@ -178,7 +178,8 @@ function onPointerDown(event: PointerEvent) {
 
 	pointer.type = event.pointerType
 	pointer.down = true
-	pointer.downPos = toPos(event)
+	pointer.pos = toPos(event)
+	pointer.downPos = pointer.pos
 	canvas.select = isMacOS ? event.metaKey : event.ctrlKey
 	activeElement = document.activeElement
 
@@ -318,7 +319,7 @@ function onClick(event: MouseEvent) {
 	if (activeElement !== document.body || (pointer.type === 'mouse' && event.detail < 2))
 		return
 
-	createCard({ position: toCanvasPos(canvas, pointer.pos) })
+	createCard({ position: toCanvasPos(canvas, event) })
 }
 
 async function onDrop(event: DragEvent) {
