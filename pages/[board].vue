@@ -40,6 +40,13 @@ const selection = reactive({
 		selection.cleared++
 	}
 })
+const animating = computed(() => (
+	pointer.down
+	|| pointer.gesture
+	|| canvas.smoothZoom !== canvas.zoom
+	|| canvas.scroll.smoothX !== canvas.scroll.x
+	|| canvas.scroll.smoothY !== canvas.scroll.y
+))
 const gridSize = computed(() => {
 	let value = 20 * canvas.smoothZoom
 
@@ -433,7 +440,8 @@ function updateSelectionRect() {
 			:class="{ overview: canvas.smoothZoom < 0.5 }"
 			:style="{
 				translate: `${canvas.scroll.smoothX}px ${canvas.scroll.smoothY}px`,
-				scale: canvas.smoothZoom
+				scale: canvas.smoothZoom,
+				willChange: animating ? 'transform' : 'auto'
 			}"
 		>
 			<div
