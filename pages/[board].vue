@@ -126,7 +126,7 @@ function deleteCards() {
 useEventListener(['keyup', 'keydown'], (event) => {
 	const key = event.key.toLowerCase()
 
-	if (!key.includes('arrow'))
+	if (!key.includes('arrow') || usingInput.value)
 		return
 
 	arrowKeys[key.substring(5) as 'left' | 'right' | 'up' | 'down'] = event.type === 'keydown'
