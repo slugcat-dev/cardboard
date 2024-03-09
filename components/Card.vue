@@ -234,6 +234,7 @@ function onContextMenu(event: MouseEvent) {
 		})
 	}
 
+	/*
 	useContextMenu().show({
 		position: {
 			x: event.clientX,
@@ -241,6 +242,7 @@ function onContextMenu(event: MouseEvent) {
 		},
 		entries: typeSpecificEntries
 	})
+	*/
 }
 
 // Move cards while scrolling the canvas
