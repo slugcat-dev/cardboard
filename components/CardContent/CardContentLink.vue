@@ -60,8 +60,8 @@ const title = computed(() => {
 
 		img,
 		svg {
-			width: 1rem;
-			height: 1rem;
+			width: 1.25rem;
+			height: 1.25rem;
 		}
 	}
 

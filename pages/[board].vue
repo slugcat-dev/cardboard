@@ -40,6 +40,21 @@ const selection = reactive({
 		selection.cleared++
 	}
 })
+const arrowKeys = {
+	left: false,
+	right: false,
+	up: false,
+	down: false
+}
+const {
+	animateSmoothScroll,
+	animateContinuousScroll,
+	stopContinuousScroll,
+	animateEdgeScroll,
+	stopEdgeScroll
+} = useSmoothScroll(canvas)
+const {	board } = await useBoards()
+const cards = ref(board.value.cards)
 const animating = computed(() => (
 	pointer.down
 	|| pointer.gesture
@@ -56,13 +71,6 @@ const gridSize = computed(() => {
 
 	return value
 })
-const {
-	animateSmoothScroll,
-	animateEdgeScroll,
-	stopEdgeScroll
-} = useSmoothScroll(canvas)
-const {	board } = await useBoards()
-const cards = ref(board.value.cards)
 let activeElement: Element | null
 
 definePageMeta({
@@ -73,28 +81,25 @@ definePageMeta({
 onMounted(resetPointerPos)
 useSeoMeta({ title: board.value.name })
 defineHotkeys({
-	'home': () => {
-		canvas.scroll.x = 0
-		canvas.scroll.y = 0
-		canvas.zoom = 1
-
-		animateSmoothScroll(500)
-	},
-	// TODO: overview
-	'end': () => { },
-	'arrowright': () => keyboardPan(100, 0),
-	'arrowleft': () => keyboardPan(-100, 0),
-	'arrowdown': () => keyboardPan(0, 100),
-	'arrowup': () => keyboardPan(0, -100),
-	'meta +': () => keyboardZoom(-.2),
-	'meta -': () => keyboardZoom(.2),
-	'space': () => createCard({ position: toCanvasPos(canvas, pointer.pos) }),
+	'home': resetZoom,
+	'meta +': keyboardZoom,
+	'meta -': keyboardZoom,
 	'meta a': () => selection.rect = new DOMRect(-Infinity, -Infinity, Infinity, Infinity),
+	'space': () => createCard({ position: toCanvasPos(canvas, pointer.pos) }),
 	'delete': deleteCards,
 	'backspace': deleteCards
 })
 
-function keyboardZoom(delta: number) {
+function resetZoom() {
+	canvas.scroll.x = 0
+	canvas.scroll.y = 0
+	canvas.zoom = 1
+
+	animateSmoothScroll(500)
+}
+
+function keyboardZoom(event: KeyboardEvent) {
+	const delta = event.key === '+' ? -.2 : .2
 	const canvasRect = canvas.ref.getBoundingClientRect()
 	const center = {
 		x: canvasRect.x + canvasRect.width / 2,
@@ -102,13 +107,6 @@ function keyboardZoom(delta: number) {
 	}
 
 	setCanvasZoom(canvas.zoom * (1 - delta), center)
-	animateSmoothScroll()
-}
-
-function keyboardPan(dX: number, dY: number) {
-	canvas.scroll.x -= dX
-	canvas.scroll.y -= dY
-
 	animateSmoothScroll()
 }
 
@@ -123,6 +121,41 @@ function deleteCards() {
 	fetchDeleteMany(selection.cards)
 	selection.clear()
 }
+
+// Pan the canvas using the arrow keys
+useEventListener(['keyup', 'keydown'], (event) => {
+	const key = event.key.toLowerCase()
+
+	if (!key.includes('arrow'))
+		return
+
+	arrowKeys[key.substring(5) as 'left' | 'right' | 'up' | 'down'] = event.type === 'keydown'
+
+	const direction = { x: 0, y: 0 }
+
+	if (arrowKeys.left)
+		direction.x += 1
+
+	if (arrowKeys.right)
+		direction.x -= 1
+
+	if (arrowKeys.up)
+		direction.y += 1
+
+	if (arrowKeys.down)
+		direction.y -= 1
+
+	if (direction.x === 0 && direction.y === 0)
+		return stopContinuousScroll()
+
+	// Normalize direction so scrolling diagonally doesn't feel faster
+	const magnitude = Math.hypot(direction.x, direction.y)
+
+	direction.x = direction.x / magnitude
+	direction.y = direction.y / magnitude
+
+	animateContinuousScroll(direction, 1000)
+})
 
 // Listen for paste events on the entire document
 useEventListener('paste', async (event: ClipboardEvent) => {
@@ -231,16 +264,22 @@ function onPointerUp(event?: PointerEvent) {
 			suppressClick()
 
 		// Make scrolling feel like it has inertia on touch devices
-		function kineticScrollStep() {
-			canvas.scroll.x += canvas.scroll.velocity.x
-			canvas.scroll.y += canvas.scroll.velocity.y
+		let prevTimestamp = Infinity
+
+		function kineticScrollStep(timestamp: number) {
+			const delta = Math.max(timestamp - prevTimestamp, 0) / (1000 / 60)
+
+			canvas.scroll.x += canvas.scroll.velocity.x * delta
+			canvas.scroll.y += canvas.scroll.velocity.y * delta
 			canvas.scroll.smoothX = canvas.scroll.x
 			canvas.scroll.smoothY = canvas.scroll.y
-			canvas.scroll.velocity.x *= .95
-			canvas.scroll.velocity.y *= .95
+			canvas.scroll.velocity.x *= 0.95 ** delta
+			canvas.scroll.velocity.y *= 0.95 ** delta
 
 			if ((Math.abs(canvas.scroll.velocity.x) > .25 || Math.abs(canvas.scroll.velocity.y) > .25) && !(pointer.down || pointer.gesture))
 				requestAnimationFrame(kineticScrollStep)
+
+			prevTimestamp = timestamp
 		}
 
 		if (pointer.type === 'touch' && moveThreshold(canvas.scroll.velocity, { x: 0, y: 0 }, 4))

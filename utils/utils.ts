@@ -114,3 +114,12 @@ export function selectRange(range: Range) {
 	selection?.removeAllRanges()
 	selection?.addRange(range)
 }
+
+export function blobToBase64(blob: Blob) {
+	return new Promise((resolve: (value: string) => void) => {
+		const reader = new FileReader()
+
+		reader.onloadend = () => resolve(reader.result as string)
+		reader.readAsDataURL(blob)
+	})
+}

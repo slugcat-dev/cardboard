@@ -112,7 +112,6 @@ function onPointerUp() {
 	stopEdgeScroll()
 }
 
-// TODO: Display custom ContextMenu
 function onContextMenu(event: MouseEvent) {
 	if (!cardInteractionAllowed(event))
 		return

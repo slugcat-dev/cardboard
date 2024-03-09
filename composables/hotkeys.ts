@@ -7,7 +7,10 @@ export function defineHotkeys(config: HotkeysConfig) {
 		const keySplit = key.toLowerCase().split(' ')
 		const hotkey = {
 			handler,
-			key: keySplit.filter(k => !['ctrl', 'meta', 'shift', 'alt'].includes(k)).join().replace(/^space/i, ' '),
+			key: keySplit
+				.filter(k => !['ctrl', 'meta', 'shift', 'alt'].includes(k))
+				.map(k => k === 'space' ? ' ' : k)
+				.join(),
 			ctrlKey: keySplit.includes('ctrl'),
 			metaKey: keySplit.includes('meta'),
 			shiftKey: keySplit.includes('shift'),
@@ -24,6 +27,9 @@ export function defineHotkeys(config: HotkeysConfig) {
 	})
 
 	useEventListener('keydown', (event: KeyboardEvent) => {
+		if (event.repeat)
+			return
+
 		for (const hotkey of hotkeys) {
 			if (
 				usingInput.value
@@ -36,7 +42,7 @@ export function defineHotkeys(config: HotkeysConfig) {
 				continue
 
 			event.preventDefault()
-			hotkey.handler()
+			hotkey.handler(event)
 		}
 	})
 }

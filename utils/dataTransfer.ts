@@ -29,16 +29,3 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 		}
 	})
 }
-
-function blobToBase64(blob: Blob | null) {
-	return new Promise((resolve: (result: string | null) => void) => {
-		const reader = new FileReader()
-
-		reader.onloadend = () => resolve(reader.result as string)
-
-		if (blob)
-			reader.readAsDataURL(blob)
-		else
-			resolve(null)
-	})
-}
