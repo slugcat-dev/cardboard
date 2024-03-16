@@ -18,7 +18,6 @@ defineExpose({ active })
 		class="card-content-image"
 		:src="card.content"
 		draggable="false"
-		loading="lazy"
 		@click.left.exact="activate"
 	>
 	<Teleport to="body">
@@ -28,10 +27,7 @@ defineExpose({ active })
 				class="image-preview"
 				@click="active = false"
 			>
-				<img
-					:src="card.content"
-					loading="lazy"
-				>
+				<img :src="card.content">
 			</div>
 		</Transition>
 	</Teleport>

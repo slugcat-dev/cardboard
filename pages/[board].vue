@@ -79,9 +79,9 @@ definePageMeta({
 	layout: 'board'
 })
 onMounted(resetPointerPos)
-useSeoMeta({ title: board.value.name })
 defineHotkeys({
 	'home': resetZoom,
+	'end': overview,
 	'meta +': keyboardZoom,
 	'meta -': keyboardZoom,
 	'meta a': () => selection.rect = new DOMRect(-Infinity, -Infinity, Infinity, Infinity),
@@ -98,12 +98,43 @@ function resetZoom() {
 	animateSmoothScroll(500)
 }
 
+// Fit all cards into view
+function overview() {
+	const canvasRect = canvas.ref.getBoundingClientRect()
+	const cardRefs = Array.from<HTMLElement>(canvas.ref.querySelectorAll('.card'))
+	const rect = cardRefs.reduce<DOMRect | undefined>((rect, cardRef) => {
+		const cardRect = toCanvasRect(canvas, cardRef.getBoundingClientRect())
+
+		if (!rect)
+			return cardRect
+
+		const minX = Math.min(rect.x, cardRect.x)
+		const minY = Math.min(rect.y, cardRect.y)
+		const maxX = Math.max(rect.x + rect.width, cardRect.x + cardRect.width)
+		const maxY = Math.max(rect.y + rect.height, cardRect.y + cardRect.height)
+
+		return new DOMRect(minX, minY, maxX - minX, maxY - minY)
+	}, undefined)
+
+	if (!rect)
+		return resetZoom()
+
+	const scaleX = canvasRect.width / (rect.width + 100)
+	const scaleY = canvasRect.height / (rect.height + 100)
+
+	canvas.zoom = Math.max(Math.min(scaleX, scaleY, 1), .2)
+	canvas.scroll.x = (canvasRect.width - rect.width * canvas.zoom) / 2 - rect.x * canvas.zoom
+	canvas.scroll.y = (canvasRect.height - rect.height * canvas.zoom) / 2 - rect.y * canvas.zoom
+
+	animateSmoothScroll(500)
+}
+
 function keyboardZoom(event: KeyboardEvent) {
 	const delta = event.key === '+' ? -.2 : .2
 	const canvasRect = canvas.ref.getBoundingClientRect()
 	const center = {
 		x: canvasRect.x + canvasRect.width / 2,
-		y: canvasRect.x + canvasRect.width / 2
+		y: canvasRect.y + canvasRect.height / 2
 	}
 
 	setCanvasZoom(canvas.zoom * (1 - delta), center)
@@ -159,7 +190,7 @@ useEventListener(['keyup', 'keydown'], (event) => {
 
 // Listen for paste events on the entire document
 useEventListener('paste', async (event: ClipboardEvent) => {
-	if (event.target === document.body && event.clipboardData)
+	if (!usingInput.value && event.clipboardData)
 		await handleDataTransfer(event.clipboardData, toCanvasPos(canvas, pointer.pos))
 })
 
@@ -490,7 +521,8 @@ function updateSelectionRect() {
 					height: `${Math.abs(selection.rect?.height || 0)}px`,
 					translate: `${selection.rect?.left || 0}px ${selection.rect?.top || 0}px`,
 					borderWidth: `${1 / canvas.zoom}px`,
-					opacity: selection.visible ? 1 : 0
+					opacity: selection.visible ? 1 : 0,
+					transition: `opacity ${selection.visible ? 0 : .2}s`
 				}"
 			/>
 			<NewCard
@@ -533,7 +565,6 @@ function updateSelectionRect() {
 			position: absolute;
 			background-color: var(--color-accent-25);
 			border: 1px solid var(--color-accent);
-			transition: opacity .2s;
 			pointer-events: none;
 		}
 	}

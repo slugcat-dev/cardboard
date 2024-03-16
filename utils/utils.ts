@@ -1,12 +1,34 @@
 export const isMacOS = process.client && navigator.userAgent.includes('Macintosh')
-export const usingInput = ref(false)
 
-watchEffect(() => {
+// TODO: composable
+export function useActiveElement() {
+	const activeElement = ref<HTMLElement | null>()
+
+	function update() {
+		activeElement.value = document?.activeElement as HTMLElement | null
+	}
+
+	if (window) {
+		useEventListener('blur', (event) => {
+			if (event.relatedTarget !== null)
+				return
+
+			update()
+		}, true)
+		useEventListener('focus', update, true)
+	}
+
+	update()
+
+	return activeElement
+}
+
+export const usingInput = computed(() => {
 	const activeElement = useActiveElement()
 	const tagName = activeElement.value?.tagName.toLowerCase()
 	const contentEditable = activeElement.value?.contentEditable.toLowerCase()
 
-	usingInput.value = (
+	return (
 		tagName === 'input'
 		|| tagName === 'textarea'
 		|| contentEditable === 'true'

@@ -3,7 +3,12 @@
 <script setup lang="ts">
 import { CardContentImage, CardContentLink, CardContentText } from '#components'
 
-const { card, canvas, selection } = defineProps(['card', 'canvas', 'selection'])
+const { card, canvas, selection } = defineProps<{
+	card: Card
+	canvas: any
+	selection: any
+}>()
+// const { card, canvas, selection } = props
 const { animateEdgeScroll, stopEdgeScroll } = useSmoothScroll(canvas)
 const cardRef = ref()
 const contentRef = ref()
@@ -26,11 +31,16 @@ onBeforeUnmount(() => clearTimeout(longPressTimeout))
 
 // Update card position on scroll while dragging
 watch(canvas, () => {
-	if (pointer.down && !cardInteractionAllowed())
+	if (!pointer.down)
+		return
+
+	if (!cardInteractionAllowed())
 		return onPointerUp()
 
-	if (pointer.moved)
-		updateCardPos()
+	if (!pointer.moved)
+		pointer.moved = true
+
+	updateCardPos()
 })
 
 // Card selection

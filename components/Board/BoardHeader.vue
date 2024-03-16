@@ -5,6 +5,7 @@ const boardNameRef = ref()
 const { board, deleteBoard } = await useBoards()
 const { breadcrumbs, oldcrumbs } = useBreadcrumbs()
 
+useSeoMeta({ title: () => board.value.name })
 defineHotkeys({
 	escape: () => {
 		if (breadcrumbs.value.length === 0)
@@ -35,7 +36,6 @@ function onBoardNameUpdate() {
 	}
 
 	board.value.name = name
-	document.title = name
 
 	$fetch(`/api/boards/${board.value.id}`, {
 		method: 'PUT',

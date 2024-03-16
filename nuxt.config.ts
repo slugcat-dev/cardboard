@@ -25,7 +25,7 @@ export default defineNuxtConfig({
 	app: {
 		pageTransition: { name: 'slide' },
 		layoutTransition: { name: 'slide' },
-		rootId: 'root'
+		rootId: 'app'
 	},
 	css: [
 		'~/assets/style.scss',
