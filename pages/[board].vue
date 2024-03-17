@@ -527,7 +527,7 @@ function updateSelectionRect() {
 					transition: `opacity ${selection.visible ? 0 : .2}s`
 				}"
 			/>
-			<NewCard
+			<Card
 				v-for="card in cards"
 				:key="card.id"
 				:card="card"

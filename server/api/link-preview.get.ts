@@ -1,6 +1,26 @@
 import type { Page } from 'puppeteer-core'
 import puppeteer from 'puppeteer-core'
-import { isImageAccessible } from '~/utils'
+
+function isBase64(string: string) {
+	// TODO:
+	if (/^(?:data:\w+\/[a-zA-Z\+\-\.]+;base64,)(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/gi.test(string))
+		return true
+}
+
+async function isImageAccessible(url: string) {
+	// Allow base64 data URLs
+	if (isBase64(url))
+		return true
+
+	try {
+		const res = await fetch(new URL(url).toString())
+
+		return /image\/*/.test(res.headers.get('content-type') || '')
+	}
+	catch {}
+
+	return false
+}
 
 export default defineEventHandler(async (event) => {
 	await requireUserSession(event)
