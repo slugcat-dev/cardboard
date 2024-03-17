@@ -102,6 +102,8 @@ function resetZoom() {
 function overview() {
 	const canvasRect = canvas.ref.getBoundingClientRect()
 	const cardRefs = Array.from<HTMLElement>(canvas.ref.querySelectorAll('.card'))
+
+	// Calculate the area occupied by all cards
 	const rect = cardRefs.reduce<DOMRect | undefined>((rect, cardRef) => {
 		const cardRect = toCanvasRect(canvas, cardRef.getBoundingClientRect())
 
