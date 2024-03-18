@@ -104,8 +104,8 @@ export function toPos(event: { clientX: number, clientY: number }) {
 	return { x: event.clientX, y: event.clientY }
 }
 
-export function toPosArray(touches: TouchList) {
-	return Array.from(touches).map(point => toPos(point))
+export function toPosArray(touches: Touch[]) {
+	return touches.map(point => toPos(point))
 }
 
 export function midpoint(positions: Position[]) {

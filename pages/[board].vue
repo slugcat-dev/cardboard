@@ -11,7 +11,7 @@ const pointer = reactive({
 	gesture: false
 })
 const gesture = {
-	initialTouches: [] as Position[],
+	initialTouches: [] as Touch[],
 	initialZoom: 1,
 	prevTranslation: { x: 0, y: 0 }
 }
@@ -134,12 +134,11 @@ function overview() {
 function keyboardZoom(event: KeyboardEvent) {
 	const delta = event.key === '+' ? -.2 : .2
 	const canvasRect = canvas.ref.getBoundingClientRect()
-	const center = {
+
+	setCanvasZoom(canvas.zoom * (1 - delta), {
 		x: canvasRect.x + canvasRect.width / 2,
 		y: canvasRect.y + canvasRect.height / 2
-	}
-
-	setCanvasZoom(canvas.zoom * (1 - delta), center)
+	})
 	animateSmoothScroll()
 }
 
@@ -327,31 +326,34 @@ function onPointerUp(event?: PointerEvent) {
 	stopEdgeScroll()
 }
 
+// Start a pinch-to-zoom gesture
 function onTouchStart(event: TouchEvent) {
-	const touches = toPosArray(event.touches)
-
-	pointer.gesture = touches.length >= 2
-
-	if (!pointer.gesture)
+	if (event.touches.length !== 2)
 		return
+
+	pointer.gesture = true
 
 	if (pointer.down)
 		onPointerUp()
 
-	gesture.initialTouches = touches
+	gesture.initialTouches = Array.from(event.touches)
 	gesture.initialZoom = canvas.smoothZoom
 	gesture.prevTranslation = { x: 0, y: 0 }
 }
 
 function onTouchMove(event: TouchEvent) {
-	if (!pointer.gesture)
+	// Filter out all touchpoints not involved in the gesture
+	const touches = Array.from(event.touches).filter(t => gesture.initialTouches.some(i => i.identifier === t.identifier))
+
+	if (!pointer.gesture || touches.length === 0)
 		return
 
-	const touches = toPosArray(event.touches)
-	const origin = midpoint(gesture.initialTouches)
-	const currentMidpoint = midpoint(touches)
+	const initialTouchPoints = toPosArray(gesture.initialTouches)
+	const touchPoints = toPosArray(touches)
+	const origin = midpoint(initialTouchPoints)
+	const currentMidpoint = midpoint(touchPoints)
 	const transform = {
-		scale: distance(touches) / distance(gesture.initialTouches),
+		scale: distance(touchPoints) / distance(initialTouchPoints),
 		translation: {
 			x: currentMidpoint.x - origin.x,
 			y: currentMidpoint.y - origin.y
@@ -362,11 +364,13 @@ function onTouchMove(event: TouchEvent) {
 		y: transform.translation.y - gesture.prevTranslation.y
 	}
 
+	// Elastic zoom
 	setCanvasZoom(gesture.initialZoom * transform.scale, {
 		x: origin.x + transform.translation.x,
 		y: origin.y + transform.translation.y
 	}, true)
 
+	// Apply transformations to the canvas
 	canvas.scroll.x += translationDelta.x
 	canvas.scroll.y += translationDelta.y
 	canvas.scroll.smoothX = canvas.scroll.x
@@ -376,16 +380,16 @@ function onTouchMove(event: TouchEvent) {
 }
 
 function onTouchEnd(event: TouchEvent) {
-	// As long as there are still more than two touch points, the gesture isn't done
-	onTouchStart(event)
+	// As long as the two initial touches are still down, the gesture isn't completed
+	pointer.gesture = gesture.initialTouches.filter(i => Array.from(event.touches).some(t => t.identifier === i.identifier)).length === 2
 
-	// Elastic zoom
+	// Elastic zoom bounce back
 	if (!pointer.gesture && (canvas.zoom > 2 || canvas.zoom < .2)) {
-		const rect = canvas.ref.getBoundingClientRect()
+		const canvasRect = canvas.ref.getBoundingClientRect()
 
 		setCanvasZoom(canvas.zoom, {
-			x: rect.width / 2,
-			y: rect.height / 2
+			x: canvasRect.x + canvasRect.width / 2,
+			y: canvasRect.y + canvasRect.height / 2
 		})
 		animateSmoothScroll(300)
 	}
