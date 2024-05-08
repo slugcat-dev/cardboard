@@ -14,7 +14,9 @@ export async function useBoards() {
 
 	// Fetch board cards
 	if (!board.value.cards) {
-		const { data } = await useFetch<{ cards: Card[] }>(`/api/boards/${board.value.id}`, { method: 'GET', pick: ['cards'] })
+		const { data } = process.server
+			? await useFetch<{ cards: Card[] }>(`/api/boards/${board.value.id}`, { method: 'GET', pick: ['cards'] })
+			: { data: { value: await $fetch<{ cards: Card[] }>(`/api/boards/${board.value.id}`, { method: 'GET' }) } }
 
 		board.value.cards = data.value?.cards || []
 	}

@@ -8,7 +8,6 @@ const { card, canvas, selection } = defineProps<{
 	canvas: any
 	selection: any
 }>()
-// const { card, canvas, selection } = props
 const { animateEdgeScroll, stopEdgeScroll } = useSmoothScroll(canvas)
 const cardRef = ref()
 const contentRef = ref()
@@ -208,7 +207,7 @@ function deleteCard() {
 		<component
 			:is="getContentComponent()"
 			ref="contentRef"
-			:card="card"
+			:card
 			@activate="selection.clear"
 		/>
 	</div>

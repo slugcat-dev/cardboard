@@ -33,11 +33,9 @@ const selection = reactive({
 	rect: process.client ? new DOMRect() : undefined,
 	cards: [] as Card[],
 	visible: false,
-	cleared: 0,
 	clear() {
 		selection.rect = undefined
 		selection.cards = []
-		selection.cleared++
 	}
 })
 const arrowKeys = {
@@ -98,7 +96,7 @@ function resetZoom() {
 	animateSmoothScroll(500)
 }
 
-// Fit all cards into view
+// Zoom out to fit all cards into view
 function overview() {
 	const canvasRect = canvas.ref.getBoundingClientRect()
 	const cardRefs = Array.from<HTMLElement>(canvas.ref.querySelectorAll('.card'))
@@ -534,9 +532,9 @@ function updateSelectionRect() {
 			<Card
 				v-for="card in cards"
 				:key="card.id"
-				:card="card"
-				:canvas="canvas"
-				:selection="selection"
+				:card
+				:canvas
+				:selection
 			/>
 		</div>
 	</div>
