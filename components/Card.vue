@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/no-mutating-props -->
 
 <script setup lang="ts">
-import { CardContentImage, CardContentLink, CardContentText } from '#components'
+import { CardContentImage, CardContentLink, CardContentText, CardContentTmp } from '#components'
 
 const { card, canvas, selection } = defineProps<{
 	card: Card
@@ -134,6 +134,7 @@ function getContentComponent() {
 		case 'text': return CardContentText
 		case 'image': return CardContentImage
 		case 'link': return CardContentLink
+		case 'tasklist': return CardContentTmp
 		default: return CardContentText
 	}
 }
@@ -230,6 +231,14 @@ function deleteCard() {
 		z-index: -1;
 		content: '';
 		inset: -100vh -100vw;
+	}
+
+	&.selected .card-content {
+		border-color: var(--color-accent-50);
+	}
+
+	&.content-active .card-content-text {
+		border-color: var(--color-accent);
 	}
 
 	&.deleted {

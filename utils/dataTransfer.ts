@@ -20,11 +20,12 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 
 	items.forEach(async (item) => {
 		if (item.type === 'text/plain') {
-			// The text will be pasted into the card immediately after it is focused
-			// Bad idea, but I'll leave it this way for now
-			createCard({
-				id: 'new:empty',
-				position
+			item.getAsString((data) => {
+				createCard({
+					id: 'new:create',
+					position,
+					content: data
+				})
 			})
 		}
 	})

@@ -7,7 +7,7 @@ const title = computed(() => {
 </script>
 
 <template>
-	<div class="card-content-link">
+	<div class="card-content card-content-link">
 		<div class="favicon">
 			<img
 				v-if="card.content.favicon"
@@ -62,6 +62,7 @@ const title = computed(() => {
 		svg {
 			width: 1.25rem;
 			height: 1.25rem;
+			-webkit-touch-callout: none;
 		}
 	}
 
@@ -83,9 +84,5 @@ const title = computed(() => {
 			color: currentcolor;
 		}
 	}
-}
-
-.card.selected > .card-content-link {
-	border-color: var(--color-accent-50);
 }
 </style>

@@ -1,130 +1,123 @@
 <!-- eslint-disable vue/no-mutating-props -->
 
 <script setup lang="ts">
+// TODO: clean up
+import { Compartment, EditorState } from '@codemirror/state'
+import { EditorView, drawSelection, dropCursor, highlightSpecialChars, highlightTrailingWhitespace, highlightWhitespace, keymap, rectangularSelection } from '@codemirror/view'
+import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands'
+import { vim } from '@replit/codemirror-vim'
+import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
+import { languages } from '@codemirror/language-data'
+import { bracketMatching, defaultHighlightStyle, foldKeymap, indentOnInput, syntaxHighlighting } from '@codemirror/language'
+import { closeBrackets, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete'
+import { lintKeymap } from '@codemirror/lint'
+
 const { card } = defineProps(['card'])
 const emit = defineEmits(['activate'])
 const contentRef = ref()
 const active = ref(false)
+const editable = new Compartment()
 
-// Activate new cards
-if (card.id === 'new:empty')
-	onMounted(activate)
+let editor: EditorView
 
-async function onBlur(event?: Event) {
-	if (event?.type !== 'blur')
-		return contentRef.value.blur()
+onMounted(() => {
+	editor = new EditorView({
+		doc: card.content,
+		extensions: [
+			// vim(),
 
-	active.value = false
-	contentRef.value.contentEditable = false
+			bracketMatching(),
+			closeBrackets(),
+			drawSelection(),
+			dropCursor(),
+			highlightTrailingWhitespace(),
+			// highlightWhitespace(),
+			history(),
 
-	// Delete empty cards
-	if (isEmpty())
-		return fetchDeleteCard(card)
+			indentOnInput(),
+			highlightSpecialChars(),
 
-	card.content = contentRef.value.innerHTML
+			EditorState.allowMultipleSelections.of(true),
 
-	fetchUpdateCard(card)
-}
+			syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+
+			rectangularSelection(),
+
+			keymap.of([
+				...closeBracketsKeymap,
+				...defaultKeymap,
+				...historyKeymap,
+				...foldKeymap,
+				...completionKeymap,
+				...lintKeymap,
+				indentWithTab
+			]),
+
+			markdown({
+				base: markdownLanguage,
+				codeLanguages: languages
+			}),
+
+			editable.of(EditorView.editable.of(false))
+		],
+		parent: contentRef.value
+	})
+
+	editor.contentDOM.addEventListener('blur', onBlur)
+
+	// Activate new cards
+	if (card.id === 'new:empty')
+		activate()
+})
+
+onBeforeUnmount(() => {
+	editor.contentDOM.removeEventListener('blur', onBlur)
+	editor.destroy()
+})
 
 function onKeyDownDel() {
 	if (isEmpty())
-		onBlur()
+		editor.contentDOM.blur()
 }
 
 function onKeyDownEsc(event: KeyboardEvent) {
 	// Prevent navigation
 	event.stopPropagation()
-	onBlur()
+	editor.contentDOM.blur()
 }
 
-// TODO ---
-async function onPaste(event: ClipboardEvent) {
-	if (!event.clipboardData)
-		return
-
-	const files = Array.from(event.clipboardData.files)
-
-	if (files.length > 0) {
-		event.preventDefault()
-
-		if (!isEmpty() || !files[0].type.startsWith('image'))
-			return
-
-		const url = await blobToBase64(files[0])
-
-		card.content = url
-		card.type = 'image'
-
-		fetchUpdateCard(card)
-
-		// TODO: multiple files
-		// TODO: other types than img
-		// TODO: send this part of func to canvas paste handler instead and del card
-	}
-}
-
-function blobToBase64(blob: Blob | null) {
-	return new Promise((resolve: (result: string | null) => void) => {
-		const reader = new FileReader()
-
-		reader.onloadend = () => resolve(reader.result as string)
-
-		if (blob)
-			reader.readAsDataURL(blob)
-		else
-			resolve(null)
-	})
-}
-// TODO ---
-
-function activate(event?: MouseEvent) {
+function activate() {
 	if (active.value)
 		return
 
 	active.value = true
-	contentRef.value.contentEditable = true
 
-	contentRef.value.focus()
+	editor.dispatch({
+		effects: editable.reconfigure(EditorView.editable.of(true))
+	})
+	editor.focus()
 	emit('activate')
-
-	if (event)
-		moveCaretWhereClicked(event)
 }
 
-function moveCaretWhereClicked(event: MouseEvent | MouseEvent & { rangeOffset: number, rangeParent: Node }) {
-	const range = (() => {
-	// Firefox-only, not documented on MDN
-		if ('rangeOffset' in event) {
-			const range = document.createRange()
+async function onBlur() {
+	active.value = false
 
-			range.setStart(event.rangeParent, event.rangeOffset)
-			range.collapse(true)
+	editor.dispatch({
+		effects: editable.reconfigure(EditorView.editable.of(false)),
+		selection: { anchor: 0 }
+	})
 
-			return range
-		}
+	// Delete empty cards
+	if (isEmpty())
+		return fetchDeleteCard(card)
 
-		// Deprecated in favor of caretPositionFromPoint, but supported by every browser except Firefox (which is the only to support the new method)
-		return document.caretRangeFromPoint(event.clientX, event.clientY) ?? document.createRange()
-	})()
+	card.content = editor.state.doc.toString()
 
-	// Move the caret to the start or end of the clicked word
-	if (isPointerCoarse()) {
-		const text = range.startContainer.textContent || ''
-		let start = range.startOffset
-		let end = range.startOffset
-
-		while (start > 0 && !/\s|\W/.test(text.charAt(start - 1))) start--
-		while (end < text.length && !/\s|\W/.test(text.charAt(end))) end++
-
-		range.setStart(range.startContainer, end - range.startOffset <= range.startOffset - start ? end : start)
-		range.collapse(true)
-	}
-
-	selectRange(range)
+	fetchUpdateCard(card)
 }
 
 function isEmpty() {
-	return contentRef.value.textContent.trim().length === 0
+	return editor.state.doc.toString().trim().length === 0
 }
 
 defineExpose({ active })
@@ -133,40 +126,105 @@ defineExpose({ active })
 <template>
 	<div
 		ref="contentRef"
-		class="card-content-text"
-		contenteditable="false"
-		spellcheck="false"
+		class="card-content card-content-text"
 		@click.left.exact="activate"
-		@blur="onBlur"
 		@keydown.escape="onKeyDownEsc"
 		@keydown.delete="onKeyDownDel"
-		@paste="onPaste"
-		v-html="card.content"
 	/>
 </template>
 
 <style lang="scss">
 .card-content-text {
-	min-height: 2.25rem;
 	padding: .375rem;
 	font-size: .875rem;
 	background-color: #222;
 	border: 2px solid var(--color-border);
 	border-radius: .375rem;
 	box-shadow: var(--shadow-card);
-
-	&:focus-visible {
-		border-color: var(--color-accent);
-		outline: none;
-	}
-
-	h1 {
-		margin: 0;
-		font-size: 1.125rem;
-	}
 }
 
-.card.selected > .card-content-text {
-	border-color: var(--color-accent-50);
+/* stylelint-disable */
+
+.cm-content {
+	padding: 0 !important;
+	font-family: Roboto, system-ui, sans-serif;
+	line-height: 1.25rem;
 }
+
+.cm-scroller {
+	overflow-x: initial !important;
+}
+
+.cm-line {
+  padding: 0 !important;
+}
+
+.cm-selectionBackground {
+	background-color: var(--color-accent-25) !important;
+}
+
+.cm-cursor,
+.cm-dropCursor {
+	width: 2px;
+
+	// margin: 0 !important;
+	background-color: var(--color-text);
+	border: none !important;
+}
+
+.cm-matchingBracket {
+	background-color: var(--color-good-25) !important;
+}
+
+.cm-nonmatchingBracket,
+.cm-trailingSpace {
+	background-color: var(--color-danger-25) !important;
+}
+
+.ͼ5 {
+	color: var(--color-text);
+	opacity: .5;
+}
+
+.ͼ6 {
+	text-decoration: none;
+}
+
+.ͼ7 {
+	font-weight: bold;
+	font-size: 1.125rem;
+	text-decoration: none;
+}
+
+.ͼb {
+	color: oklch(80% .125 340deg);
+}
+
+.ͼc {
+	color: var(--color-accent);
+}
+
+.ͼd {
+	color: var(--color-good);
+}
+
+.ͼe {
+	color: var(--color-danger);
+}
+
+.ͼg,
+.ͼl {
+	color: var(--color-accent);
+}
+
+.ͼi {
+	color: var(--color-good);
+}
+
+.ͼm {
+	color: var(--color-text);
+	opacity: .5;
+}
+
+// more classes till n
 </style>

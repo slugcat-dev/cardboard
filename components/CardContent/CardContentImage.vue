@@ -15,7 +15,7 @@ defineExpose({ active })
 
 <template>
 	<img
-		class="card-content-image"
+		class="card-content card-content-image"
 		:src="card.content"
 		draggable="false"
 		@click.left.exact="activate"
@@ -45,10 +45,6 @@ defineExpose({ active })
 	outline-offset: -2px;
 	box-shadow: var(--shadow-card);
 	-webkit-touch-callout: none;
-}
-
-.card.selected > .card-content-image {
-	outline-color: var(--color-accent-50);
 }
 
 .image-preview {
