@@ -20,17 +20,19 @@ defineExpose({ active })
 		draggable="false"
 		@click.left.exact="activate"
 	>
-	<Teleport to="body">
-		<Transition name="image-preview">
-			<div
-				v-if="active"
-				class="image-preview"
-				@click="active = false"
-			>
-				<img :src="card.content">
-			</div>
-		</Transition>
-	</Teleport>
+	<ClientOnly>
+		<Teleport to="body">
+			<Transition name="image-preview">
+				<div
+					v-if="active"
+					class="image-preview"
+					@click="active = false"
+				>
+					<img :src="card.content">
+				</div>
+			</Transition>
+		</Teleport>
+	</ClientOnly>
 </template>
 
 <style lang="scss">
