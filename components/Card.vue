@@ -158,7 +158,11 @@ function updateCardPos() {
 }
 
 function cardInteractionAllowed(event?: Event) {
-	const targetAllowed = !(event && (event.target as Element).tagName === 'A')
+	const targetElement = event?.target as Element
+	const targetAllowed = !(event && (
+		targetElement.tagName === 'INPUT'
+		|| targetElement.tagName === 'A'
+	))
 
 	return (
 		targetAllowed
