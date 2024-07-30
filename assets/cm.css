@@ -1,0 +1,33 @@
+/* stylelint-disable selector-class-pattern */
+
+.cm-scroller {
+	overflow-x: initial !important;
+}
+
+.cm-content {
+	padding: 0 !important;
+	font-family: Roboto, system-ui, sans-serif;
+	line-height: 1.25rem;
+}
+
+.cm-selectionBackground {
+	background-color: var(--color-accent-25) !important
+}
+
+.cm-line {
+  padding: 0 !important;
+}
+
+.cm-markdown-blockquote {
+	&::before {
+		position: absolute;
+		height: 1.25rem;
+		border-left: 2px solid var(--color-text);
+		opacity: .5;
+		content: '';
+	}
+
+	:first-child {
+		opacity: 0;
+	}
+}

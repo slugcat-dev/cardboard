@@ -17,7 +17,9 @@ export default antfu(
 			'ts/consistent-type-definitions': ['error', 'interface'],
 			'style/no-floating-decimal': 'off',
 			'unicorn/prefer-number-properties': ['error', { checkInfinity: false }],
-			'no-unused-expressions': 'off'
+			'no-unused-expressions': 'off',
+			'antfu/curly': 'off',
+			'style/brace-style': 'off'
 		}
 	}
 )
