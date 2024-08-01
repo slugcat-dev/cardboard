@@ -34,7 +34,7 @@ export default defineNuxtConfig({
 	css: [
 		'~/assets/style.scss',
 		'~/assets/transitions.scss',
-		'~/assets/cm.css'
+		'/codemirror/style.css'
 	],
 
 	experimental: {

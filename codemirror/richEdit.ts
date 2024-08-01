@@ -21,8 +21,8 @@ const tokenHidden = [
 ]
 const decorationHeading = Decoration.mark({ tagName: 'h1', class: 'cm-markdown-heading' })
 const decorationInlineCode = Decoration.mark({ class: 'cm-markdown-inline-code' })
-const decorationBlockquote = Decoration.mark({ class: 'cm-markdown-blockquote' })
 const decorationTaskMarker = Decoration.mark({ class: 'cm-markdown-task-marker' })
+const decorationBlockquote = Decoration.mark({ class: 'cm-markdown-blockquote' })
 const decorationCodeBlock = Decoration.line({ class: 'cm-markdown-code-block' })
 const decorationHidden = Decoration.mark({ class: 'cm-markdown-hidden' })
 

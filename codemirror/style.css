@@ -1,41 +1,40 @@
 /* stylelint-disable selector-class-pattern */
 
-.cm-cursor,
-.cm-dropCursor {
-	width: 2px;
-	margin: -1px !important;
-	background-color: var(--color-text);
-	border: none !important;
-	transition: all 50ms;
+.cm-markdown-heading {
+  margin: 0;
+  font-weight: bold;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
 }
 
-/* cursor height */
+.cm-markdown-task-marker {
+  font-family: 'Ubuntu Mono', monospace;
+}
 
-/* selection bg */
+.cm-markdown-checkbox {
+  position: relative;
+  top: .125rem;
+  display: inline-flex;
+  margin-inline-end: .25rem;
 
-/*
-'.cm-selectionLayer': { zIndex: '100 !important', mixBlendMode: 'hue !important' },
-	'.cm-selectionBackground': { backgroundColor: 'var(--color-accent-25) !important' },
-
-	'.cm-selectionBackground': { backgroundColor: 'var(--color-accent-25) !important' },
-*/
-
-.cm-selectionLayer { mix-blend-mode: hue;
-	pointer-events: none; }
+	& > input {
+		width: .875rem;
+		height: .875rem;
+		margin: 0;
+	}
+}
 
 .cm-markdown-blockquote {
+	color: transparent;
+
 	&::before {
 		position: absolute;
 		width: 3px;
 		height: calc(1.25rem + 2px);
 		margin-top: -1px;
-		background-color: color-mix(in srgb, var(--color-text), #222 50%);
+		background-color: #666;
 		border-radius: .125rem;
 		content: '';
-	}
-
-	.cm-markdown-mark {
-		color: transparent;
 	}
 }
 
@@ -48,12 +47,11 @@
 
 .cm-markdown-inline-code {
 	padding-block: .125rem;
+	border-radius: .25rem;
 
 	&:has(.cm-markdown-hidden) {
 		padding-inline: .25rem
 	}
-
-	border-radius: .25rem;
 }
 
 .cm-markdown-code-block {
@@ -72,23 +70,3 @@
 	border-bottom-right-radius: .375rem;
 	border-bottom-left-radius: .375rem;
 }
-
-/*
-
-	element.style {
-    tab-size: 4;
-	}
-
-	.cm-content {
-    caret-color: transparent !important;
-	}
-
-	.cm-content {
-    caret-color: white;
-	}
-
-	.cm-line {
-    caret-color: transparent !important;
-	}
-
-*/

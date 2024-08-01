@@ -47,10 +47,10 @@ const cursorLayer = layer({
 
 const themeSpec: { [selector: string]: StyleSpec } = {
 	'.cm-line': {
-		caretColor: canHidePrimary ? 'transparent !important' : 'initial !important'
+		caretColor: canHidePrimary ? 'transparent !important' : 'var(--color-accent) !important'
 	},
 	'.cm-content': {
-		caretColor: canHidePrimary ? 'transparent !important' : 'initial !important'
+		caretColor: canHidePrimary ? 'transparent !important' : 'var(--color-accent) !important'
 	}
 }
 

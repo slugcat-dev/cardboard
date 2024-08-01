@@ -2,7 +2,7 @@
 
 <script setup lang="ts">
 import { EditorView } from '@codemirror/view'
-import { Compartment, EditorState } from '@codemirror/state'
+import { Compartment } from '@codemirror/state'
 import editor from '../../codemirror/editor'
 
 const { card } = defineProps(['card'])

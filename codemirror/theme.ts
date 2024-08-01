@@ -17,8 +17,9 @@ const violet = '#c678dd'
 const highlightStyle = HighlightStyle.define([
 	{ tag: markTag, class: 'cm-markdown-mark' },
 	{ tag: [t.heading, t.strong], fontWeight: 'bold' },
-	{ tag: [t.emphasis, underlineItalicTag], fontStyle: 'italic' },
-	{ tag: [underlineTag, underlineItalicTag], class: 'cm-markdown-underline' },
+	{ tag: t.emphasis, class: 'cm-markdown-italic' },
+	{ tag: underlineTag, class: 'cm-markdown-underline' },
+	{ tag: underlineItalicTag, class: 'cm-markdown-underline cm-markdown-italic' },
 	{ tag: t.strikethrough, class: 'cm-markdown-strikethrough' },
 
 	{ tag: t.keyword, color: violet },
@@ -44,29 +45,19 @@ const editorTheme = EditorView.theme({
 	},
 	'.cm-content': { padding: 0 },
 	'.cm-line': { padding: 0 },
+	'.cm-cursor, .cm-dropCursor': {
+		width: '2px',
+		marginLeft: '-1px',
+		backgroundColor: 'currentcolor',
+		border: 'none',
+		transition: 'all 50ms'
+	},
 	'.cm-markdown-hidden': { display: 'none' },
 	'.cm-markdown-mark': { color: 'color-mix(in srgb, currentcolor, transparent 50%)' },
-	'.cm-markdown-heading': {
-		margin: 0,
-		fontWeight: 'bold',
-		fontSize: '1.25rem',
-		lineHeight: '1.75rem'
-	},
+	'.cm-markdown-italic': { fontStyle: 'italic' },
 	'.cm-markdown-underline': { textDecoration: 'underline' },
 	'.cm-markdown-strikethrough': { textDecoration: 'line-through' },
-	'.cm-markdown-strikethrough.cm-markdown-underline': { textDecoration: 'line-through underline' },
-	'.cm-markdown-task-marker': { fontFamily: 'monospace' },
-	'.cm-markdown-checkbox': {
-		'display': 'inline-flex',
-		'position': 'relative',
-		'margin-inline-end': '.25rem',
-		'top': '.125rem',
-		'& > input': {
-			width: '.875rem',
-			height: '.875rem',
-			margin: 0
-		}
-	}
+	'.cm-markdown-strikethrough.cm-markdown-underline': { textDecoration: 'line-through underline' }
 }, { dark: true })
 
 export default [editorTheme, syntaxHighlighting(highlightStyle)]
