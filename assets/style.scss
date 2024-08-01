@@ -1,5 +1,5 @@
-// Import Google fonts: Roboto, JetBrains Mono
-@import 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=JetBrains+Mono:wght@400;700&family=Fira+Code:wght@400;700&display=swap';
+// Import Google fonts: Roboto, Ubuntu Mono
+@import 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Ubuntu+Mono:wght@400;700&display=swap';
 
 // Default (light) theme
 :root {
@@ -37,7 +37,7 @@
 
 // Dark theme
 :root:not(.light) {
-	--color-text: oklch(85% 0 0deg);
+	--color-text: oklch(75% 0 0deg);
 	--color-text-secondary: oklch(75% 0 0deg);
 	--color-text-tertiary: oklch(65% 0 0deg);
 	--color-background: oklch(23.5% 0 0deg);

@@ -59,13 +59,13 @@ export enum Type {
 
 	// Inline
 	Escape,
-	Entity,
 	HardBreak,
 	Emphasis,
 	StrongEmphasis,
 	InlineCode,
 
 	// Smaller tokens
+	EscapeMark,
 	HeaderMark,
 	QuoteMark,
 	ListMark,
@@ -73,8 +73,7 @@ export enum Type {
 	EmphasisMark,
 	CodeMark,
 	CodeText,
-	CodeInfo,
-	URL
+	CodeInfo
 }
 
 /// Data structure used to accumulate a block's content during [leaf
@@ -315,8 +314,10 @@ type BlockResult = boolean | null
 
 function addCodeText(marks: Element[], from: number, to: number) {
 	const last = marks.length - 1
+
 	if (last >= 0 && marks[last].to == from && marks[last].type == Type.CodeText)
 		(marks[last] as any).to = to
+	
 	else marks.push(elt(Type.CodeText, from, to))
 }
 
@@ -325,77 +326,55 @@ function addCodeText(marks: Element[], from: number, to: number) {
 // `p.line` has been updated, the rule is assumed to have consumed a
 // leaf block. Otherwise, it is assumed to have opened a context.
 const DefaultBlockParsers: { [name: string]: ((cx: BlockContext, line: Line) => BlockResult) | undefined } = {
-	IndentedCode(cx, line) {
-		const base = line.baseIndent + 4
-		if (line.indent < base)
-			return false
-		const start = line.findColumn(base)
-		const from = cx.lineStart + start; let to = cx.lineStart + line.text.length
-		const marks: Element[] = []; let pendingMarks: Element[] = []
-		addCodeText(marks, from, to)
-		while (cx.nextLine() && line.depth >= cx.stack.length) {
-			if (line.pos == line.text.length) { // Empty
-				addCodeText(pendingMarks, cx.lineStart - 1, cx.lineStart)
-				for (const m of line.markers) pendingMarks.push(m)
-			} else if (line.indent < base)
-				break
-			else {
-				if (pendingMarks.length) {
-					for (const m of pendingMarks) {
-						if (m.type == Type.CodeText)
-							addCodeText(marks, m.from, m.to)
-						else marks.push(m)
-					}
-					pendingMarks = []
-				}
-				addCodeText(marks, cx.lineStart - 1, cx.lineStart)
-				for (const m of line.markers) marks.push(m)
-				to = cx.lineStart + line.text.length
-				const codeStart = cx.lineStart + line.findColumn(line.baseIndent + 4)
-				if (codeStart < to)
-					addCodeText(marks, codeStart, to)
-			}
-		}
-		if (pendingMarks.length) {
-			pendingMarks = pendingMarks.filter(m => m.type != Type.CodeText)
-			if (pendingMarks.length)
-				line.markers = pendingMarks.concat(line.markers)
-		}
-
-		cx.addNode(cx.buffer.writeElements(marks, -from).finish(Type.CodeBlock, to - from), from)
-		return true
-	},
-
 	FencedCode(cx, line) {
 		const fenceEnd = isFencedCode(line)
+
 		if (fenceEnd < 0)
 			return false
-		const from = cx.lineStart + line.pos; const ch = line.next; const len = fenceEnd - line.pos
-		const infoFrom = line.skipSpace(fenceEnd); const infoTo = skipSpaceBack(line.text, line.text.length, infoFrom)
+
+		const from = cx.lineStart + line.pos
+		const ch = line.next
+		const len = fenceEnd - line.pos
+		const infoFrom = line.skipSpace(fenceEnd)
+		const infoTo = skipSpaceBack(line.text, line.text.length, infoFrom)
 		const marks: (Element | TreeElement)[] = [elt(Type.CodeMark, from, from + len)]
+		
 		if (infoFrom < infoTo)
 			marks.push(elt(Type.CodeInfo, cx.lineStart + infoFrom, cx.lineStart + infoTo))
 
 		for (let first = true; cx.nextLine() && line.depth >= cx.stack.length; first = false) {
 			let i = line.pos
+
 			if (line.indent - line.baseIndent < 4)
-				while (i < line.text.length && line.text.charCodeAt(i) == ch) i++
+				while (i < line.text.length && line.text.charCodeAt(i) == ch)
+					i++
+			
 			if (i - line.pos >= len && line.skipSpace(i) == line.text.length) {
-				for (const m of line.markers) marks.push(m)
+				for (const m of line.markers)
+					marks.push(m)
+
 				marks.push(elt(Type.CodeMark, cx.lineStart + line.pos, cx.lineStart + i))
 				cx.nextLine()
+
 				break
 			} else {
 				if (!first)
 					addCodeText(marks, cx.lineStart - 1, cx.lineStart)
-				for (const m of line.markers) marks.push(m)
-				const textStart = cx.lineStart + line.basePos; const textEnd = cx.lineStart + line.text.length
+
+				for (const m of line.markers)
+					marks.push(m)
+
+				const textStart = cx.lineStart + line.basePos
+				const textEnd = cx.lineStart + line.text.length
+
 				if (textStart < textEnd)
-					addCodeText(marks, textStart, textEnd)
+					addCodeText(marks, cx.lineStart, textEnd)
 			}
 		}
+
 		cx.addNode(cx.buffer.writeElements(marks, -from)
 			.finish(Type.FencedCode, cx.prevLineEnd() - from), from)
+		
 		return true
 	},
 
@@ -454,17 +433,6 @@ const DefaultBlockParsers: { [name: string]: ((cx: BlockContext, line: Line) => 
 		cx.addNode(node, from)
 		return true
 	},
-}
-
-function lineEnd(text: string, pos: number) {
-	for (; pos < text.length; pos++) {
-		const next = text.charCodeAt(pos)
-		if (next == 10)
-			break
-		if (!space(next))
-			return -1
-	}
-	return pos
 }
 
 const DefaultLeafBlocks: { [name: string]: (cx: BlockContext, leaf: LeafBlock) => LeafBlockParser | null } = {
@@ -1167,6 +1135,7 @@ function findName(names: readonly string[], name: string) {
 }
 
 const nodeTypes = [NodeType.none]
+
 for (let i = 1, name; name = Type[i]; i++) {
 	nodeTypes[i] = NodeType.define({
 		id: i,
@@ -1293,17 +1262,14 @@ const DefaultInline: { [name: string]: (cx: InlineContext, next: number, pos: nu
 	Escape(cx, next, start) {
 		if (next != 92 /* '\\' */ || start == cx.end - 1)
 			return -1
-		const escaped = cx.char(start + 1)
-		for (let i = 0; i < Escapable.length; i++) { if (Escapable.charCodeAt(i) == escaped)
-			return cx.append(elt(Type.Escape, start, start + 2)) }
-		return -1
-	},
 
-	Entity(cx, next, start) {
-		if (next != 38 /* '&' */)
-			return -1
-		const m = /^(?:#\d+|#x[a-f\d]+|\w+);/i.exec(cx.slice(start + 1, start + 31))
-		return m ? cx.append(elt(Type.Entity, start, start + 1 + m[0].length)) : -1
+		const escaped = cx.char(start + 1)
+
+		for (let i = 0; i < Escapable.length; i++) {
+			if (Escapable.charCodeAt(i) == escaped)
+				return cx.append(elt(Type.Escape, start, start + 2, [elt(Type.EscapeMark, start, start + 1)]))
+		}
+		return -1
 	},
 
 	InlineCode(cx, next, start) {
@@ -1352,42 +1318,6 @@ const DefaultInline: { [name: string]: (cx: InlineContext, next: number, pos: nu
 		}
 		return -1
 	},
-}
-
-// These return `null` when falling off the end of the input, `false`
-// when parsing fails otherwise (for use in the incremental link
-// reference parser).
-
-function parseURL(text: string, start: number, offset: number): null | false | Element {
-	const next = text.charCodeAt(start)
-	if (next == 60 /* '<' */) {
-		for (let pos = start + 1; pos < text.length; pos++) {
-			const ch = text.charCodeAt(pos)
-			if (ch == 62 /* '>' */)
-				return elt(Type.URL, start + offset, pos + 1 + offset)
-			if (ch == 60 || ch == 10 /* '<\n' */)
-				return false
-		}
-		return null
-	} else {
-		let depth = 0; let pos = start
-		for (let escaped = false; pos < text.length; pos++) {
-			const ch = text.charCodeAt(pos)
-			if (space(ch))
-				break
-			else if (escaped)
-				escaped = false
-			else if (ch == 40 /* '(' */) {
-				depth++
-			} else if (ch == 41 /* ')' */) {
-				if (!depth)
-					break
-				depth--
-			} else if (ch == 92 /* '\\' */)
-				escaped = true
-		}
-		return pos > start ? elt(Type.URL, start + offset, pos + offset) : pos == text.length ? null : false
-	}
 }
 
 /// Inline parsing functions get access to this context, and use it to
@@ -1570,7 +1500,7 @@ function injectMarks(elements: readonly (Element | TreeElement)[], marks: Elemen
 
 // These are blocks that can span blank lines, and should thus only be
 // reused if their next sibling is also being reused.
-const NotLast = [Type.CodeBlock, Type.ListItem, Type.OrderedList, Type.BulletList]
+const NotLast = [Type.ListItem, Type.OrderedList, Type.BulletList]
 
 class FragmentCursor {
 // Index into fragment array
@@ -1690,16 +1620,12 @@ const markdownHighlighting = styleTags({
 	'ATXHeading4/...': t.heading4,
 	'ATXHeading5/...': t.heading5,
 	'ATXHeading6/...': t.heading6,
-	'Escape': t.escape,
-	'Entity': t.character,
 	'Emphasis/...': t.emphasis,
 	'StrongEmphasis/...': t.strong,
 	'OrderedList/... BulletList/...': t.list,
-	'BlockQuote/...': t.quote,
-	'InlineCode CodeText': t.monospace,
-	'URL': t.url,
-	'HeaderMark HardBreak QuoteMark ListMark EmphasisMark CodeMark': markTag,
-	'CodeInfo': t.labelName,
+	'InlineCode/...': t.monospace,
+	'EscapeMark HeaderMark QuoteMark EmphasisMark CodeMark': markTag, // OrderedListMark ListMark
+	'CodeInfo': t.atom,
 	'Paragraph': t.content
 })
 

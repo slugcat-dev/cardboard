@@ -13,7 +13,7 @@ export default function (element: Element, content: string, extensions: Extensio
 		extensions: [
 			markdownViewPlugin(),
 			history(),
-			drawSelection(),
+			drawSelection({ cursorBlinkRate: 1000 }),
 			dropCursor(),
 			indentOnInput(),
 			closeBrackets(),

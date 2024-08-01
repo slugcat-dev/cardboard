@@ -2,13 +2,11 @@
 
 <script setup lang="ts">
 import { EditorView } from '@codemirror/view'
-import { Compartment } from '@codemirror/state'
-import editor from './codemirror/editor'
+import { Compartment, EditorState } from '@codemirror/state'
+import editor from '../../codemirror/editor'
 
 const { card } = defineProps(['card'])
-
 const emit = defineEmits(['activate'])
-
 const contentRef = ref()
 const active = ref(false)
 const editable = new Compartment()
@@ -20,7 +18,6 @@ onMounted(() => {
 		editable.of(EditorView.editable.of(false))
 	])
 
-	// https://codemirror.net/docs/ref/#view.EditorView^focusChangeEffect
 	view.contentDOM.addEventListener('blur', onBlur)
 
 	// Activate new cards

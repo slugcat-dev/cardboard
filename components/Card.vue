@@ -221,7 +221,6 @@ function deleteCard() {
 <style lang="scss">
 .card {
 	position: absolute;
-	width: max-content;
 
 	&.content-active,
 	&.pointer-down,
