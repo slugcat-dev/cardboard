@@ -38,7 +38,7 @@ function signin(provider: string) {
 				/>
 				GitHub
 			</button>
-			<span>If you can not sign in, ask to join<br>by <a href="mailto:join@doublekekse.dev?subject=Request%20to%20join&body=Hey%2C%20I'd%20love%20to%20join%20the%20private%20beta%0A">sending an e-mail</a></span>
+			<span>If you can not sign in, ask to join<br>by <a href="mailto:mail@doublekekse.dev?subject=Request%20to%20join&body=Hey%2C%20I'd%20love%20to%20join%20the%20private%20beta%0A">sending an e-mail</a></span>
 		</div>
 	</main>
 </template>
@@ -72,13 +72,7 @@ main {
 		border: 1px solid gray;
 		border-radius: .375rem;
 		box-shadow: var(--color-scrollbar) 0 1px;
-		cursor: pointer;
 		transition: box-shadow .2s;
-
-		&:disabled {
-			cursor: not-allowed;
-			opacity: .5;
-		}
 
 		&:hover:not(:disabled) {
 			box-shadow: var(--color-scrollbar) 0 0 0 2px;

@@ -1,9 +1,5 @@
 /* stylelint-disable selector-class-pattern */
 
-.cm-selectionBackground {
-	background-color: var(--color-accent-25) !important
-}
-
 .cm-cursor,
 .cm-dropCursor {
 	width: 2px;
@@ -17,18 +13,19 @@
 
 /* selection bg */
 
-@media (pointer: coarse) {
-	.cm-line {
-		caret-color: red !important;
-	}
-}
+/*
+'.cm-selectionLayer': { zIndex: '100 !important', mixBlendMode: 'hue !important' },
+	'.cm-selectionBackground': { backgroundColor: 'var(--color-accent-25) !important' },
+*/
 
 .cm-markdown-blockquote {
 	&::before {
 		position: absolute;
-		height: 1.25rem;
-		border-left: 2px solid currentcolor;
-		opacity: .5;
+		width: 3px;
+		height: calc(1.25rem + 2px);
+		margin-top: -1px;
+		background-color: color-mix(in srgb, var(--color-text), #222 50%);
+		border-radius: .125rem;
 		content: '';
 	}
 
@@ -39,7 +36,7 @@
 
 .cm-markdown-inline-code,
 .cm-markdown-code-block {
-	color: color-mix(in srgb, var(--color-text), black 20%);
+	color: color-mix(in srgb, var(--color-text), black 10%);
 	font-family: 'Ubuntu Mono', monospace;
 	background-color: #0004;
 }
@@ -68,15 +65,6 @@
 .cm-markdown-code-block:last-child {
 	border-bottom-right-radius: .375rem;
 	border-bottom-left-radius: .375rem;
-}
-
-.cm-markdown-checkbox > input {
-	cursor: pointer;
-}
-
-button,
-input[type="checkbox"] {
-	cursor: pointer;
 }
 
 /*

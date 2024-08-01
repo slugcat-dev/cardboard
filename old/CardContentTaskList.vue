@@ -133,7 +133,6 @@ defineExpose({ activate })
 				margin-top: .125rem;
 				border: 1px solid gray;
 				border-radius: 100%;
-				cursor: pointer;
 				appearance: none;
 
 				&::before {

@@ -86,6 +86,29 @@ body {
 	box-sizing: border-box;
 }
 
+button,
+input {
+	font-size: .75rem;
+	font-family: inherit;
+}
+
+button,
+input[type="button"],
+input[type="checkbox"],
+input[type="color"],
+input[type="file"],
+input[type="radio"],
+input[type="reset"],
+input[type="submit"],
+label:has(input, button) {
+	cursor: pointer;
+
+	&:disabled {
+		cursor: not-allowed;
+		opacity: .75;
+	}
+}
+
 a {
 	color: var(--color-accent);
 	text-decoration: none;
@@ -130,12 +153,6 @@ a {
 
 .allow-pointer-events {
 	pointer-events: auto;
-}
-
-button,
-input {
-	font-size: .75rem;
-	font-family: inherit;
 }
 
 .flex-row {

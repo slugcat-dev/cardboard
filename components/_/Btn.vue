@@ -29,7 +29,6 @@ defineProps({
 	border: 1px solid var(--color-border);
 	border-bottom-width: 2px;
 	border-radius: .375rem;
-	cursor: pointer;
 
 	&.slim {
 		padding: .25rem .5rem;

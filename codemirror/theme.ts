@@ -41,7 +41,10 @@ const editorTheme = EditorView.theme({
 		fontFamily: 'Roboto, system-ui, sans-serif !important',
 		lineHeight: '1.25rem'
 	},
-	'.cm-content': { padding: 0 },
+	'.cm-content': {
+		padding: 0,
+		caretColor: process.client && window.matchMedia('(pointer: coarse)').matches ? 'var(--color-accent)' : 'transparent'
+	},
 	'.cm-line': { padding: 0 },
 	'.cm-markdown-hidden': { display: 'none' },
 	'.cm-markdown-mark': { color: 'color-mix(in srgb, currentcolor, transparent 50%)' },

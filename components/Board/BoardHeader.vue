@@ -112,7 +112,7 @@ async function makeBoard() {
 				</div>
 				<span class="bread-separator">/</span>
 			</div>
-			<label class="option">
+			<label class="option" style="text-decoration: line-through;">
 				<input
 					type="checkbox"
 					:checked="settings.grid.snap"
@@ -128,9 +128,6 @@ async function makeBoard() {
 				@click="toggleBoardFav"
 			>
 				<ClientIcon :name="board.fav ? 'mdi:star' : 'mdi:star-outline'" size="1rem" />
-			</button>
-			<button @click="console.log">
-				<ClientIcon name="lucide:sun" size="1rem" />
 			</button>
 			<button
 				@click="makeBoard"
@@ -272,11 +269,6 @@ async function makeBoard() {
 		align-items: center;
 		font-weight: 500;
 		font-size: .875rem;
-
-		.option,
-		.option > input[type="checkbox"] {
-			cursor: pointer;
-		}
 
 		.toolbox {
 			display: flex;
