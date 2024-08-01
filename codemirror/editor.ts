@@ -1,9 +1,10 @@
-import { EditorView, drawSelection, dropCursor, keymap } from '@codemirror/view'
+import { EditorView, dropCursor, keymap } from '@codemirror/view'
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete'
-import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands'
-import { indentOnInput } from '@codemirror/language'
+import { defaultKeymap, history, historyKeymap, indentLess, insertBlankLine, insertTab } from '@codemirror/commands'
+import { indentOnInput, indentUnit } from '@codemirror/language'
 import type { Extension } from '@codemirror/state'
 import { markdownViewPlugin } from './markdownViewPlugin'
+import { drawCursor } from './drawCursor'
 
 let view: EditorView
 
@@ -11,9 +12,10 @@ export default function (element: Element, content: string, extensions: Extensio
 	view = new EditorView({
 		doc: content,
 		extensions: [
+			indentUnit.of('\t'),
 			markdownViewPlugin(),
 			history(),
-			drawSelection({ cursorBlinkRate: 1000 }),
+			drawCursor(),
 			dropCursor(),
 			indentOnInput(),
 			closeBrackets(),
@@ -21,12 +23,18 @@ export default function (element: Element, content: string, extensions: Extensio
 				...closeBracketsKeymap,
 				...defaultKeymap,
 				...historyKeymap,
-				indentWithTab
+				{ key: 'Tab', run: insertTab },
+				{ key: 'Shift-Tab', run: indentLess },
+				{ key: 'Shift-Enter', run: insertBlankLine }
 			]),
 			...extensions
 		],
 		parent: element
 	})
+
+	view.contentDOM.setAttribute('spellcheck', 'false')
+	view.contentDOM.removeAttribute('autocorrect')
+	view.contentDOM.removeAttribute('autocapitalize')
 
 	return view
 }

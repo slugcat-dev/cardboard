@@ -139,7 +139,8 @@ class RenderCheckboxWidget extends WidgetType {
 		checkbox.checked = this.checked
 
 		wrapper.classList.add('cm-markdown-checkbox')
-		wrapper.setAttribute('aria-hidden', 'true')
+		checkbox.setAttribute('aria-hidden', 'true')
+		checkbox.setAttribute('tabindex', '-1')
 		wrapper.appendChild(checkbox)
 
 		return wrapper

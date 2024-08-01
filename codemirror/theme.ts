@@ -36,15 +36,13 @@ const highlightStyle = HighlightStyle.define([
 ])
 
 const editorTheme = EditorView.theme({
+	'&.cm-focused': { outline: 'none' },
 	'.cm-scroller': {
 		overflow: 'initial',
 		fontFamily: 'Roboto, system-ui, sans-serif !important',
 		lineHeight: '1.25rem'
 	},
-	'.cm-content': {
-		padding: 0,
-		caretColor: process.client && window.matchMedia('(pointer: coarse)').matches ? 'var(--color-accent)' : 'transparent'
-	},
+	'.cm-content': { padding: 0 },
 	'.cm-line': { padding: 0 },
 	'.cm-markdown-hidden': { display: 'none' },
 	'.cm-markdown-mark': { color: 'color-mix(in srgb, currentcolor, transparent 50%)' },
@@ -59,14 +57,15 @@ const editorTheme = EditorView.theme({
 	'.cm-markdown-strikethrough.cm-markdown-underline': { textDecoration: 'line-through underline' },
 	'.cm-markdown-task-marker': { fontFamily: 'monospace' },
 	'.cm-markdown-checkbox': {
-		position: 'relative',
-		marginInlineEnd: '.25rem'
-	},
-	'.cm-markdown-checkbox > input': {
-		display: 'inline-block',
-		width: '.75rem',
-		height: '.75rem',
-		margin: 0
+		'display': 'inline-flex',
+		'position': 'relative',
+		'margin-inline-end': '.25rem',
+		'top': '.125rem',
+		'& > input': {
+			width: '.875rem',
+			height: '.875rem',
+			margin: 0
+		}
 	}
 }, { dark: true })
 

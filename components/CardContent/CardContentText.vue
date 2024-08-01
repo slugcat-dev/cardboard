@@ -41,7 +41,7 @@ function onKeyDownEsc(event: KeyboardEvent) {
 	view.contentDOM.blur()
 }
 
-function activate() {
+function activate(event?: MouseEvent) {
 	if (active.value)
 		return
 
@@ -52,6 +52,34 @@ function activate() {
 	})
 	view.focus()
 	emit('activate')
+
+	if (!event || (event.target instanceof HTMLInputElement && event.target.matches('.cm-markdown-checkbox *')))
+		return
+
+	const from = view.posAtCoords({ x: event.clientX, y: event.clientY })
+
+	if (!isPointerCoarse() || !from)
+		return
+
+	const { state } = view
+	const line = state.doc.lineAt(from)
+	const text = line.text
+
+	let start = from - line.from
+	let end = start
+
+	while (start > 0 && !/\W/.test(text.charAt(start - 1))) start--
+	while (end < text.length && !/\W/.test(text.charAt(end))) end++
+
+	const wordStart = line.from + start
+	const wordEnd = line.from + end
+
+	const moveTo = (wordEnd - from <= from - wordStart) ? wordEnd : wordStart
+
+	view.dispatch({
+		selection: { anchor: moveTo },
+		scrollIntoView: true
+	})
 }
 
 async function onBlur() {
