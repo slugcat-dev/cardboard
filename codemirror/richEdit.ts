@@ -4,26 +4,27 @@ import type { Range, SelectionRange } from '@codemirror/state'
 import type { SyntaxNodeRef } from '@lezer/common'
 
 const tokenElement = [
+	'Escape',
 	'Emphasis',
 	'StrongEmphasis',
 	'Underline',
 	'UnderlineItalic',
 	'Strikethrough',
-	'InlineCode',
-	'Escape'
+	'InlineCode'
 ]
 const tokenHidden = [
+	'EscapeMark',
 	'EmphasisMark',
 	'UnderlineMark',
 	'UnderlineItalicMark',
 	'StrikethroughMark',
-	'EscapeMark'
 ]
 const decorationHeading = Decoration.mark({ tagName: 'h1', class: 'cm-markdown-heading' })
 const decorationInlineCode = Decoration.mark({ class: 'cm-markdown-inline-code' })
 const decorationTaskMarker = Decoration.mark({ class: 'cm-markdown-task-marker' })
 const decorationBlockquote = Decoration.mark({ class: 'cm-markdown-blockquote' })
 const decorationCodeBlock = Decoration.line({ class: 'cm-markdown-code-block' })
+const decorationHighlight = Decoration.line({ class: 'cm-markdown-highlight' })
 const decorationHidden = Decoration.mark({ class: 'cm-markdown-hidden' })
 
 export class RichEditPlugin implements PluginValue {
@@ -63,6 +64,18 @@ export class RichEditPlugin implements PluginValue {
 
 						break
 
+					case 'Highlight':
+					case 'FencedCode': {
+						const startLine = view.state.doc.lineAt(node.from)
+						const endLine = view.state.doc.lineAt(node.to)
+						const decoration = node.name === 'Highlight' ? decorationHighlight : decorationCodeBlock
+
+						for (let line = startLine.number; line <= endLine.number; line++)
+							decorations.push(decoration.range(view.state.doc.line(line).from))
+
+						break
+					}
+
 					case 'TaskMarker': {
 						decorations.push(decorationTaskMarker.range(node.from + 1, node.to - 1))
 
@@ -77,16 +90,6 @@ export class RichEditPlugin implements PluginValue {
 
 						break
 					}
-
-					case 'FencedCode': {
-						const startLine = view.state.doc.lineAt(node.from)
-						const endLine = view.state.doc.lineAt(node.to)
-
-						for (let line = startLine.number; line <= endLine.number; line++)
-							decorations.push(decorationCodeBlock.range(view.state.doc.line(line).from))
-
-						break
-					}
 				}
 			} })
 
@@ -96,9 +99,13 @@ export class RichEditPlugin implements PluginValue {
 
 				if (node.name.startsWith('ATXHeading'))
 					return !inSelection
+				else if (node.name === 'Highlight')
+					return !inSelection
 				else if (node.name === 'Blockquote')
 					return !inSelection
 				else if (node.name === 'HeaderMark')
+					decorations.push(decorationHidden.range(node.from, node.to + 1))
+				else if (node.name === 'HighlightMark')
 					decorations.push(decorationHidden.range(node.from, node.to + 1))
 				else if (node.name === 'QuoteMark')
 					decorations.push(decorationBlockquote.range(node.from, node.to))

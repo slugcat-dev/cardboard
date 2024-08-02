@@ -1,15 +1,19 @@
 /* stylelint-disable selector-class-pattern */
 
+.cm-markdown-mark {
+	text-decoration: none !important;
+	
+	&:has(~ .cm-markdown-heading) {
+		vertical-align: .125rem;
+	}
+}
+
 .cm-markdown-heading {
 	display: inline-block;
   margin: 0;
   font-weight: bold;
   font-size: 1.25rem;
   line-height: 1.75rem;
-}
-
-.cm-markdown-mark:has(~ .cm-markdown-heading) {
-	vertical-align: .125rem;
 }
 
 .cm-markdown-blockquote {
@@ -34,7 +38,7 @@
 
 .cm-markdown-inline-code,
 .cm-markdown-code-block {
-	color: color-mix(in srgb, var(--color-text), black 10%);
+	color: color-mix(in srgb, currentcolor, black 10%);
 	font-family: 'Ubuntu Mono', monospace;
 	background-color: #0004;
 }

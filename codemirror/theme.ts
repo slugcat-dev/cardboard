@@ -28,7 +28,7 @@ const highlightStyle = HighlightStyle.define([
 	{ tag: [t.color, t.constant(t.name), t.standard(t.name)], color: whiskey },
 	{ tag: [t.definition(t.name), t.separator], color: ivory },
 	{ tag: [t.typeName, t.className, t.number, t.changed, t.annotation, t.modifier, t.self, t.namespace], color: chalky },
-	{ tag: [t.operator, t.operatorKeyword, t.url, t.escape, t.regexp, t.link, t.special(t.string)], color: cyan },
+	{ tag: [t.operator, t.operatorKeyword, t.escape, t.regexp, t.link, t.special(t.string)], color: cyan },
 	{ tag: [t.meta, t.comment], color: stone },
 	{ tag: t.link, color: stone, textDecoration: 'underline' },
 	{ tag: [t.atom, t.bool, t.special(t.variableName)], color: whiskey },
@@ -57,7 +57,8 @@ const editorTheme = EditorView.theme({
 	'.cm-markdown-italic': { fontStyle: 'italic' },
 	'.cm-markdown-underline': { textDecoration: 'underline' },
 	'.cm-markdown-strikethrough': { textDecoration: 'line-through' },
-	'.cm-markdown-strikethrough.cm-markdown-underline': { textDecoration: 'line-through underline' }
+	'.cm-markdown-strikethrough.cm-markdown-underline': { textDecoration: 'line-through underline' },
+	'.cm-markdown-highlight': { color: 'var(--color-warn)', fontWeight: 'bold' }
 }, { dark: true })
 
 export default [editorTheme, syntaxHighlighting(highlightStyle)]

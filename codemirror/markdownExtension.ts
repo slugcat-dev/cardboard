@@ -3,37 +3,6 @@ import type { BlockContext, LeafBlock, LeafBlockParser, MarkdownExtension } from
 import { markTag, underlineItalicTag, underlineTag } from './customTags'
 import { Punctuation } from './lezer-markdown/markdown'
 
-class TaskParser implements LeafBlockParser {
-	nextLine() {
-		return false
-	}
-
-	finish(cx: BlockContext, leaf: LeafBlock) {
-		cx.addLeafElement(
-			leaf,
-			cx.elt('Task', leaf.start, leaf.start + leaf.content.length, [
-				cx.elt('TaskMarker', leaf.start, leaf.start + 3),
-				...cx.parser.parseInline(leaf.content.slice(3), leaf.start + 3)
-			])
-		)
-
-		return true
-	}
-}
-
-export const TaskList: MarkdownExtension = {
-	defineNodes: [
-		{ name: 'Task', block: true, style: t.list },
-		{ name: 'TaskMarker', style: t.atom }
-	],
-	parseBlock: [{
-		name: 'TaskList',
-		leaf(cx, leaf) {
-			return /^\[[ x]\][ \t]/i.test(leaf.content) && cx.parentType().name === 'ListItem' ? new TaskParser() : null
-		}
-	}]
-}
-
 const underscore = '_'.charCodeAt(0)
 const tilde = '~'.charCodeAt(0)
 const UnderlineDelim = { resolve: 'Underline', mark: 'UnderlineMark' }
@@ -140,5 +109,74 @@ export const Strikethrough: MarkdownExtension = {
 			)
 		},
 		after: 'Emphasis'
+	}]
+}
+
+class HighlightLineParser implements LeafBlockParser {
+	nextLine() {
+		return true
+	}
+
+	finish(cx: BlockContext, leaf: LeafBlock) {
+		if (leaf.content.startsWith('!! ')) {
+			cx.addLeafElement(
+				leaf,
+				cx.elt('Highlight', leaf.start, leaf.start + leaf.content.length, [
+					cx.elt('HighlightMark', leaf.start, leaf.start + 2),
+					...cx.parser.parseInline(leaf.content.slice(3), leaf.start + 3)
+				])
+			)
+
+			return true
+		}
+
+		return false
+	}
+}
+
+export const HighlightLine: MarkdownExtension = {
+	defineNodes: [
+		{ name: 'Highlight' },
+		{ name: 'HighlightMark', style: markTag }
+	],
+	parseBlock: [{
+		name: 'Highlight',
+		leaf() {
+			return new HighlightLineParser()
+		},
+		endLeaf() {
+			return true
+		}
+	}]
+}
+
+class TaskParser implements LeafBlockParser {
+	nextLine() {
+		return false
+	}
+
+	finish(cx: BlockContext, leaf: LeafBlock) {
+		cx.addLeafElement(
+			leaf,
+			cx.elt('Task', leaf.start, leaf.start + leaf.content.length, [
+				cx.elt('TaskMarker', leaf.start, leaf.start + 3),
+				...cx.parser.parseInline(leaf.content.slice(3), leaf.start + 3)
+			])
+		)
+
+		return true
+	}
+}
+
+export const TaskList: MarkdownExtension = {
+	defineNodes: [
+		{ name: 'Task', block: true, style: t.list },
+		{ name: 'TaskMarker', style: t.atom }
+	],
+	parseBlock: [{
+		name: 'TaskList',
+		leaf(cx, leaf) {
+			return /^\[[ x]\][ \t]/i.test(leaf.content) && cx.parentType().name === 'ListItem' ? new TaskParser() : null
+		}
 	}]
 }

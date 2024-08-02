@@ -1275,6 +1275,21 @@ const DefaultInline: { [name: string]: (cx: InlineContext, next: number, pos: nu
 		return -1
 	},
 
+	Emphasis(cx, next, start) {
+		if (next != 95 && next != 42)
+			return -1
+		let pos = start + 1
+		while (cx.char(pos) == next) pos++
+		const before = cx.slice(start - 1, start); const after = cx.slice(pos, pos + 1)
+		const pBefore = Punctuation.test(before); const pAfter = Punctuation.test(after)
+		const sBefore = /\s|^$/.test(before); const sAfter = /\s|^$/.test(after)
+		const leftFlanking = !sAfter && (!pAfter || sBefore || pBefore)
+		const rightFlanking = !sBefore && (!pBefore || sAfter || pAfter)
+		const canOpen = leftFlanking && (next == 42 || !rightFlanking || pBefore)
+		const canClose = rightFlanking && (next == 42 || !leftFlanking || pAfter)
+		return cx.append(new InlineDelimiter(next == 95 ? EmphasisUnderscore : EmphasisAsterisk, start, pos, (canOpen ? Mark.Open : Mark.None) | (canClose ? Mark.Close : Mark.None)))
+	},
+
 	InlineCode(cx, next, start) {
 		if (next != 96 /* '`' */ || start && cx.char(start - 1) == 96)
 			return -1
@@ -1293,21 +1308,6 @@ const DefaultInline: { [name: string]: (cx: InlineContext, next: number, pos: nu
 				curSize = 0
 		}
 		return -1
-	},
-
-	Emphasis(cx, next, start) {
-		if (next != 95 && next != 42)
-			return -1
-		let pos = start + 1
-		while (cx.char(pos) == next) pos++
-		const before = cx.slice(start - 1, start); const after = cx.slice(pos, pos + 1)
-		const pBefore = Punctuation.test(before); const pAfter = Punctuation.test(after)
-		const sBefore = /\s|^$/.test(before); const sAfter = /\s|^$/.test(after)
-		const leftFlanking = !sAfter && (!pAfter || sBefore || pBefore)
-		const rightFlanking = !sBefore && (!pBefore || sAfter || pAfter)
-		const canOpen = leftFlanking && (next == 42 || !rightFlanking || pBefore)
-		const canClose = rightFlanking && (next == 42 || !leftFlanking || pAfter)
-		return cx.append(new InlineDelimiter(next == 95 ? EmphasisUnderscore : EmphasisAsterisk, start, pos, (canOpen ? Mark.Open : Mark.None) | (canClose ? Mark.Close : Mark.None)))
 	},
 
 	HardBreak(cx, next, start) {
@@ -1627,7 +1627,7 @@ const markdownHighlighting = styleTags({
 	'StrongEmphasis/...': t.strong,
 	'OrderedList/... BulletList/...': t.list,
 	'InlineCode/...': t.monospace,
-	'EscapeMark HeaderMark QuoteMark EmphasisMark CodeMark': markTag, // OrderedListMark ListMark
+	'EscapeMark HeaderMark QuoteMark EmphasisMark CodeMark': markTag,
 	'CodeInfo': t.atom,
 	'Paragraph': t.content
 })
