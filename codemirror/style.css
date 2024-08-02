@@ -1,27 +1,15 @@
 /* stylelint-disable selector-class-pattern */
 
 .cm-markdown-heading {
+	display: inline-block;
   margin: 0;
   font-weight: bold;
   font-size: 1.25rem;
   line-height: 1.75rem;
 }
 
-.cm-markdown-task-marker {
-  font-family: 'Ubuntu Mono', monospace;
-}
-
-.cm-markdown-checkbox {
-  position: relative;
-  top: .125rem;
-  display: inline-flex;
-  margin-inline-end: .25rem;
-
-	& > input {
-		width: .875rem;
-		height: .875rem;
-		margin: 0;
-	}
+.cm-markdown-mark:has(~ .cm-markdown-heading) {
+	vertical-align: .125rem;
 }
 
 .cm-markdown-blockquote {
@@ -35,6 +23,12 @@
 		background-color: #666;
 		border-radius: .125rem;
 		content: '';
+	}
+
+	&:has(~ .cm-markdown-heading) {
+		&::before {
+			height: calc(1.75rem + 2px);
+		}
 	}
 }
 
@@ -55,8 +49,7 @@
 }
 
 .cm-markdown-code-block {
-	-padding-inline: .375rem !important;
-	-text-indent: .375rem;
+	padding-inline: .375rem !important;
 }
 
 .cm-markdown-code-block:first-child,
@@ -69,4 +62,21 @@
 .cm-markdown-code-block:last-child {
 	border-bottom-right-radius: .375rem;
 	border-bottom-left-radius: .375rem;
+}
+
+.cm-markdown-task-marker {
+  font-family: 'Ubuntu Mono', monospace;
+}
+
+.cm-markdown-checkbox {
+  position: relative;
+  top: .125rem;
+  display: inline-flex;
+  margin-inline-end: .25rem;
+
+	& > input {
+		width: .875rem;
+		height: .875rem;
+		margin: 0;
+	}
 }

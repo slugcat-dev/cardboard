@@ -327,6 +327,9 @@ function addCodeText(marks: Element[], from: number, to: number) {
 // leaf block. Otherwise, it is assumed to have opened a context.
 const DefaultBlockParsers: { [name: string]: ((cx: BlockContext, line: Line) => BlockResult) | undefined } = {
 	FencedCode(cx, line) {
+		if (cx.block.type == Type.Blockquote)
+			return false
+
 		const fenceEnd = isFencedCode(line)
 
 		if (fenceEnd < 0)
