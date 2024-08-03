@@ -15,10 +15,12 @@ let view: EditorView
 
 onMounted(() => {
 	view = editor(contentRef.value, card.content, [
+		EditorView.updateListener.of((update) => {
+			if (update.focusChanged && !update.view.hasFocus)
+				onBlur()
+		}),
 		editable.of(EditorView.editable.of(false))
 	])
-
-	view.contentDOM.addEventListener('blur', onBlur)
 
 	// Activate new cards
 	if (card.id === 'new:empty')
@@ -26,7 +28,6 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-	view.contentDOM.removeEventListener('blur', onBlur)
 	view.destroy()
 })
 
@@ -53,14 +54,16 @@ function activate(event?: MouseEvent) {
 	view.focus()
 	emit('activate')
 
-	if (!event || (event.target instanceof HTMLInputElement && event.target.matches('.cm-markdown-checkbox *')))
+	// Caret placement fix for mobile
+	if (!isPointerCoarse() || !event || event.target instanceof HTMLInputElement)
 		return
 
 	const from = view.posAtCoords({ x: event.clientX, y: event.clientY })
 
-	if (!isPointerCoarse() || !from)
+	if (!from)
 		return
 
+	// Move to the nearest word boundary
 	const { state } = view
 	const line = state.doc.lineAt(from)
 	const text = line.text
