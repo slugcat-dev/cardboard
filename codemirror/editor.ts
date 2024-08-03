@@ -23,8 +23,6 @@ export default function (element: Element, content: string, extensions: Extensio
 				...closeBracketsKeymap,
 				...defaultKeymap,
 				...historyKeymap,
-				{ key: 'Tab', run: insertTab },
-				{ key: 'Shift-Tab', run: indentLess },
 				{ key: 'Shift-Enter', run: insertBlankLine }
 			]),
 			...extensions

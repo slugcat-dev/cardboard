@@ -5,6 +5,8 @@ import type { ChangeSpec, EditorState, Line, StateCommand, Text } from '@codemir
 import { EditorSelection, countColumn } from '@codemirror/state'
 import { indentUnit, syntaxTree } from '@codemirror/language'
 import type { SyntaxNode, Tree } from '@lezer/common'
+import type { EditorView } from '@codemirror/view'
+import { indentMore, insertTab } from '@codemirror/commands'
 import { markdownLanguage } from './markdown'
 
 class Context {
@@ -382,4 +384,22 @@ export const deleteMarkupBackward: StateCommand = ({ state, dispatch }) => {
 	dispatch(state.update(changes, { scrollIntoView: true, userEvent: 'delete' }))
 
 	return true
+}
+
+/// Use indentMore when in a list, use insertTab otherwise
+export function handleTab(view: EditorView) {
+	const { state } = view
+	const tree = syntaxTree(state)
+	const pos = state.selection.main.from
+	const context = getContext(tree.resolveInner(pos, -1), state.doc)
+
+	if (!context.length)
+		return insertTab(view)
+
+	const inner = context[context.length - 1]
+
+	if (inner.node.name.includes('List'))
+		return indentMore(view)
+	else
+		return insertTab(view)
 }
