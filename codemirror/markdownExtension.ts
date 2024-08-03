@@ -180,3 +180,88 @@ export const TaskList: MarkdownExtension = {
 		}
 	}]
 }
+
+// Autolink
+const autolinkStart = /(https?:\/\/[^\W_])|[^\W_](?:[\w.+-]*[^\W_])?@[^\W_]/gy
+const emailEnd = /[\w-]*(?:\.[^\W_](?:[\w-]*[^\W_])?)+/gy
+
+const urlEnd = /[\w-]*(?:\.[^\W_](?:[\w-]*[^\W_])?)*(?::\d{1,5})?(?:\/[^\s<]*)?/gy
+
+function count(str: string, from: number, to: number, ch: string) {
+	let result = 0
+
+	for (let i = from; i < to; i++) {
+		if (str[i] === ch)
+			result++
+	}
+
+	return result
+}
+
+function autolinkURLEnd(text: string, from: number) {
+	urlEnd.lastIndex = from
+
+	const match = urlEnd.exec(text)
+
+	if (!match)
+		return -1
+
+	let end = from + match[0].length
+
+	for (;;) {
+		const last = text[end - 1]
+
+		// TODO: bracket matching
+		// TODO: *_~
+		if (
+			/[?!.,:*_~]/.test(last)
+			|| (last === ')' && count(text, from, end, ')') > count(text, from, end, '('))
+			|| (last === ']' && count(text, from, end, ']') > count(text, from, end, '['))
+			|| (last === '}' && count(text, from, end, '}') > count(text, from, end, '{'))
+		)
+			end--
+		else
+			break
+	}
+
+	return end
+}
+
+export const Autolink: MarkdownExtension = {
+	parseInline: [{
+		name: 'Autolink',
+		parse(cx, next, absPos) {
+			const pos = absPos - cx.offset
+
+			autolinkStart.lastIndex = pos
+
+			const startMatch = autolinkStart.exec(cx.text)
+			let end = -1
+
+			if (!startMatch)
+				return -1
+
+			const from = pos + startMatch[0].length
+
+			if (startMatch[1])
+				end = autolinkURLEnd(cx.text, from)
+			else {
+				emailEnd.lastIndex = from
+
+				const endMatch = emailEnd.exec(cx.text)
+
+				if (!endMatch)
+					return -1
+
+				end = from + endMatch[0].length
+			}
+
+			if (end < 0)
+				return -1
+
+			cx.addElement(cx.elt('URL', absPos, end + cx.offset))
+
+			return end + cx.offset
+		}
+	}]
+}

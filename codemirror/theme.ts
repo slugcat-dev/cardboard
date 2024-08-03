@@ -21,6 +21,7 @@ const highlightStyle = HighlightStyle.define([
 	{ tag: underlineTag, class: 'cm-markdown-underline' },
 	{ tag: underlineItalicTag, class: 'cm-markdown-underline cm-markdown-italic' },
 	{ tag: t.strikethrough, class: 'cm-markdown-strikethrough' },
+	{ tag: t.url, color: 'var(--color-accent)' },
 
 	{ tag: t.keyword, color: violet },
 	{ tag: [t.name, t.deleted, t.character, t.propertyName, t.macroName], color: coral },

@@ -73,7 +73,9 @@ export enum Type {
 	EmphasisMark,
 	CodeMark,
 	CodeText,
-	CodeInfo
+	CodeInfo,
+	LinkMark,
+	URL
 }
 
 /// Data structure used to accumulate a block's content during [leaf
@@ -1250,7 +1252,6 @@ export interface DelimiterType {
 
 const EmphasisUnderscore: DelimiterType = { resolve: 'Emphasis', mark: 'EmphasisMark' }
 const EmphasisAsterisk: DelimiterType = { resolve: 'Emphasis', mark: 'EmphasisMark' }
-const LinkStart: DelimiterType = {}
 
 class InlineDelimiter {
 	constructor(readonly type: DelimiterType, readonly from: number, readonly to: number, public side: Mark) {}
@@ -1289,6 +1290,23 @@ const DefaultInline: { [name: string]: (cx: InlineContext, next: number, pos: nu
 		const canClose = rightFlanking && (next == 42 || !leftFlanking || pAfter)
 		return cx.append(new InlineDelimiter(next == 95 ? EmphasisUnderscore : EmphasisAsterisk, start, pos, (canOpen ? Mark.Open : Mark.None) | (canClose ? Mark.Close : Mark.None)))
 	},
+
+	URL(cx, next, start) {
+    if (next != 60 /* '<' */ || start == cx.end - 1)
+			return -1
+
+    let after = cx.slice(start + 1, cx.end)
+    let url = /^(?:[a-z][-\w+.]+:[^\s>]+|[a-z\d.!#$%&'*+/=?^_`{|}~-]+@[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?(?:\.[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?)*)>/i.exec(after)
+    
+		if (!url)
+			return -1
+
+		return cx.append(elt(Type.URL, start, start + 1 + url[0].length, [
+			elt(Type.LinkMark, start, start + 1),
+			elt(Type.URL, start + 1, start + url[0].length),
+			elt(Type.LinkMark, start + url[0].length, start + 1 + url[0].length)
+		]))
+  },
 
 	InlineCode(cx, next, start) {
 		if (next != 96 /* '`' */ || start && cx.char(start - 1) == 96)
@@ -1363,16 +1381,6 @@ export class InlineContext {
 	addDelimiter(type: DelimiterType, from: number, to: number, open: boolean, close: boolean) {
 		return this.append(new InlineDelimiter(type, from, to, (open ? Mark.Open : Mark.None) | (close ? Mark.Close : Mark.None)))
 	}
-
-	/// Returns true when there is an unmatched link or image opening
-  /// token before the current position.
-  get hasOpenLink() {
-    for (let i = this.parts.length - 1; i >= 0; i--) {
-      let part = this.parts[i]
-      if (part instanceof InlineDelimiter && part.type == LinkStart) return true
-    }
-    return false
-  }
 
 	/// Add an inline element. Returns the end of the element.
 	addElement(elt: Element) {
@@ -1627,7 +1635,8 @@ const markdownHighlighting = styleTags({
 	'StrongEmphasis/...': t.strong,
 	'OrderedList/... BulletList/...': t.list,
 	'InlineCode/...': t.monospace,
-	'EscapeMark HeaderMark QuoteMark EmphasisMark CodeMark': markTag,
+	'URL': t.url,
+	'EscapeMark HeaderMark QuoteMark EmphasisMark CodeMark LinkMark': markTag,
 	'CodeInfo': t.atom,
 	'Paragraph': t.content
 })

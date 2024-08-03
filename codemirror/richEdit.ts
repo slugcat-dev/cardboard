@@ -10,7 +10,8 @@ const tokenElement = [
 	'Underline',
 	'UnderlineItalic',
 	'Strikethrough',
-	'InlineCode'
+	'InlineCode',
+	'URL'
 ]
 const tokenHidden = [
 	'EscapeMark',
@@ -18,6 +19,7 @@ const tokenHidden = [
 	'UnderlineMark',
 	'UnderlineItalicMark',
 	'StrikethroughMark',
+	'LinkMark'
 ]
 const decorationHeading = Decoration.mark({ tagName: 'h1', class: 'cm-markdown-heading' })
 const decorationInlineCode = Decoration.mark({ class: 'cm-markdown-inline-code' })
