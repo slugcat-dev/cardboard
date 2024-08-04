@@ -118,8 +118,6 @@ class HighlightLineParser implements LeafBlockParser {
 	}
 
 	finish(cx: BlockContext, leaf: LeafBlock) {
-		console.log(leaf.content)
-
 		if (leaf.content.startsWith('!! ')) {
 			cx.addLeafElement(
 				leaf,

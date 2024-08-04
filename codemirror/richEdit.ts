@@ -125,21 +125,36 @@ export class RichEditPlugin implements PluginValue {
 			} })
 
 			// Hide block markers
+			let visible: string[] = []
+
 			tree.iterate({ from, to, enter(node) {
 				const inSelection = checkSelection(cursor, node) && view.hasFocus
 
-				if (node.name.startsWith('ATXHeading'))
-					return !inSelection
-				else if (node.name === 'Highlight')
-					return !inSelection
-				else if (node.name === 'Blockquote')
-					return !inSelection
-				else if (node.name === 'HeaderMark')
+				if (inSelection) {
+					if (node.name.startsWith('ATXHeading'))
+						visible.push('HeaderMark')
+					else if (node.name === 'Highlight')
+						visible.push('HighlightMark')
+					else if (node.name === 'Blockquote')
+						visible.push('QuoteMark')
+				}
+
+				if (visible.includes(node.name))
+					return
+
+				if (node.name === 'HeaderMark')
 					decorations.push(decorationHidden.range(node.from, node.to + 1))
 				else if (node.name === 'HighlightMark')
 					decorations.push(decorationHidden.range(node.from, node.to + 1))
 				else if (node.name === 'QuoteMark')
 					decorations.push(decorationBlockquote.range(node.from, node.to))
+			}, leave(node) {
+				if (node.name.startsWith('ATXHeading'))
+					visible = visible.filter(item => item !== 'HeaderMark')
+				else if (node.name.startsWith('Highlight'))
+					visible = visible.filter(item => item !== 'HighlightMark')
+				else if (node.name.startsWith('Blockquote'))
+					visible = visible.filter(item => item !== 'QuoteMark')
 			} })
 
 			// Hide inline markers
