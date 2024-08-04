@@ -200,11 +200,14 @@ async function makeBoard() {
 }
 
 #header {
+	position: fixed;
+	left: 240px;
 	display: flex;
 	gap: 1rem;
 	align-items: center;
 	padding: .5rem 1rem;
 	background-color: var(--color-background);
+	transition: left .2s;
 	user-select: none;
 
 	.breadcrumbs {
@@ -293,5 +296,9 @@ async function makeBoard() {
 		}
 
 	}
+}
+
+#sidebar.hidden ~ #header {
+	left: 0;
 }
 </style>
