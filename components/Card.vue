@@ -159,7 +159,7 @@ function updateCardPos() {
 
 function cardInteractionAllowed(event?: Event) {
 	return (
-		cardTargetAllowed(event)
+		cardTargetAllowed(['A', 'INPUT'], event)
 		&& canvas.cardDragAllowed
 		&& !contentRef.value.active
 		&& card.id

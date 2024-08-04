@@ -146,11 +146,8 @@ export function blobToBase64(blob: Blob) {
 	})
 }
 
-export function cardTargetAllowed(event?: Event) {
+export function cardTargetAllowed(tagNames: string[], event?: Event) {
 	const targetElement = event?.target as Element
 
-	return !(event && (
-		targetElement.tagName === 'INPUT'
-		|| targetElement.tagName === 'A'
-	))
+	return !(event && tagNames.includes(targetElement.tagName))
 }

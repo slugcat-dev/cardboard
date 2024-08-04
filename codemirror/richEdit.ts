@@ -23,10 +23,10 @@ const tokenHidden = [
 ]
 const decorationHeading = Decoration.mark({ tagName: 'h1', class: 'cm-markdown-heading' })
 const decorationInlineCode = Decoration.mark({ class: 'cm-markdown-inline-code' })
+const decorationHighlight = Decoration.mark({ class: 'cm-markdown-highlight' })
 const decorationTaskMarker = Decoration.mark({ class: 'cm-markdown-task-marker' })
 const decorationBlockquote = Decoration.mark({ class: 'cm-markdown-blockquote' })
 const decorationCodeBlock = Decoration.line({ class: 'cm-markdown-code-block' })
-const decorationHighlight = Decoration.line({ class: 'cm-markdown-highlight' })
 const decorationHidden = Decoration.mark({ class: 'cm-markdown-hidden' })
 
 function decorationURL(url: string, fake: boolean) {
@@ -80,6 +80,11 @@ export class RichEditPlugin implements PluginValue {
 
 						break
 
+					case 'Highlight':
+						decorations.push(decorationHighlight.range(node.from, node.to))
+
+						break
+
 					case 'URL': {
 						const text = view.state.doc.sliceString(node.from, node.to)
 						let url = text
@@ -92,14 +97,12 @@ export class RichEditPlugin implements PluginValue {
 						break
 					}
 
-					case 'Highlight':
 					case 'FencedCode': {
 						const startLine = view.state.doc.lineAt(node.from)
 						const endLine = view.state.doc.lineAt(node.to)
-						const decoration = node.name === 'Highlight' ? decorationHighlight : decorationCodeBlock
 
 						for (let line = startLine.number; line <= endLine.number; line++)
-							decorations.push(decoration.range(view.state.doc.line(line).from))
+							decorations.push(decorationCodeBlock.range(view.state.doc.line(line).from))
 
 						break
 					}

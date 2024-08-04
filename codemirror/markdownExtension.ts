@@ -118,16 +118,32 @@ class HighlightLineParser implements LeafBlockParser {
 	}
 
 	finish(cx: BlockContext, leaf: LeafBlock) {
+		console.log(leaf.content)
+
 		if (leaf.content.startsWith('!! ')) {
 			cx.addLeafElement(
 				leaf,
 				cx.elt('Highlight', leaf.start, leaf.start + leaf.content.length, [
 					cx.elt('HighlightMark', leaf.start, leaf.start + 2),
-					...cx.parser.parseInline(leaf.content.slice(3), leaf.start + 3)
+					...cx.parser.parseInline(leaf.content.slice(2), leaf.start + 2)
 				])
 			)
 
 			return true
+		}
+
+		// Fix for task lists
+		const inListItem = isIn(cx, 'BulletList') && cx.parentType().name === 'ListItem'
+
+		if (/^\[[ x]\] !! /i.test(leaf.content) && inListItem) {
+			cx.addLeafElement(
+				leaf,
+				cx.elt('Highlight', leaf.start + 4, leaf.start + leaf.content.length, [
+					cx.elt('HighlightMark', leaf.start + 4, leaf.start + 6)
+				])
+			)
+
+			return false
 		}
 
 		return false
@@ -136,7 +152,7 @@ class HighlightLineParser implements LeafBlockParser {
 
 export const HighlightLine: MarkdownExtension = {
 	defineNodes: [
-		{ name: 'Highlight' },
+		{ name: 'Highlight', block: true },
 		{ name: 'HighlightMark', style: markTag }
 	],
 	parseBlock: [{
@@ -176,9 +192,27 @@ export const TaskList: MarkdownExtension = {
 	parseBlock: [{
 		name: 'TaskList',
 		leaf(cx, leaf) {
-			return /^\[[ x]\] /i.test(leaf.content) && cx.parentType().name === 'ListItem' ? new TaskParser() : null
+			const inListItem = isIn(cx, 'BulletList') && cx.parentType().name === 'ListItem'
+
+			return /^\[[ x]\] /i.test(leaf.content) && inListItem ? new TaskParser() : null
 		}
 	}]
+}
+
+function isIn(cx: BlockContext, nodeName: string) {
+	let depth = cx.depth - 1
+	let parentType
+
+	while (depth >= 0) {
+		parentType = cx.parentType(depth)
+
+		if (parentType.name === nodeName)
+			return true
+
+		depth--
+	}
+
+	return false
 }
 
 // Autolink
