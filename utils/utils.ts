@@ -145,3 +145,12 @@ export function blobToBase64(blob: Blob) {
 		reader.readAsDataURL(blob)
 	})
 }
+
+export function cardTargetAllowed(event?: Event) {
+	const targetElement = event?.target as Element
+
+	return !(event && (
+		targetElement.tagName === 'INPUT'
+		|| targetElement.tagName === 'A'
+	))
+}

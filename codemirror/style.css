@@ -52,6 +52,10 @@
 	}
 }
 
+.cm-markdown-url {
+	color: var(--color-accent);
+}
+
 .cm-markdown-code-block {
 	padding-inline: .375rem !important;
 }

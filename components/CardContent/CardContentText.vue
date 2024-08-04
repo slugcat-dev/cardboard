@@ -43,7 +43,7 @@ function onKeyDownEsc(event: KeyboardEvent) {
 }
 
 function activate(event?: MouseEvent) {
-	if (active.value)
+	if (active.value || !cardTargetAllowed(event))
 		return
 
 	active.value = true

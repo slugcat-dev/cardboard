@@ -11,7 +11,7 @@ const tokenElement = [
 	'UnderlineItalic',
 	'Strikethrough',
 	'InlineCode',
-	'URL'
+	'Link'
 ]
 const tokenHidden = [
 	'EscapeMark',
@@ -28,6 +28,20 @@ const decorationBlockquote = Decoration.mark({ class: 'cm-markdown-blockquote' }
 const decorationCodeBlock = Decoration.line({ class: 'cm-markdown-code-block' })
 const decorationHighlight = Decoration.line({ class: 'cm-markdown-highlight' })
 const decorationHidden = Decoration.mark({ class: 'cm-markdown-hidden' })
+
+function decorationURL(url: string, fake: boolean) {
+	if (fake)
+		return Decoration.mark({ class: 'cm-markdown-url' })
+
+	return Decoration.mark({
+		tagName: 'a',
+		class: 'cm-markdown-url',
+		attributes: {
+			href: url,
+			target: '_blank'
+		}
+	})
+}
 
 export class RichEditPlugin implements PluginValue {
 	decorations: DecorationSet
@@ -65,6 +79,18 @@ export class RichEditPlugin implements PluginValue {
 						decorations.push(decorationInlineCode.range(node.from, node.to))
 
 						break
+
+					case 'URL': {
+						const text = view.state.doc.sliceString(node.from, node.to)
+						let url = text
+
+						if (/^[^\W_](?:[\w.+-]*[^\W_])?@[^\W_][\w-]*(?:\.[^\W_](?:[\w-]*[^\W_])?)*/.test(text))
+							url = `mailto:${text}`
+
+						decorations.push(decorationURL(url, view.hasFocus).range(node.from, node.to))
+
+						break
+					}
 
 					case 'Highlight':
 					case 'FencedCode': {

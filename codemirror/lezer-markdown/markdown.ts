@@ -63,6 +63,7 @@ export enum Type {
 	Emphasis,
 	StrongEmphasis,
 	InlineCode,
+	Link,
 
 	// Smaller tokens
 	EscapeMark,
@@ -1301,7 +1302,7 @@ const DefaultInline: { [name: string]: (cx: InlineContext, next: number, pos: nu
 		if (!url)
 			return -1
 
-		return cx.append(elt(Type.URL, start, start + 1 + url[0].length, [
+		return cx.append(elt(Type.Link, start, start + 1 + url[0].length, [
 			elt(Type.LinkMark, start, start + 1),
 			elt(Type.URL, start + 1, start + url[0].length),
 			elt(Type.LinkMark, start + url[0].length, start + 1 + url[0].length)
@@ -1635,7 +1636,6 @@ const markdownHighlighting = styleTags({
 	'StrongEmphasis/...': t.strong,
 	'OrderedList/... BulletList/...': t.list,
 	'InlineCode/...': t.monospace,
-	'URL': t.url,
 	'EscapeMark HeaderMark QuoteMark EmphasisMark CodeMark LinkMark': markTag,
 	'CodeInfo': t.atom,
 	'Paragraph': t.content

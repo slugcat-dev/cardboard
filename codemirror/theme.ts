@@ -10,7 +10,6 @@ const highlightStyle = HighlightStyle.define([
 	{ tag: underlineTag, class: 'cm-markdown-underline' },
 	{ tag: underlineItalicTag, class: 'cm-markdown-underline cm-markdown-italic' },
 	{ tag: t.strikethrough, class: 'cm-markdown-strikethrough' },
-	{ tag: t.url, color: 'var(--color-accent)' },
 
 	/*
 	GitHub Dark
@@ -105,7 +104,8 @@ const highlightStyle = HighlightStyle.define([
 	{ tag: [t.special(t.string), t.processingInstruction, t.string, t.inserted], color: '#ce9178' },
 	{ tag: [t.angleBracket], color: '#808080' },
 	{ tag: [t.meta, t.comment], color: '#808080' },
-	{ tag: t.invalid, color: '#ff0000' }
+	{ tag: t.invalid, color: '#ff0000' },
+	{ tag: t.url, color: '#569cd6', textDecoration: 'underline' }
 ])
 
 const editorTheme = EditorView.theme({
