@@ -167,12 +167,15 @@ function cardInteractionAllowed(event?: Event) {
 }
 
 function deleteCard() {
-	if (selection.cards.length > 1) {
-		fetchDeleteMany(selection.cards)
-		selection.clear()
+	if (selected.value) {
+		if (selection.cards.length > 1) {
+			fetchDeleteMany(selection.cards)
+			selection.clear()
 
-		return
-	}
+			return
+		}
+	} else
+		selection.clear()
 
 	cardRef.value.classList.add('deleted')
 	setTimeout(() => fetchDeleteCard(card), 200)

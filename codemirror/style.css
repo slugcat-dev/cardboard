@@ -73,14 +73,14 @@
 }
 
 .cm-markdown-task-marker {
-  font-family: 'Ubuntu Mono', monospace;
+	font-family: 'Ubuntu Mono', monospace;
 }
 
 .cm-markdown-checkbox {
-  position: relative;
-  top: .125rem;
-  display: inline-flex;
-  margin-inline-end: .25rem;
+	position: relative;
+	top: .125rem;
+	display: inline-flex;
+	margin-inline-end: .25rem;
 
 	& > input {
 		width: .875rem;
