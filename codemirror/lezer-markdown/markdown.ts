@@ -287,13 +287,19 @@ function isOrderedList(line: Line, cx: BlockContext, breaking: boolean) {
 }
 
 function isAtxHeading(line: Line) {
-	if (line.next != 35 /* '#' */)
+	if (line.next !== 35 /* '#' */)
 		return -1
+
 	let pos = line.pos + 1
-	while (pos < line.text.length && line.text.charCodeAt(pos) == 35) pos++
-	if (pos < line.text.length && line.text.charCodeAt(pos) != 32)
+
+	while (pos < line.text.length && line.text.charCodeAt(pos) === 35)
+		pos++
+
+	if (pos <= line.text.length && line.text.charCodeAt(pos) !== 32)
 		return -1
+
 	const size = pos - line.pos
+
 	return size > 6 ? -1 : size
 }
 
