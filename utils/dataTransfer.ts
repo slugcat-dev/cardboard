@@ -18,17 +18,46 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 	if (dataTransfer.files.length > 0)
 		return
 
-	items.forEach(async (item) => {
-		if (item.type === 'text/plain') {
-			item.getAsString((data) => {
-				createCard({
-					id: 'new:create',
-					position,
-					content: data
+	let mode = null
+	let text = null
+
+	const tasks = items.map((item) => {
+		return new Promise<void>((resolve) => {
+			if (item.type === 'text/plain') {
+				item.getAsString((data) => {
+					text = data
+
+					resolve()
 				})
-			})
-		}
+			} else if (item.type === 'vscode-editor-data') {
+				item.getAsString((json) => {
+					try {
+						const data = JSON.parse(json)
+
+						mode = data.mode
+
+						resolve()
+					} catch {}
+				})
+			} else
+				resolve()
+		})
 	})
+
+	await Promise.all(tasks)
+
+	console.log(mode)
+
+	if (text) {
+		if (mode)
+			text = `\`\`\`${mode}\n${text}\n\`\`\``
+
+		createCard({
+			id: 'new:create',
+			position,
+			content: text
+		})
+	}
 }
 
 /*
