@@ -46,11 +46,11 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 
 	await Promise.all(tasks)
 
-	console.log(mode)
+	const fence = '```'
 
 	if (text) {
 		if (mode)
-			text = `\`\`\`${mode}\n${text}\n\`\`\``
+			text = `${fence}${mode}\n${text}\n${fence}`
 
 		createCard({
 			id: 'new:create',
