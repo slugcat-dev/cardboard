@@ -151,3 +151,12 @@ export function cardTargetAllowed(tagNames: string[], event?: Event) {
 
 	return !(event && tagNames.includes(targetElement.tagName))
 }
+
+export async function getLinkPreview(url: string) {
+	try {
+		return await $fetch('/api/link-preview', { query: { url: new URL(url).toString() } })
+	}
+	catch {}
+
+	return false
+}

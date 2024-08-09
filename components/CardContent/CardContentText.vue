@@ -102,6 +102,16 @@ async function onBlur() {
 	fetchUpdateCard(card)
 }
 
+async function onPaste(event: ClipboardEvent) {
+	if (!isEmpty())
+		return
+
+	if (event.clipboardData) {
+		await handleDataTransfer(event.clipboardData, card.position, card)
+		event.preventDefault()
+	}
+}
+
 function isEmpty() {
 	return view.state.doc.toString().trim().length === 0
 }
@@ -116,6 +126,7 @@ defineExpose({ active })
 		@click.left.exact="activate"
 		@keydown.escape="onKeyDownEsc"
 		@keydown.delete="onKeyDownDel"
+		@paste.capture="onPaste"
 	/>
 </template>
 

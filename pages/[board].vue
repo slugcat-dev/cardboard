@@ -404,7 +404,7 @@ function onClick(event: MouseEvent) {
 }
 
 async function onDrop(event: DragEvent) {
-	if (event.dataTransfer)
+	if (event.target === canvas.ref && event.dataTransfer)
 		await handleDataTransfer(event.dataTransfer, toCanvasPos(canvas, toPos(event)))
 }
 
