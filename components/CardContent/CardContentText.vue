@@ -143,7 +143,6 @@ defineExpose({ active })
 
 <style lang="scss">
 .card-content-text {
-	padding: .375rem;
 	font-size: .875rem;
 	background-color: #222;
 	border: 2px solid var(--color-border);

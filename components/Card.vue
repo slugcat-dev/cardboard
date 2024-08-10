@@ -242,7 +242,6 @@ function deleteCard() {
 
 	&.selected .card-content {
 		border-color: var(--color-accent-50);
-		outline-color: var(--color-accent-50);
 	}
 
 	&.deleted {

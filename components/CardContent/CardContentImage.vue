@@ -41,10 +41,9 @@ defineExpose({ active })
 	max-width: 550px;
 	height: auto;
 	max-height: 350px;
-	background-color: var(--color-background);
+	background-color: #222;
 	border-radius: .375rem;
-	outline: 2px solid var(--color-border);
-	outline-offset: -2px;
+	border: 2px solid var(--color-border);
 	box-shadow: var(--shadow-card);
 	-webkit-touch-callout: none;
 }

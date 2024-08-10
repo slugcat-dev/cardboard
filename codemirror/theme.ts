@@ -66,7 +66,10 @@ const editorTheme = EditorView.theme({
 		fontFamily: 'Roboto, system-ui, sans-serif !important',
 		lineHeight: '1.25rem'
 	},
-	'.cm-content': { padding: 0 },
+	'.cm-content': {
+		margin: '-2px',
+		padding: '.5rem'
+	},
 	'.cm-line': { padding: 0 },
 	'.cm-cursor, .cm-dropCursor': {
 		width: '2px',
