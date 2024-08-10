@@ -404,7 +404,7 @@ function onClick(event: MouseEvent) {
 }
 
 async function onDrop(event: DragEvent) {
-	if (event.target === canvas.ref && event.dataTransfer)
+	if (event.dataTransfer)
 		await handleDataTransfer(event.dataTransfer, toCanvasPos(canvas, toPos(event)))
 }
 
@@ -494,7 +494,7 @@ function updateSelectionRect() {
 
 		@dragenter.stop.prevent
 		@dragover.stop.prevent
-		@drop.stop.prevent="onDrop"
+		@drop.self.stop.prevent="onDrop"
 	>
 		<svg class="canvas-background">
 			<pattern
