@@ -215,9 +215,10 @@ function deleteCard() {
 	</div>
 </template>
 
-<style lang="scss">
+<style lang="css">
 .card {
 	position: absolute;
+	transition: scale .1s, opacity .1s;
 
 	&.content-active,
 	&.pointer-down,
@@ -225,12 +226,18 @@ function deleteCard() {
 		z-index: 1;
 	}
 
-	// Prevent the cursor from leaving the hitbox when moving really fast
+	/* Prevent the pointer from leaving the hitbox while dragging the card */
 	&.pointer-down::before {
-		position: fixed;
-		z-index: -1;
 		content: '';
-		inset: -100vh -100vw;
+		position: fixed;
+		width: 1000vw;
+		height: 1000vh;
+		translate: -50% -50%;
+		z-index: -1;
+	}
+
+	&.content-active .card-content-text {
+		border-color: var(--color-accent);
 	}
 
 	&.selected .card-content {
@@ -238,13 +245,14 @@ function deleteCard() {
 		outline-color: var(--color-accent-50);
 	}
 
-	&.content-active .card-content-text {
-		border-color: var(--color-accent);
-	}
-
 	&.deleted {
-		opacity: 0;
 		scale: .75;
+		opacity: 0;
+		pointer-events: none;
 	}
+}
+
+.canvas:has(.card.pointer-down) .card:not(.pointer-down) {
+	pointer-events: none;
 }
 </style>
