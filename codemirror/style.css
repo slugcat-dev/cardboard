@@ -2,7 +2,7 @@
 
 .cm-markdown-mark {
 	text-decoration: none !important;
-	
+
 	&:has(~ .cm-markdown-heading) {
 		vertical-align: .125rem;
 	}
@@ -58,6 +58,7 @@
 
 .cm-markdown-code-block {
 	padding-inline: .375rem !important;
+	tab-size: 2;
 }
 
 .cm-markdown-code-block:first-child,
