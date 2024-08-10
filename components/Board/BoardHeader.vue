@@ -209,7 +209,7 @@ async function makeBoard() {
 	background-color: var(--color-background);
 	transition: left .2s;
 	user-select: none;
-	z-index: 10;
+	z-index: 5;
 
 	.breadcrumbs {
 		display: flex;
