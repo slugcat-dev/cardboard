@@ -48,7 +48,8 @@ function toggleCheckbox(view: EditorView, pos: number) {
 			to: pos - 1,
 			insert: checked ? ' ' : 'x'
 		},
-		selection: { anchor: line.to }
+		selection: { anchor: line.to },
+		scrollIntoView: true
 	})
 
 	return true

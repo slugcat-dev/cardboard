@@ -1,6 +1,6 @@
 import { EditorView, dropCursor, keymap } from '@codemirror/view'
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete'
-import { defaultKeymap, history, historyKeymap, insertBlankLine } from '@codemirror/commands'
+import { defaultKeymap, history, historyKeymap, insertBlankLine, insertNewlineAndIndent } from '@codemirror/commands'
 import { indentOnInput, indentUnit } from '@codemirror/language'
 import type { Extension } from '@codemirror/state'
 import { markdownViewPlugin } from './markdownViewPlugin'
@@ -23,7 +23,7 @@ export default function (element: Element, content: string, extensions: Extensio
 				...closeBracketsKeymap,
 				...defaultKeymap,
 				...historyKeymap,
-				{ key: 'Shift-Enter', run: insertBlankLine }
+				{ key: 'Enter', run: insertNewlineAndIndent, shift: insertBlankLine }
 			]),
 			...extensions
 		],

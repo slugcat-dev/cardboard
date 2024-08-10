@@ -9,7 +9,7 @@ import { indentLess } from '@codemirror/commands'
 import type { MarkdownExtension } from '../lezer-markdown'
 import { MarkdownParser, parseCode } from '../lezer-markdown'
 import { commonmarkLanguage, getCodeParser, markdownLanguage, mkLang } from './markdown'
-import { deleteMarkupBackward, handleTab, insertNewlineContinueMarkup } from './commands'
+import { deleteMarkupBackward, handleHome, handleTab, insertNewlineContinueMarkup } from './commands'
 
 export { commonmarkLanguage, markdownLanguage, insertNewlineContinueMarkup, deleteMarkupBackward }
 
@@ -20,8 +20,8 @@ export { commonmarkLanguage, markdownLanguage, insertNewlineContinueMarkup, dele
 export const markdownKeymap: readonly KeyBinding[] = [
 	{ key: 'Enter', run: insertNewlineContinueMarkup },
 	{ key: 'Backspace', run: deleteMarkupBackward },
-	{ key: 'Tab', run: handleTab },
-	{ key: 'Shift-Tab', run: indentLess }
+	{ key: 'Tab', run: handleTab, shift: indentLess },
+	{ key: 'Home', run: handleHome }
 ]
 
 /// Markdown language support.

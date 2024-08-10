@@ -403,3 +403,26 @@ export function handleTab(view: EditorView) {
 	else
 		return insertTab(view)
 }
+
+export function handleHome(view: EditorView) {
+	const { state } = view
+	const pos = state.selection.main.head
+	const line = state.doc.lineAt(pos)
+	const tree = syntaxTree(state)
+	const context = getContext(tree.resolveInner(pos, -1), state.doc)
+
+	if (!context.length || !/list|quote/i.test(context[context.length - 1].node.name))
+		return false
+
+	const inner = context[context.length - 1]
+
+	if (pos <= line.from + inner.to)
+		return false
+
+	view.dispatch({
+			selection: { anchor: line.from + inner.to },
+			scrollIntoView: true
+	})
+
+	return true
+}
