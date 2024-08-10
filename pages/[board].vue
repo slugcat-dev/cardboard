@@ -83,9 +83,23 @@ defineHotkeys({
 	'meta +': keyboardZoom,
 	'meta -': keyboardZoom,
 	'meta a': () => selection.rect = new DOMRect(-Infinity, -Infinity, Infinity, Infinity),
-	'space': () => createCard({ position: toCanvasPos(canvas, pointer.pos) }),
 	'delete': deleteCards,
+	'shift delete': deleteCards,
 	'backspace': deleteCards
+})
+
+// Allow typing anywhere on the canvas to create a new card
+useEventListener('keydown', (event: KeyboardEvent) => {
+	if (event.repeat || event.ctrlKey || event.metaKey || usingInput.value)
+		return
+
+	if (event.key === 'Enter' || event.key.length === 1) {
+		event.preventDefault()
+		createCard({
+			position: toCanvasPos(canvas, pointer.pos),
+			content: event.key !== ' ' && event.key !== 'Enter' ? event.key : ''
+		})
+	}
 })
 
 function resetZoom() {
@@ -140,12 +154,13 @@ function keyboardZoom(event: KeyboardEvent) {
 	animateSmoothScroll()
 }
 
-function deleteCards() {
+function deleteCards(event: KeyboardEvent) {
 	if (selection.cards.length === 0)
 		return
 
 	// eslint-disable-next-line no-alert
-	if (!confirm(`Are you sure you want to delete ${selection.cards.length} cards?`))
+	if ((!event.shiftKey && selection.cards.length === cards.value.length)
+		&& !confirm(`Are you sure you want to delete ${selection.cards.length} cards?`))
 		return
 
 	fetchDeleteMany(selection.cards)

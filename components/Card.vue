@@ -244,7 +244,6 @@ function deleteCard() {
 
 	&.deleted {
 		opacity: 0;
-		transition: opacity .1s, scale .1s;
 		scale: .75;
 	}
 }

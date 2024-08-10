@@ -27,13 +27,12 @@ export function defineHotkeys(config: HotkeysConfig) {
 	})
 
 	useEventListener('keydown', (event: KeyboardEvent) => {
-		if (event.repeat)
+		if (event.repeat || usingInput.value)
 			return
 
 		for (const hotkey of hotkeys) {
 			if (
-				usingInput.value
-				|| event.key.toLowerCase() !== hotkey.key
+				event.key.toLowerCase() !== hotkey.key
 				|| event.ctrlKey !== hotkey.ctrlKey
 				|| event.metaKey !== hotkey.metaKey
 				|| event.shiftKey !== hotkey.shiftKey

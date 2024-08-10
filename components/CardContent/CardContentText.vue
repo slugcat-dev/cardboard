@@ -23,8 +23,12 @@ onMounted(() => {
 	])
 
 	// Activate new cards
-	if (card.id === 'new:empty')
+	if (card.id === 'new:empty') {
 		activate()
+
+		if (!isEmpty())
+			view.dispatch({ selection: { anchor: view.state.doc.length } })
+	}
 })
 
 onBeforeUnmount(() => {
@@ -116,7 +120,7 @@ function isEmpty() {
 	return view.state.doc.toString().trim().length === 0
 }
 
-// Prevent text being selected with the mouse to allow link dragging
+// Prevent text being selected with the mouse  on anchor elements to allow link dragging
 function onMouseDown(event: MouseEvent) {
 	if (event.target instanceof HTMLAnchorElement)
 		event.stopPropagation()
