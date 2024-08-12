@@ -89,7 +89,7 @@ export class RichEditPlugin implements PluginValue {
 						const text = view.state.doc.sliceString(node.from, node.to)
 						let url = text
 
-						if (/^[^\W_](?:[\w.+-]*[^\W_])?@[^\W_][\w-]*(?:\.[^\W_](?:[\w-]*[^\W_])?)*/.test(text))
+						if (/^[^\W_](?:[\w.+-]*[^\W_])?@[^\W_](?:[\w-]*[^\W_])?(?:\.[^\W_](?:[\w-]*[^\W_])?)*/.test(text))
 							url = `mailto:${text}`
 
 						decorations.push(decorationURL(url, view.hasFocus).range(node.from, node.to))

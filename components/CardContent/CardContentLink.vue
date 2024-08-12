@@ -1,9 +1,10 @@
 <script setup lang="ts">
 const { card } = defineProps(['card'])
-
 const title = computed(() => {
-	return `${card.content.siteName && !card.content.title.includes(card.content.siteName) ? `${card.content.siteName} - ` : ''}${card.content.title || card.content.domain}`
+	return `${card.content.siteName && !card.content.title.includes(card.content.siteName)
+		? `${card.content.siteName} - ` : ''}${card.content.title || card.content.domain}`
 })
+const showImage = /youtube|spotify/.test(card.content.url)
 </script>
 
 <template>
@@ -32,6 +33,13 @@ const title = computed(() => {
 				{{ card.content.domain }}
 			</div>
 		</div>
+		<img
+			v-if="showImage && card.content.image"
+			class="image"
+			:src="card.content.image"
+			draggable="false"
+			loading="lazy"
+		>
 	</div>
 </template>
 
@@ -83,6 +91,19 @@ const title = computed(() => {
 		.title {
 			color: currentcolor;
 		}
+	}
+
+	.image {
+		position: absolute;
+		left: 0;
+		bottom: 3.875rem;
+		width: 100%;
+		height: 8rem;
+		border-radius: .375rem;
+		object-fit: cover;
+		-webkit-touch-callout: none;
+		border: inherit;
+		background-color: #222;
 	}
 }
 </style>

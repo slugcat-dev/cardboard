@@ -215,8 +215,8 @@ function isIn(cx: BlockContext, nodeName: string) {
 
 // Autolink
 const autolinkStart = /(https?:\/\/[^\W_])|[^\W_](?:[\w.+-]*[^\W_])?@[^\W_]/giy
-const urlEnd = /[\w-]*(?:\.[^\W_](?:[\w-]*[^\W_])?)*(?::\d{1,5})?(?:\/[^\s<]*)?/gy
-const emailEnd = /[\w-]*(?:\.[^\W_](?:[\w-]*[^\W_])?)+/gy
+const urlEnd = /(?:[\w-]*[^\W_])?(?:\.[^\W_](?:[\w-]*[^\W_])?)*(?::\d{1,5})?(?:\/[^\s<]*)?/gy
+const emailEnd = /(?:[\w-]*[^\W_])?[\w-]*(?:\.[^\W_](?:[\w-]*[^\W_])?)+/gy
 
 function count(str: string, from: number, to: number, ch: string) {
 	let result = 0

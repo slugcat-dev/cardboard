@@ -67,7 +67,7 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 		text = url
 
 	if (text) {
-		if (url || /https?:\/\/[^\W_][\w-]*(?:\.[^\W_](?:[\w-]*[^\W_])?)*(?::\d{1,5})?(?:\/[^\s<]*)?/i.test(text)) {
+		if (url || /https?:\/\/[^\W_](?:[\w-]*[^\W_])?(?:\.[^\W_](?:[\w-]*[^\W_])?)*(?::\d{1,5})?(?:\/[^\s<]*)?/i.test(text)) {
 			const linkPreview = await getLinkPreview(text)
 
 			if (linkPreview) {
