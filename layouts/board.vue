@@ -25,14 +25,14 @@ body {
 		#8884 25%,
 		#8882 50%
 	);
-  background-size: 400vw 100vh;
-  background-attachment: fixed;
-  animation: pulse .8s linear infinite;
+	background-size: 400vw 100vh;
+	background-attachment: fixed;
+	animation: pulse .8s linear infinite;
 }
 
 @keyframes pulse {
-  0% { background-position: 0 0; }
-  100% { background-position: 400vw 0; }
+	0% { background-position: 0 0; }
+	100% { background-position: 400vw 0; }
 }
 
 .app-layout {

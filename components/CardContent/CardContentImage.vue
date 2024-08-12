@@ -77,7 +77,7 @@ defineExpose({ active })
 
 .image-preview-enter-from,
 .image-preview-leave-to {
-  background-color: transparent;
+	background-color: transparent;
 	backdrop-filter: blur(0);
 
 	img {

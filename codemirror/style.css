@@ -10,10 +10,10 @@
 
 .cm-markdown-heading {
 	display: inline-block;
-  margin: 0;
-  font-weight: bold;
-  font-size: 1.25rem;
-  line-height: 1.75rem;
+	margin: 0;
+	font-weight: bold;
+	font-size: 1.25rem;
+	line-height: 1.75rem;
 }
 
 .cm-markdown-blockquote {

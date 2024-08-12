@@ -125,18 +125,18 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 
 /*
 files.forEach(async (file, index) => {
-    // TODO: upload file, create card
-    // File inherits from Blob
-    // eslint-disable-next-line no-console
-    console.log(index, file.name, file.type, 'Size:', file.size)
-  })
+		// TODO: upload file, create card
+		// File inherits from Blob
+		// eslint-disable-next-line no-console
+		console.log(index, file.name, file.type, 'Size:', file.size)
+	})
 
-  if (files.length !== 0)
-    return
+	if (files.length !== 0)
+		return
 
-  items.forEach(async (item, index) => {
-    // TODO: create cards
-    // eslint-disable-next-line no-console
-    console.log(index, item.type, 'Size:', dataTransfer.getData(item.type).length)
-  })
+	items.forEach(async (item, index) => {
+		// TODO: create cards
+		// eslint-disable-next-line no-console
+		console.log(index, item.type, 'Size:', dataTransfer.getData(item.type).length)
+	})
 */

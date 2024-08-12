@@ -326,7 +326,7 @@ function addCodeText(marks: Element[], from: number, to: number) {
 
 	if (last >= 0 && marks[last].to == from && marks[last].type == Type.CodeText)
 		(marks[last] as any).to = to
-	
+
 	else marks.push(elt(Type.CodeText, from, to))
 }
 
@@ -350,7 +350,7 @@ const DefaultBlockParsers: { [name: string]: ((cx: BlockContext, line: Line) => 
 		const infoFrom = line.skipSpace(fenceEnd)
 		const infoTo = skipSpaceBack(line.text, line.text.length, infoFrom)
 		const marks: (Element | TreeElement)[] = [elt(Type.CodeMark, from, from + len)]
-		
+
 		if (infoFrom < infoTo)
 			marks.push(elt(Type.CodeInfo, cx.lineStart + infoFrom, cx.lineStart + infoTo))
 
@@ -360,7 +360,7 @@ const DefaultBlockParsers: { [name: string]: ((cx: BlockContext, line: Line) => 
 			if (line.indent - line.baseIndent < 4)
 				while (i < line.text.length && line.text.charCodeAt(i) == ch)
 					i++
-			
+
 			if (i - line.pos >= len && line.skipSpace(i) == line.text.length) {
 				for (const m of line.markers)
 					marks.push(m)
@@ -386,7 +386,7 @@ const DefaultBlockParsers: { [name: string]: ((cx: BlockContext, line: Line) => 
 
 		cx.addNode(cx.buffer.writeElements(marks, -from)
 			.finish(Type.FencedCode, cx.prevLineEnd() - from), from)
-		
+
 		return true
 	},
 
@@ -1299,12 +1299,12 @@ const DefaultInline: { [name: string]: (cx: InlineContext, next: number, pos: nu
 	},
 
 	URL(cx, next, start) {
-    if (next != 60 /* '<' */ || start == cx.end - 1)
+	if (next != 60 /* '<' */ || start == cx.end - 1)
 			return -1
 
-    let after = cx.slice(start + 1, cx.end)
-    let url = /^(?:[a-z][-\w+.]+:[^\s>]+|[a-z\d.!#$%&'*+/=?^_`{|}~-]+@[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?(?:\.[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?)*)>/i.exec(after)
-    
+		let after = cx.slice(start + 1, cx.end)
+		let url = /^(?:[a-z][-\w+.]+:[^\s>]+|[a-z\d.!#$%&'*+/=?^_`{|}~-]+@[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?(?:\.[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?)*)>/i.exec(after)
+
 		if (!url)
 			return -1
 
@@ -1313,7 +1313,7 @@ const DefaultInline: { [name: string]: (cx: InlineContext, next: number, pos: nu
 			elt(Type.URL, start + 1, start + url[0].length),
 			elt(Type.LinkMark, start + url[0].length, start + 1 + url[0].length)
 		]))
-  },
+	},
 
 	InlineCode(cx, next, start) {
 		if (next != 96 /* '`' */ || start && cx.char(start - 1) == 96)

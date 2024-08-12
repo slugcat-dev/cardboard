@@ -3,10 +3,11 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 
 	modules: [
-		'@vueuse/nuxt',
-		'nuxt-auth-utils',
-		'@nuxt/icon',
-		'nuxt-mongoose'
+				'@vueuse/nuxt',
+				'nuxt-auth-utils',
+				'@nuxt/icon',
+				'nuxt-mongoose',
+				'@nuxt/eslint'
 	],
 
 	runtimeConfig: {
@@ -53,6 +54,15 @@ export default defineNuxtConfig({
 		esbuild: {
 			options: {
 				target: 'esnext'
+			}
+		}
+	},
+
+	eslint: {
+		config: {
+			typescript: { strict: true },
+			stylistic: {
+				indent: 'tab'
 			}
 		}
 	},
