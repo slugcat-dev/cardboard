@@ -38,7 +38,7 @@ const position = computed(() => {
 					class="context-menu-item"
 					@pointerup="item.handler"
 				>
-					<ClientIcon
+					<Icon
 						:name="item.icon"
 						size="1rem"
 					/>

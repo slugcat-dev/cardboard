@@ -21,7 +21,7 @@ function signin(provider: string) {
 				:disabled="isLoading"
 				@click="signin('google')"
 			>
-				<ClientIcon
+				<Icon
 					name="mdi:google"
 					size="1.5rem"
 				/>
@@ -32,7 +32,7 @@ function signin(provider: string) {
 				:disabled="isLoading"
 				@click="signin('github')"
 			>
-				<ClientIcon
+				<Icon
 					name="mdi:github"
 					size="1.5rem"
 				/>

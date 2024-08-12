@@ -71,7 +71,7 @@ async function makeBoard() {
 			class="sidebar-toggle"
 			@click="settings.sidebar = !settings.sidebar"
 		>
-			<ClientIcon name="f7:sidebar-left" size="1rem" />
+			<Icon name="f7:sidebar-left" size="1rem" />
 		</button>
 		<div
 			v-if="board.id"
@@ -82,14 +82,14 @@ async function makeBoard() {
 					class="nav-button"
 					@click="router.back()"
 				>
-					<ClientIcon name="material-symbols:arrow-back-ios-rounded" size="14px" />
+					<Icon name="material-symbols:arrow-back-ios-rounded" size="14px" />
 				</a>
 				<a
 					class="nav-button"
 					:class="{ disabled: oldcrumbs.length === 0 }"
 					@click="router.forward()"
 				>
-					<ClientIcon name="material-symbols:arrow-forward-ios-rounded" size="14px" />
+					<Icon name="material-symbols:arrow-forward-ios-rounded" size="14px" />
 				</a>
 				<span class="bread-separator">/</span>
 				<div
@@ -127,12 +127,12 @@ async function makeBoard() {
 				v-if="!board.parent"
 				@click="toggleBoardFav"
 			>
-				<ClientIcon :name="board.fav ? 'mdi:star' : 'mdi:star-outline'" size="1rem" />
+				<Icon :name="board.fav ? 'mdi:star' : 'mdi:star-outline'" size="1rem" />
 			</button>
 			<button
 				@click="makeBoard"
 			>
-				<ClientIcon name="lucide:plus" size="1rem" />
+				<Icon name="lucide:plus" size="1rem" />
 				Create Board
 			</button>
 			<div
@@ -140,19 +140,19 @@ async function makeBoard() {
 				class="toolbox"
 			>
 				<div class="tool active">
-					<ClientIcon
+					<Icon
 						name="material-symbols:text-fields"
 						size="1rem"
 					/>
 				</div>
 				<div class="tool">
-					<ClientIcon
+					<Icon
 						name="material-symbols:dashboard"
 						size="1rem"
 					/>
 				</div>
 				<div class="tool">
-					<ClientIcon
+					<Icon
 						name="material-symbols:checklist"
 						size="1rem"
 					/>
@@ -163,7 +163,7 @@ async function makeBoard() {
 			v-else
 			class="header-title"
 		>
-			<ClientIcon name="material-symbols:search" size="16px" />
+			<Icon name="material-symbols:search" size="16px" />
 			Cardboard<kbd>⌘</kbd><kbd>K</kbd>
 		</div>
 	</header>

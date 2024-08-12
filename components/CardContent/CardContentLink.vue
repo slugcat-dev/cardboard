@@ -16,7 +16,7 @@ const showImage = /youtube|spotify/.test(card.content.url)
 				draggable="false"
 				loading="lazy"
 			>
-			<ClientIcon
+			<Icon
 				v-else
 				name="mdi:earth"
 			/>

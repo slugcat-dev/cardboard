@@ -10,7 +10,7 @@ defineProps({
 		class="btn"
 		:class="role"
 	>
-		<ClientIcon
+		<Icon
 			v-if="icon"
 			:name="icon"
 		/>

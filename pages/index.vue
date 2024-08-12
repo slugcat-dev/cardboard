@@ -20,7 +20,7 @@ definePageMeta({
 			</div>
 			<main class="outbox">
 				<div class="empty">
-					<ClientIcon name="lucide:download" size="64px" />
+					<Icon name="lucide:download" size="64px" />
 					<h1>Inbox</h1>
 				</div>
 				<div class="input">

@@ -36,7 +36,7 @@ const noFavRootBoards = computed(() => rootBoards.value.filter(board => !board.f
 			class="board-link"
 			@click="createBoard({ open: true })"
 		>
-			<ClientIcon
+			<Icon
 				name="lucide:plus"
 				size="20px"
 			/>

@@ -11,11 +11,11 @@ const { boards } = await useBoards()
 		:to="board.id"
 		@keydown.f2="console.log('rename board')"
 	>
-		<ClientIcon
+		<Icon
 			name="fluent:page-20-regular"
 			size="20px"
 		/>
-		<ClientIcon
+		<Icon
 			name="fluent:page-20-filled"
 			size="20px"
 		/>
