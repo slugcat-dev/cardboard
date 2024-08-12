@@ -1,6 +1,6 @@
 import { UserSchema } from '~/server/models/user.schema'
 
-export default oauth.githubEventHandler({
+export default oauthGitHubEventHandler({
 	async onSuccess(event, { user }) {
 		let userLink = await UserSchema.findOne({ $or: [{ email: user.email }, { github: user.id }] })
 

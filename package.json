@@ -22,14 +22,14 @@
 		"codemirror": "^6.0.1",
 		"fuse.js": "^7.0.0",
 		"nuxt-mongoose": "^1.0.6",
-		"puppeteer-core": "^21.11.0"
+		"puppeteer-core": "^23.0.2"
 	},
 	"devDependencies": {
+		"@nuxt/icon": "^1.4.5",
 		"@vueuse/math": "^10.11.1",
 		"@vueuse/nuxt": "^10.11.1",
 		"nuxt": "^3.12.4",
-		"nuxt-auth-utils": "^0.0.14",
-		"nuxt-icon": "^0.6.10",
+		"nuxt-auth-utils": "^0.3.2",
 		"vue": "^3.4.37"
 	}
 }

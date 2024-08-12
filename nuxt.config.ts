@@ -5,18 +5,20 @@ export default defineNuxtConfig({
 	modules: [
 		'@vueuse/nuxt',
 		'nuxt-auth-utils',
-		'nuxt-icon',
+		'@nuxt/icon',
 		'nuxt-mongoose'
 	],
 
 	runtimeConfig: {
-		google: {
-			clientId: '',
-			clientSecret: ''
-		},
-		github: {
-			clientId: '',
-			clientSecret: ''
+		oauth: {
+			google: {
+				clientId: '',
+				clientSecret: ''
+			},
+			github: {
+				clientId: '',
+				clientSecret: ''
+			},
 		},
 		session: {
 			name: 'session',
