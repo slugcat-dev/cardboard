@@ -30,7 +30,7 @@ const canvas = reactive({
 	cardDragAllowed: computed(() => !pointer.down && !pointer.gesture)
 })
 const selection = reactive({
-	rect: process.client ? new DOMRect() : undefined,
+	rect: import.meta.client ? new DOMRect() : undefined,
 	cards: [] as Card[],
 	visible: false,
 	clear() {
@@ -158,7 +158,6 @@ function deleteCards(event: KeyboardEvent) {
 	if (selection.cards.length === 0)
 		return
 
-	// eslint-disable-next-line no-alert
 	if ((!event.shiftKey && selection.cards.length === cards.value.length)
 		&& !confirm(`Are you sure you want to delete ${selection.cards.length} cards?`))
 		return
@@ -224,8 +223,10 @@ function onWheelScroll(event: WheelEvent) {
 	if (event.shiftKey)
 		[deltaX, deltaY] = [deltaY, deltaX]
 
-	if (isMouseWheel)
-		(deltaX = Math.sign(deltaX) * 100, deltaY = Math.sign(deltaY) * 100)
+	if (isMouseWheel) {
+		deltaX = Math.sign(deltaX) * 100
+		deltaY = Math.sign(deltaY) * 100
+	}
 
 	canvas.scroll.x -= deltaX
 	canvas.scroll.y -= deltaY
@@ -446,8 +447,7 @@ function setCanvasZoom(zoom: number, adjust: Position, elastic = false) {
 			zoom = 2 + Math.log(zoom - 1)
 		if (zoom < .2)
 			zoom = (zoom / 0.2) ** Math.E * 0.1 + 0.1
-	}
-	else
+	} else
 		zoom = Math.max(Math.min(zoom, 2), .2)
 
 	canvas.zoom = zoom

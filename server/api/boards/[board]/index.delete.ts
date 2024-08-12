@@ -1,5 +1,3 @@
-import type { Model } from 'mongoose'
-
 export default defineEventHandler(async (event) => {
 	const { user } = await requireUserSession(event)
 	const board = await BoardSchema.findById(getRouterParams(event).board)

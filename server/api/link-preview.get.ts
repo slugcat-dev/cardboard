@@ -41,7 +41,7 @@ const minimalArgs = [
 
 function isBase64(string: string) {
 	// TODO:
-	if (/^(?:data:\w+\/[a-zA-Z\+\-\.]+;base64,)(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/gi.test(string))
+	if (/^(?:data:\w+\/[a-zA-Z+\-.]+;base64,)(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/gi.test(string))
 		return true
 }
 
@@ -82,8 +82,7 @@ function validateURL(url: string | undefined) {
 
 	try {
 		return new URL(url)
-	}
-	catch {
+	} catch {
 		return false
 	}
 }

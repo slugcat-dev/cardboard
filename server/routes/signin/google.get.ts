@@ -9,8 +9,7 @@ export default oauthGoogleEventHandler({
 				email: user.email,
 				google: user.sub
 			}).save()
-		}
-		else if (!userLink.google)
+		} else if (!userLink.google)
 			await userLink.updateOne({ google: user.sub })
 
 		await setUserSession(event, {

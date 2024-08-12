@@ -1,8 +1,11 @@
 <script setup lang="ts">
 const { card } = defineProps(['card'])
 const title = computed(() => {
-	return `${card.content.siteName && !card.content.title.includes(card.content.siteName)
-		? `${card.content.siteName} - ` : ''}${card.content.title || card.content.domain}`
+	const siteName = card.content.siteName && !card.content.title.includes(card.content.siteName)
+		? `${card.content.siteName} - `
+		: ''
+
+	return `${siteName}${card.content.title || card.content.domain}`
 })
 const showImage = /youtube|spotify/.test(card.content.url)
 </script>

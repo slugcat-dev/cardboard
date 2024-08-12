@@ -420,8 +420,8 @@ export function handleHome(view: EditorView) {
 		return false
 
 	view.dispatch({
-			selection: { anchor: line.from + inner.to },
-			scrollIntoView: true
+		selection: { anchor: line.from + inner.to },
+		scrollIntoView: true
 	})
 
 	return true

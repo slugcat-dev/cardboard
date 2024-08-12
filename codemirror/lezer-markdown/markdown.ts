@@ -1,6 +1,4 @@
-/* eslint-disable eslint-comments/no-unlimited-disable */
-/* eslint-disable */
-
+/* eslint-disable no-cond-assign */
 // https://github.com/lezer-parser/markdown/tree/main/src
 
 import type { Input, NodePropSource, ParseWrapper, PartialParse,	SyntaxNode, TreeBuffer, TreeCursor, TreeFragment } from '@lezer/common'
@@ -134,7 +132,9 @@ export class Line {
 	/// Skip whitespace after the given position, return the position of
 	/// the next non-space character or the end of the line if there's
 	/// only space after `from`.
-	skipSpace(from: number) { return skipSpace(this.text, from) }
+	skipSpace(from: number) {
+		return skipSpace(this.text, from)
+	}
 
 	/// @internal
 	reset(text: string) {
@@ -225,7 +225,9 @@ const DefaultSkipMarkup: { [type: number]: (bl: CompositeBlock, cx: BlockContext
 	[Type.Document]() { return true }
 }
 
-export function space(ch: number) { return ch == 32 || ch == 9 || ch == 10 || ch == 13 }
+export function space(ch: number) {
+	return ch == 32 || ch == 9 || ch == 10 || ch == 13
+}
 
 function skipSpace(line: string, i = 0) {
 	while (i < line.length && space(line.charCodeAt(i))) i++
@@ -244,9 +246,12 @@ function isFencedCode(line: Line) {
 	while (pos < line.text.length && line.text.charCodeAt(pos) == line.next) pos++
 	if (pos < line.pos + 3)
 		return -1
-	if (line.next == 96)
-	{ for (let i = pos; i < line.text.length; i++) { if (line.text.charCodeAt(i) == 96)
-		return -1 } }
+	if (line.next == 96) {
+		for (let i = pos; i < line.text.length; i++) {
+			if (line.text.charCodeAt(i) == 96)
+				return -1
+		}
+	}
 	return pos
 }
 
@@ -255,20 +260,24 @@ function isBlockquote(line: Line) {
 }
 
 function inList(cx: BlockContext, type: Type) {
-	for (let i = cx.stack.length - 1; i >= 0; i--)
-	{ if (cx.stack[i].type == type)
-		return true }
+	for (let i = cx.stack.length - 1; i >= 0; i--) {
+		if (cx.stack[i].type == type)
+			return true
+	}
 	return false
 }
 
 function isBulletList(line: Line, cx: BlockContext, breaking: boolean) {
 	return (line.next == 45 || line.next == 42 /* '-*' */)
 		&& (line.pos == line.text.length - 1 || space(line.text.charCodeAt(line.pos + 1)))
-		&& (!breaking || inList(cx, Type.BulletList) || line.skipSpace(line.pos + 2) < line.text.length) ? 1 : -1
+		&& (!breaking || inList(cx, Type.BulletList) || line.skipSpace(line.pos + 2) < line.text.length)
+		? 1
+		: -1
 }
 
 function isOrderedList(line: Line, cx: BlockContext, breaking: boolean) {
-	let pos = line.pos; let next = line.next
+	let pos = line.pos
+	let next = line.next
 	for (;;) {
 		if (next >= 48 && next <= 57 /* '0-9' */)
 			pos++
@@ -277,11 +286,17 @@ function isOrderedList(line: Line, cx: BlockContext, breaking: boolean) {
 			return -1
 		next = line.text.charCodeAt(pos)
 	}
-	if (pos == line.pos || pos > line.pos + 9
+	if (
+		pos == line.pos
+		|| pos > line.pos + 9
 		|| (next != 46 && next != 41 /* '.)' */)
 		|| (pos < line.text.length - 1 && !space(line.text.charCodeAt(pos + 1)))
-		|| breaking && !inList(cx, Type.OrderedList)
-		&& (line.skipSpace(pos + 1) == line.text.length || pos > line.pos + 1 || line.next != 49 /* '1' */))
+		|| (
+			breaking
+			&& !inList(cx, Type.OrderedList)
+			&& (line.skipSpace(pos + 1) == line.text.length || pos > line.pos + 1 || line.next != 49 /* '1' */)
+		)
+	)
 		return -1
 	return pos + 1 - line.pos
 }
@@ -430,8 +445,10 @@ const DefaultBlockParsers: { [name: string]: ((cx: BlockContext, line: Line) => 
 		const size = isAtxHeading(line)
 		if (size < 0)
 			return false
-		const off = line.pos; const from = cx.lineStart + off
-		const endOfSpace = skipSpaceBack(line.text, line.text.length, off); let after = endOfSpace
+		const off = line.pos
+		const from = cx.lineStart + off
+		const endOfSpace = skipSpaceBack(line.text, line.text.length, off)
+		let after = endOfSpace
 		while (after > off && line.text.charCodeAt(after - 1) == line.next) after--
 		if (after == endOfSpace || after == off || !space(line.text.charCodeAt(after - 1)))
 			after = line.text.length
@@ -444,7 +461,7 @@ const DefaultBlockParsers: { [name: string]: ((cx: BlockContext, line: Line) => 
 		cx.nextLine()
 		cx.addNode(node, from)
 		return true
-	},
+	}
 }
 
 const DefaultLeafBlocks: { [name: string]: (cx: BlockContext, leaf: LeafBlock) => LeafBlockParser | null } = {
@@ -455,7 +472,7 @@ const DefaultEndLeaf: readonly ((cx: BlockContext, line: Line) => boolean)[] = [
 	(_, line) => isFencedCode(line) >= 0,
 	(_, line) => isBlockquote(line) >= 0,
 	(p, line) => isBulletList(line, p, true) >= 0,
-	(p, line) => isOrderedList(line, p, true) >= 0,
+	(p, line) => isOrderedList(line, p, true) >= 0
 ]
 
 const scanLineResult = { text: '', end: 0 }
@@ -535,33 +552,42 @@ export class BlockContext implements PartialParse {
 			return null
 
 		start: for (;;) {
-			for (const type of this.parser.blockParsers) { if (type) {
-				const result = type(this, line)
-				if (result != false) {
-					if (result == true)
-						return null
-					line.forward()
-					continue start
+			for (const type of this.parser.blockParsers) {
+				if (type) {
+					const result = type(this, line)
+					if (result != false) {
+						if (result == true)
+							return null
+						line.forward()
+						continue start
+					}
 				}
-			} }
+			}
 			break
 		}
 
 		const leaf = new LeafBlock(this.lineStart + line.pos, line.text.slice(line.pos))
-		for (const parse of this.parser.leafBlockParsers) { if (parse) {
-			const parser = parse!(this, leaf)
-			if (parser)
-				leaf.parsers.push(parser!)
-		} }
+		for (const parse of this.parser.leafBlockParsers) {
+			if (parse) {
+				const parser = parse!(this, leaf)
+				if (parser)
+					leaf.parsers.push(parser!)
+			}
+		}
 		lines: while (this.nextLine()) {
 			if (line.pos == line.text.length)
 				break
-			if (line.indent < line.baseIndent + 4)
-			{ for (const stop of this.parser.endLeafBlock) { if (stop(this, line, leaf))
-				break lines } }
+			if (line.indent < line.baseIndent + 4) {
+				for (const stop of this.parser.endLeafBlock) {
+					if (stop(this, line, leaf))
+						break lines
+				}
+			}
 
-			for (const parser of leaf.parsers) { if (parser.nextLine(this, line, leaf))
-				return null }
+			for (const parser of leaf.parsers) {
+				if (parser.nextLine(this, line, leaf))
+					return null
+			}
 			leaf.content += `\n${line.scrub()}`
 			for (const m of line.markers) leaf.marks.push(m)
 		}
@@ -645,7 +671,8 @@ export class BlockContext implements PartialParse {
 			r.text = this.lineChunkAt(start)
 			r.end += r.text.length
 			if (this.ranges.length > 1) {
-				let textOffset = this.absoluteLineStart; let rangeI = this.rangeI
+				let textOffset = this.absoluteLineStart
+				let rangeI = this.rangeI
 				while (this.ranges[rangeI].to < r.end) {
 					rangeI++
 					const nextFrom = this.ranges[rangeI].from
@@ -661,11 +688,13 @@ export class BlockContext implements PartialParse {
 
 	/// @internal
 	readLine() {
-		const { line } = this; const { text, end } = this.scanLine(this.absoluteLineStart)
+		const { line } = this
+		const { text, end } = this.scanLine(this.absoluteLineStart)
 		this.absoluteLineEnd = end
 		line.reset(text)
 		for (; line.depth < this.stack.length; line.depth++) {
-			const cx = this.stack[line.depth]; const handler = this.parser.skipContextMarkup[cx.type]
+			const cx = this.stack[line.depth]
+			const handler = this.parser.skipContextMarkup[cx.type]
 			if (!handler)
 				throw new Error(`Unhandled block context ${Type[cx.type]}`)
 			if (!handler(cx, this, line))
@@ -675,7 +704,8 @@ export class BlockContext implements PartialParse {
 	}
 
 	private lineChunkAt(pos: number) {
-		const next = this.input.chunk(pos); let text
+		const next = this.input.chunk(pos)
+		let text
 		if (!this.input.lineChunks) {
 			const eol = next.indexOf('\n')
 			text = eol < 0 ? next : next.slice(0, eol)
@@ -743,8 +773,10 @@ export class BlockContext implements PartialParse {
 
 	/// @internal
 	finishLeaf(leaf: LeafBlock) {
-		for (const parser of leaf.parsers) { if (parser.finish(this, leaf))
-			return }
+		for (const parser of leaf.parsers) {
+			if (parser.finish(this, leaf))
+				return
+		}
 		const inline = injectMarks(this.parser.parseInline(leaf.content, leaf.start), leaf.marks)
 		this.addNode(this.buffer
 			.writeElements(inline, -leaf.start)
@@ -773,7 +805,9 @@ function injectGaps(
 	dummies: Map<Tree, Tree>
 ): Tree {
 	let rangeEnd = ranges[rangeI].to
-	const children = []; const positions = []; const start = tree.from + offset
+	const children = []
+	const positions = []
+	const start = tree.from + offset
 	function movePastNext(upto: number, inclusive: boolean) {
 		while (inclusive ? upto >= rangeEnd : upto > rangeEnd) {
 			const size = ranges[rangeI + 1].from - rangeEnd
@@ -785,7 +819,9 @@ function injectGaps(
 	}
 	for (let ch = tree.firstChild; ch; ch = ch.nextSibling) {
 		movePastNext(ch.from + offset, true)
-		const from = ch.from + offset; let node; const reuse = dummies.get(ch.tree!)
+		const from = ch.from + offset
+		let node
+		const reuse = dummies.get(ch.tree!)
 		if (reuse)
 			node = reuse
 		else if (ch.to + offset > rangeEnd) {
@@ -990,21 +1026,26 @@ export class MarkdownParser extends Parser {
 		if (!config)
 			return this
 		let { nodeSet, skipContextMarkup } = this
-		const blockParsers = this.blockParsers.slice(); const leafBlockParsers = this.leafBlockParsers.slice()
-		const blockNames = this.blockNames.slice(); const inlineParsers = this.inlineParsers.slice()
-		const inlineNames = this.inlineNames.slice(); const endLeafBlock = this.endLeafBlock.slice()
+		const blockParsers = this.blockParsers.slice()
+		const leafBlockParsers = this.leafBlockParsers.slice()
+		const blockNames = this.blockNames.slice()
+		const inlineParsers = this.inlineParsers.slice()
+		const inlineNames = this.inlineNames.slice()
+		const endLeafBlock = this.endLeafBlock.slice()
 		let wrappers = this.wrappers
 
 		if (nonEmpty(config.defineNodes)) {
 			skipContextMarkup = Object.assign({}, skipContextMarkup)
-			const nodeTypes = nodeSet.types.slice(); let styles: { [selector: string]: Tag | readonly Tag[] } | undefined
+			const nodeTypes = nodeSet.types.slice()
+			let styles: { [selector: string]: Tag | readonly Tag[] } | undefined
 			for (const s of config.defineNodes) {
 				const { name, block, composite, style } = typeof s == 'string' ? { name: s } as NodeSpec : s
 				if (nodeTypes.some(t => t.name == name))
 					continue
-				if (composite)
-				{ (skipContextMarkup as any)[nodeTypes.length]
-		= (bl: CompositeBlock, cx: BlockContext, line: Line) => composite!(cx, line, bl.value) }
+				if (composite) {
+					(skipContextMarkup as any)[nodeTypes.length]
+		= (bl: CompositeBlock, cx: BlockContext, line: Line) => composite!(cx, line, bl.value)
+				}
 				const id = nodeTypes.length
 				const group = composite
 					? ['Block', 'BlockContext']
@@ -1034,7 +1075,8 @@ export class MarkdownParser extends Parser {
 
 		if (nonEmpty(config.remove)) {
 			for (const rm of config.remove) {
-				const block = this.blockNames.indexOf(rm); const inline = this.inlineNames.indexOf(rm)
+				const block = this.blockNames.indexOf(rm)
+				const inline = this.inlineNames.indexOf(rm)
 				if (block > -1)
 					blockParsers[block] = leafBlockParsers[block] = undefined
 				if (inline > -1)
@@ -1066,7 +1108,7 @@ export class MarkdownParser extends Parser {
 				const found = inlineNames.indexOf(spec.name)
 				if (found > -1)
 					inlineParsers[found] = spec.parse
-	 else {
+				else {
 					const pos = spec.before
 						? findName(inlineNames, spec.before)
 						: spec.after ? findName(inlineNames, spec.after) + 1 : inlineNames.length - 1
@@ -1097,10 +1139,15 @@ export class MarkdownParser extends Parser {
 		const cx = new InlineContext(this, text, offset)
 		outer: for (let pos = offset; pos < cx.end;) {
 			const next = cx.char(pos)
-			for (const token of this.inlineParsers) { if (token) {
-				const result = token(cx, next, pos)
-				if (result >= 0) { pos = result; continue outer }
-			} }
+			for (const token of this.inlineParsers) {
+				if (token) {
+					const result = token(cx, next, pos)
+					if (result >= 0) {
+						pos = result
+						continue outer
+					}
+				}
+			}
 			pos++
 		}
 		return cx.resolveMarkers(0)
@@ -1124,7 +1171,8 @@ function resolveConfig(spec: MarkdownExtension): MarkdownConfig | null {
 		return conf || rest
 	const conc: <T>(a: readonly T[] | undefined, b: readonly T[] | undefined) => readonly T[]
 = (a, b) => (a || none).concat(b || none)
-	const wrapA = conf.wrap; const wrapB = rest.wrap
+	const wrapA = conf.wrap
+	const wrapB = rest.wrap
 	return {
 		props: conc(conf.props, rest.props),
 		defineNodes: conc(conf.defineNodes, rest.defineNodes),
@@ -1266,8 +1314,12 @@ class InlineDelimiter {
 
 const Escapable = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'
 
-export let Punctuation = /[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~\xA1\u2010-\u2027]/
-try { Punctuation = new RegExp('[\\p{Pc}|\\p{Pd}\\p{Pe}\\p{Pf}\\p{Pi}\\p{Po}\\p{Ps}]', 'u') } catch (_) {}
+let PunctuationRegex = /[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~\xA1\u2010-\u2027]/
+try {
+	PunctuationRegex = new RegExp('[\\p{Pc}|\\p{Pd}\\p{Pe}\\p{Pf}\\p{Pi}\\p{Po}\\p{Ps}]', 'u')
+} catch {}
+
+export const Punctuation = PunctuationRegex
 
 const DefaultInline: { [name: string]: (cx: InlineContext, next: number, pos: number) => number } = {
 	Escape(cx, next, start) {
@@ -1288,9 +1340,12 @@ const DefaultInline: { [name: string]: (cx: InlineContext, next: number, pos: nu
 			return -1
 		let pos = start + 1
 		while (cx.char(pos) == next) pos++
-		const before = cx.slice(start - 1, start); const after = cx.slice(pos, pos + 1)
-		const pBefore = Punctuation.test(before); const pAfter = Punctuation.test(after)
-		const sBefore = /\s|^$/.test(before); const sAfter = /\s|^$/.test(after)
+		const before = cx.slice(start - 1, start)
+		const after = cx.slice(pos, pos + 1)
+		const pBefore = Punctuation.test(before)
+		const pAfter = Punctuation.test(after)
+		const sBefore = /\s|^$/.test(before)
+		const sAfter = /\s|^$/.test(after)
 		const leftFlanking = !sAfter && (!pAfter || sBefore || pBefore)
 		const rightFlanking = !sBefore && (!pBefore || sAfter || pAfter)
 		const canOpen = leftFlanking && (next == 42 || !rightFlanking || pBefore)
@@ -1299,11 +1354,11 @@ const DefaultInline: { [name: string]: (cx: InlineContext, next: number, pos: nu
 	},
 
 	URL(cx, next, start) {
-	if (next != 60 /* '<' */ || start == cx.end - 1)
+		if (next != 60 /* '<' */ || start == cx.end - 1)
 			return -1
 
-		let after = cx.slice(start + 1, cx.end)
-		let url = /^(?:[a-z][-\w+.]+:[^\s>]+|[a-z\d.!#$%&'*+/=?^_`{|}~-]+@[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?(?:\.[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?)*)>/i.exec(after)
+		const after = cx.slice(start + 1, cx.end)
+		const url = /^(?:[a-z][-\w+.]+:[^\s>]+|[a-z\d.!#$%&'*+/=?^_`{|}~-]+@[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?(?:\.[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?)*)>/i.exec(after)
 
 		if (!url)
 			return -1
@@ -1316,19 +1371,21 @@ const DefaultInline: { [name: string]: (cx: InlineContext, next: number, pos: nu
 	},
 
 	InlineCode(cx, next, start) {
-		if (next != 96 /* '`' */ || start && cx.char(start - 1) == 96)
+		if (next != 96 /* '`' */ || (start && cx.char(start - 1) == 96))
 			return -1
 		let pos = start + 1
 		while (pos < cx.end && cx.char(pos) == 96) pos++
-		const size = pos - start; let curSize = 0
+		const size = pos - start
+		let curSize = 0
 		for (; pos < cx.end; pos++) {
 			if (cx.char(pos) == 96) {
 				curSize++
-				if (curSize == size && cx.char(pos + 1) != 96)
-				{ return cx.append(elt(Type.InlineCode, start, pos + 1, [
-					elt(Type.CodeMark, start, start + size),
-					elt(Type.CodeMark, pos + 1 - size, pos + 1)
-				])) }
+				if (curSize == size && cx.char(pos + 1) != 96) {
+					return cx.append(elt(Type.InlineCode, start, pos + 1, [
+						elt(Type.CodeMark, start, start + size),
+						elt(Type.CodeMark, pos + 1 - size, pos + 1)
+					]))
+				}
 			} else
 				curSize = 0
 		}
@@ -1345,7 +1402,7 @@ const DefaultInline: { [name: string]: (cx: InlineContext, next: number, pos: nu
 				return cx.append(elt(Type.HardBreak, start, pos + 1))
 		}
 		return -1
-	},
+	}
 }
 
 /// Inline parsing functions get access to this context, and use it to
@@ -1405,7 +1462,8 @@ export class InlineContext {
 
 			const emp = close.type == EmphasisUnderscore || close.type == EmphasisAsterisk
 			const closeSize = close.to - close.from
-			let open: InlineDelimiter | undefined; let j = i - 1
+			let open: InlineDelimiter | undefined
+			let j = i - 1
 			// Continue scanning for a matching opening token
 			for (; j >= from; j--) {
 				const part = this.parts[j]
@@ -1420,8 +1478,10 @@ export class InlineContext {
 			if (!open)
 				continue
 
-			let type = close.type.resolve; const content = []
-			let start = open.from; let end = close.to
+			let type = close.type.resolve
+			const content = []
+			let start = open.from
+			let end = close.to
 			// Emphasis marker effect depends on the character count. Size consumed is minimum of the two
 			// markers.
 			if (emp) {
@@ -1503,7 +1563,8 @@ function injectMarks(elements: readonly (Element | TreeElement)[], marks: Elemen
 		return elements
 	if (!elements.length)
 		return marks
-	const elts = elements.slice(); let eI = 0
+	const elts = elements.slice()
+	let eI = 0
 	for (const mark of marks) {
 		while (eI < elts.length && elts[eI].to < mark.to) eI++
 		if (eI < elts.length && elts[eI].from < mark.from) {
@@ -1558,8 +1619,10 @@ class FragmentCursor {
 		}
 
 		const rPos = pos + this.fragment.offset
-		while (c.to <= rPos) { if (!c.parent())
-			return false }
+		while (c.to <= rPos) {
+			if (!c.parent())
+				return false
+		}
 		for (;;) {
 			if (c.from >= rPos)
 				return this.fragment.from <= lineStart
@@ -1574,9 +1637,14 @@ class FragmentCursor {
 	}
 
 	takeNodes(cx: BlockContext) {
-		const cur = this.cursor!; const off = this.fragment!.offset; const fragEnd = this.fragmentEnd - (this.fragment!.openEnd ? 1 : 0)
-		const start = cx.absoluteLineStart; let end = start; let blockI = cx.block.children.length
-		let prevEnd = end; let prevI = blockI
+		const cur = this.cursor!
+		const off = this.fragment!.offset
+		const fragEnd = this.fragmentEnd - (this.fragment!.openEnd ? 1 : 0)
+		const start = cx.absoluteLineStart
+		let end = start
+		let blockI = cx.block.children.length
+		let prevEnd = end
+		let prevI = blockI
 		for (;;) {
 			if (cur.to - off > fragEnd) {
 				if (cur.type.isAnonymous && cur.firstChild())
@@ -1623,7 +1691,8 @@ class FragmentCursor {
 function toRelative(abs: number, ranges: readonly { from: number, to: number }[]) {
 	let pos = abs
 	for (let i = 1; i < ranges.length; i++) {
-		const gapFrom = ranges[i - 1].to; const gapTo = ranges[i].from
+		const gapFrom = ranges[i - 1].to
+		const gapTo = ranges[i].from
 		if (gapFrom < abs)
 			pos -= gapTo - gapFrom
 	}

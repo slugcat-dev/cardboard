@@ -1,5 +1,5 @@
 export interface HotkeysConfig {
-	[key: string]: Function
+	[key: string]: (event: KeyboardEvent) => void
 }
 
 export function defineHotkeys(config: HotkeysConfig) {

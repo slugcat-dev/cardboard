@@ -1,4 +1,4 @@
-export const isMacOS = process.client && navigator.userAgent.includes('Macintosh')
+export const isMacOS = import.meta.client && navigator.userAgent.includes('Macintosh')
 
 // TODO: composable
 export function useActiveElement() {

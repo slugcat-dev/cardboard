@@ -5,8 +5,8 @@ import { EditorSelection, Prec } from '@codemirror/state'
 import { EditorView, RectangleMarker, layer } from '@codemirror/view'
 import type { StyleSpec } from 'style-mod'
 
-const isSafari = process.client && /Apple Computer/.test(navigator.vendor)
-const isMobileSafari = process.client && isSafari && (/Mobile\/\w+/.test(navigator.userAgent) || navigator.maxTouchPoints > 2)
+const isSafari = import.meta.client && /Apple Computer/.test(navigator.vendor)
+const isMobileSafari = import.meta.client && isSafari && (/Mobile\/\w+/.test(navigator.userAgent) || navigator.maxTouchPoints > 2)
 const canHidePrimary = !isMobileSafari
 
 const cursorLayer = layer({

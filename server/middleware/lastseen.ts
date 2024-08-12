@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-	if (process.dev)
+	if (import.meta.dev)
 		console.log(event.path)
 
 	const { user } = await getUserSession(event)

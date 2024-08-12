@@ -14,7 +14,7 @@ export async function useBoards() {
 
 	// Fetch board cards
 	if (!board.value.cards) {
-		const { data } = process.server
+		const { data } = import.meta.server
 			? await useFetch<{ cards: Card[] }>(`/api/boards/${board.value.id}`, { method: 'GET', pick: ['cards'] })
 			: { data: { value: await $fetch<{ cards: Card[] }>(`/api/boards/${board.value.id}`, { method: 'GET' }) } }
 
@@ -40,7 +40,6 @@ export async function useBoards() {
 	}
 
 	async function deleteBoard(id: string) {
-		// eslint-disable-next-line no-alert
 		if (!confirm('Do you REALLY want to DELETE THIS BOARD AND ALL THE BOARDS it contains? This action is irreversible!'))
 			return false
 

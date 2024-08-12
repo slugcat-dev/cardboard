@@ -9,8 +9,7 @@ export default oauthGitHubEventHandler({
 				email: user.email,
 				github: user.github
 			}).save()
-		}
-		else if (!userLink.github)
+		} else if (!userLink.github)
 			await userLink.updateOne({ github: user.id })
 
 		await setUserSession(event, {

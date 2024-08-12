@@ -3,11 +3,11 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 
 	modules: [
-				'@vueuse/nuxt',
-				'nuxt-auth-utils',
-				'@nuxt/icon',
-				'nuxt-mongoose',
-				'@nuxt/eslint'
+		'@vueuse/nuxt',
+		'nuxt-auth-utils',
+		'@nuxt/icon',
+		'nuxt-mongoose',
+		'@nuxt/eslint'
 	],
 
 	runtimeConfig: {
@@ -19,7 +19,7 @@ export default defineNuxtConfig({
 			github: {
 				clientId: '',
 				clientSecret: ''
-			},
+			}
 		},
 		session: {
 			name: 'session',
