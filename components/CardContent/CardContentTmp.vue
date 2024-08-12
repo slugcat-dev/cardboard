@@ -10,7 +10,7 @@ defineProps(['card'])
 	</ul>
 </template>
 
-<style lang="scss">
+<style>
 .card-content-tmp {
 	padding: .375rem;
 	padding-left: 1.5rem;

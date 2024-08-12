@@ -7,9 +7,7 @@
 	</div>
 </template>
 
-<style lang="scss">
-// stylelint-disable declaration-block-no-redundant-longhand-properties
-
+<style>
 body {
 	overflow: hidden;
 }

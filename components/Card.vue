@@ -215,7 +215,7 @@ function deleteCard() {
 	</div>
 </template>
 
-<style lang="css">
+<style>
 .card {
 	position: absolute;
 	transition: scale .1s, opacity .1s;

@@ -49,7 +49,7 @@ const position = computed(() => {
 	</Teleport>
 </template>
 
-<style lang="scss">
+<style>
 .context-menu-overlay {
 	position: fixed;
 	z-index: 1;

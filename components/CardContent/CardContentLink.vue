@@ -43,7 +43,7 @@ const showImage = /youtube|spotify/.test(card.content.url)
 	</div>
 </template>
 
-<style lang="scss">
+<style>
 .card-content-link {
 	display: flex;
 	gap: .375rem;

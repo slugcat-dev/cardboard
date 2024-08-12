@@ -17,31 +17,19 @@
 		"@codemirror/language": "^6.10.2",
 		"@codemirror/language-data": "^6.5.1",
 		"@codemirror/state": "^6.4.1",
-		"@codemirror/view": "^6.28.6",
+		"@codemirror/view": "^6.31.0",
 		"@lezer/highlight": "^1.2.0",
-		"@replit/codemirror-vim": "^6.2.1",
 		"codemirror": "^6.0.1",
 		"fuse.js": "^7.0.0",
-		"google-auth-library": "^9.11.0",
-		"isomorphic-dompurify": "^2.13.0",
 		"nuxt-mongoose": "^1.0.6",
 		"puppeteer-core": "^21.11.0"
 	},
 	"devDependencies": {
-		"@antfu/eslint-config": "^2.23.1",
-		"@vueuse/math": "^10.11.0",
-		"@vueuse/nuxt": "^10.11.0",
+		"@vueuse/math": "^10.11.1",
+		"@vueuse/nuxt": "^10.11.1",
 		"nuxt": "^3.12.4",
 		"nuxt-auth-utils": "^0.0.14",
 		"nuxt-icon": "^0.6.10",
-		"postcss-html": "^1.7.0",
-		"sass": "^1.77.8",
-		"stylelint": "^16.7.0",
-		"stylelint-config-rational-order": "^0.1.2",
-		"stylelint-config-standard-scss": "^13.1.0",
-		"stylelint-config-standard-vue": "^1.0.0",
-		"stylelint-order": "^6.0.4",
-		"vue": "^3.4.33",
-		"vue-router": "^4.4.0"
+		"vue": "^3.4.37"
 	}
 }

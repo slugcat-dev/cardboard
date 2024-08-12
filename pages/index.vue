@@ -32,7 +32,7 @@ definePageMeta({
 	</div>
 </template>
 
-<style lang="scss">
+<style>
 .dash {
 	position: absolute;
 	display: flex;

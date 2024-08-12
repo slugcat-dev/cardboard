@@ -31,7 +31,7 @@ const { boards } = await useBoards()
 	/>
 </template>
 
-<style lang="scss">
+<style>
 .board-link {
 	display: block;
 	margin-bottom: .125rem;

@@ -18,7 +18,7 @@ defineProps({
 	</button>
 </template>
 
-<style lang="scss">
+<style>
 .btn {
 	display: inline-flex;
 	gap: .25rem;

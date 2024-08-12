@@ -35,7 +35,7 @@ defineExpose({ active })
 	</ClientOnly>
 </template>
 
-<style lang="scss">
+<style>
 .card-content-image {
 	width: auto;
 	max-width: 550px;

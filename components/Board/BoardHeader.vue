@@ -169,7 +169,7 @@ async function makeBoard() {
 	</header>
 </template>
 
-<style lang="scss">
+<style>
 .header-title {
 	display: flex;
 	grid-area: header;

@@ -46,7 +46,7 @@ const noFavRootBoards = computed(() => rootBoards.value.filter(board => !board.f
 	</div>
 </template>
 
-<style lang="scss">
+<style>
 .boards {
 	display: flex;
 	flex-direction: column;

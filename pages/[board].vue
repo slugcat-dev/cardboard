@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { createCard } from '~/utils/cards.tmp'
+import { createCard } from '~/utils/cards'
 
 const canvasRef = ref()
 const pointer = reactive({
@@ -555,13 +555,13 @@ function updateSelectionRect() {
 	</div>
 </template>
 
-<style lang="scss">
+<style>
 .canvas-wrapper {
 	position: absolute;
 	grid-area: main;
 	width: 100%;
 	height: 100%;
-	overflow: clip; // 'hidden' would make the browser scroll when typing in a card that overflows the view
+	overflow: clip; /* 'hidden' would make the browser scroll when typing in a card that overflows the view */
 	user-select: none;
 	touch-action: none;
 

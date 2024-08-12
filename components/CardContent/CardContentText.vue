@@ -141,7 +141,7 @@ defineExpose({ active })
 	/>
 </template>
 
-<style lang="scss">
+<style>
 .card-content-text {
 	font-size: .875rem;
 	background-color: #222;

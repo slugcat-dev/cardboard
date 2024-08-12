@@ -38,7 +38,7 @@ function match() {
 	</div>
 </template>
 
-<style lang="scss">
+<style>
 .list-loader {
 	display: flex;
 	flex-direction: column;

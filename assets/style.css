@@ -1,42 +1,8 @@
-// Import Google fonts: Roboto, Ubuntu Mono
+/* Import fonts from Google */
+/* Roboto, Ubuntu Mono */
 @import 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Ubuntu+Mono:wght@400;700&display=swap';
 
-// Default (light) theme
 :root {
-	--color-text: oklch(0% 0 0deg);
-	--color-text-secondary: oklch(40% 0 0deg);
-	--color-text-tertiary: oklch(60% 0 0deg);
-	--color-background: oklch(96% 0 0deg);
-	--color-background-secondary: oklch(100% 0 0deg);
-	--color-background-tertiary: oklch(94% 0 0deg);
-	--color-accent: oklch(60% .2 250deg);
-	--color-accent-50: oklch(60% .2 250deg / 50%);
-	--color-accent-25: oklch(60% .2 250deg / 25%);
-	--color-good: oklch(70% .2 160deg);
-	--color-good-50: oklch(70% .2 160deg / 50%);
-	--color-good-25: oklch(70% .2 160deg / 25%);
-	--color-warn: oklch(70% .2 60deg);
-	--color-warn-50: oklch(70% .2 60deg / 50%);
-	--color-warn-25: oklch(70% .2 60deg / 25%);
-	--color-danger: oklch(70% .2 20deg);
-	--color-danger-50: oklch(70% .2 20deg / 50%);
-	--color-danger-25: oklch(70% .2 20deg / 25%);
-	--color-border: #0002;
-	--color-scrollbar: oklch(60% 0 0deg);
-
-	// TODO
-	--color-shadow-ui: #00000010;
-	--shadow-card: 0 2px 4px var(--color-shadow-ui);
-	--color-favicon: #f3f3f3;
-	--color-icon-shadow: transparent;
-	--icon-contrast: .75;
-
-	color-scheme: light;
-	accent-color: var(--color-accent);
-}
-
-// Dark theme
-:root:not(.light) {
 	--color-text: oklch(75% 0 0deg);
 	--color-text-secondary: oklch(75% 0 0deg);
 	--color-text-tertiary: oklch(65% 0 0deg);
@@ -58,8 +24,8 @@
 	--color-border: #8881;
 	--color-scrollbar: oklch(40% 0 0deg);
 
-	// TODO
 	--color-shadow-ui: #00000020;
+	--shadow-card: 0 2px 4px var(--color-shadow-ui);
 	--color-favicon: #404040;
 	--color-icon-shadow: #00000060;
 	--icon-contrast: .75;
