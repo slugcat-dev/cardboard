@@ -88,9 +88,8 @@ function validateURL(url: string | undefined) {
 async function getLinkPreviewData(url: string) {
 	const browser = await puppeteer.launch({
 		executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
-		headless: true,
-		args: minimalArgs,
-		userDataDir: '/tmp/pptr'
+		headless: 'shell',
+		args: minimalArgs
 	})
 	const page = await browser.newPage()
 
