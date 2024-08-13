@@ -6,7 +6,7 @@ const minimalArgs = [
 	'--disable-background-networking',
 	'--disable-background-timer-throttling',
 	'--disable-backgrounding-occluded-windows',
-	'--disable-breakpad',
+	'--disable-crash-reporter',
 	'--disable-client-side-phishing-detection',
 	'--disable-component-update',
 	'--disable-default-apps',
