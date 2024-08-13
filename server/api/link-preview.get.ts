@@ -6,7 +6,6 @@ const minimalArgs = [
 	'--disable-background-networking',
 	'--disable-background-timer-throttling',
 	'--disable-backgrounding-occluded-windows',
-	'--disable-crash-reporter',
 	'--disable-client-side-phishing-detection',
 	'--disable-component-update',
 	'--disable-default-apps',
@@ -54,8 +53,7 @@ async function isImageAccessible(url: string) {
 		const res = await fetch(new URL(url).toString())
 
 		return /image\/*/.test(res.headers.get('content-type') || '')
-	}
-	catch {}
+	} catch {}
 
 	return false
 }
