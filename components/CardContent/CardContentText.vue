@@ -107,12 +107,29 @@ async function onBlur() {
 }
 
 async function onPaste(event: ClipboardEvent) {
-	if (!isEmpty())
-		return
-
 	if (event.clipboardData) {
-		await handleDataTransfer(event.clipboardData, card.position, card)
 		event.preventDefault()
+
+		const pasted = await handleDataTransfer(event.clipboardData, card.position, card, !isEmpty())
+
+		if (pasted) {
+			const { mode, text } = pasted
+
+			const range = view.state.selection.main
+			const cursor = view.state.selection.main.from
+			const line = view.state.doc.lineAt(cursor)
+			const insert = (mode && text.includes('\n') && cursor !== line.from ? '\n' : '') + text
+
+			view.dispatch({
+				changes: {
+					from: range.from,
+					to: range.to,
+					insert
+				},
+				selection: { anchor: range.from + insert.length },
+				scrollIntoView: true
+			})
+		}
 	}
 }
 

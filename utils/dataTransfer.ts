@@ -1,10 +1,13 @@
 // TODO ---
 // Handle pasted and dropped data
-export async function handleDataTransfer(dataTransfer: DataTransfer, position: Position, card?: Card) {
+export async function handleDataTransfer(dataTransfer: DataTransfer, position: Position, card?: Card, textOnly?: boolean) {
 	// const files = Array.from(dataTransfer.files)
 	const items = Array.from(dataTransfer.items)
 
 	for (const file of dataTransfer.files) {
+		if (textOnly)
+			break
+
 		if (file.type.startsWith('image')) {
 			const img = await blobToBase64(file)
 
@@ -25,7 +28,7 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 		}
 	}
 
-	if (dataTransfer.files.length > 0)
+	if (dataTransfer.files.length > 0 && !textOnly)
 		return
 
 	let mode = null
@@ -67,7 +70,7 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 		text = url
 
 	if (text) {
-		if (url || /https?:\/\/[^\W_](?:[\w-]*[^\W_])?(?:\.[^\W_](?:[\w-]*[^\W_])?)*(?::\d{1,5})?(?:\/[^\s<]*)?/i.test(text)) {
+		if (!textOnly && (url || /https?:\/\/[^\W_](?:[\w-]*[^\W_])?(?:\.[^\W_](?:[\w-]*[^\W_])?)*(?::\d{1,5})?(?:\/[^\s<]*)?/i.test(text))) {
 			const linkPreview = await getLinkPreview(text)
 
 			if (linkPreview) {
@@ -109,11 +112,24 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 			}
 		}
 
-		if (mode && false)
-			text = `${fence}${mode}\n${text}\n${fence}`
+		if (mode && !['plaintext', 'markdown'].includes(mode)) {
+			if (mode === 'javascript')
+				mode = 'js'
+			else if (mode === 'typescript')
+				mode = 'ts'
+			else if (mode === 'csharp')
+				mode = 'cs'
+
+			if (text.includes('\n'))
+				text = `${fence}${mode}\n${text}\n${fence}`
+			else
+				text = `\`${text}\``
+		} else {
+			text = wrap(text)
+		}
 
 		if (card)
-			return
+			return { mode, text }
 
 		createCard({
 			id: 'new:create',
@@ -121,6 +137,30 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 			content: text
 		})
 	}
+}
+
+function wrap(text: string) {
+	const s = 60
+
+	const lines = text.split('\n')
+
+	text = lines.map((line) => {
+		if (line.length < s)
+			return line
+
+		let i
+
+		for (i = s; i < line.length; i++)
+			if (/\s/.test(line[i]))
+				break
+
+		if (i === line.length)
+			return line
+
+		return wrap(line.slice(0, i) + '\n' + line.slice(i + 1))
+	}).join('\n')
+
+	return text
 }
 
 /*
