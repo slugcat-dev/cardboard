@@ -4,6 +4,7 @@ import puppeteer from 'puppeteer-core'
 const minimalArgs = [
 	'--autoplay-policy=user-gesture-required',
 	'--disable-background-networking',
+	'--disable-crash-reporter',
 	'--disable-background-timer-throttling',
 	'--disable-backgrounding-occluded-windows',
 	'--disable-client-side-phishing-detection',

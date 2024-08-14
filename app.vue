@@ -13,24 +13,7 @@ useSeoMeta({
 		width: 'device-width',
 		initialScale: '1.0',
 		userScalable: 'no'
-	},
-	themeColor: [
-		{
-			media: '(prefers-color-scheme: dark)',
-			content: '#222222'
-		},
-		{
-			media: '(prefers-color-scheme: light)',
-			content: '#ffffff'
-		}
-	]
-})
-
-useHead({
-	link: [{
-		rel: 'manifest',
-		href: 'manifest.json'
-	}]
+	}
 })
 </script>
 

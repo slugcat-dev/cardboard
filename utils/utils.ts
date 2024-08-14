@@ -155,8 +155,7 @@ export function cardTargetAllowed(tagNames: string[], event?: Event) {
 export async function getLinkPreview(url: string) {
 	try {
 		return await $fetch('/api/link-preview', { query: { url: new URL(url).toString() } })
-	}
-	catch {}
+	} catch {}
 
 	return false
 }

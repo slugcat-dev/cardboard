@@ -3,16 +3,15 @@ const router = useRouter()
 const settings = useSettings()
 const boardNameRef = ref()
 const { board, deleteBoard } = await useBoards()
-const { breadcrumbs, oldcrumbs } = useBreadcrumbs()
 
 useSeoMeta({ title: () => board.value.name })
 defineHotkeys({
-	escape: () => {
+	/* escape: () => {
 		if (breadcrumbs.value.length === 0)
 			return
 
 		router.back()
-	},
+	}, */
 	f2: () => {
 		const range = document.createRange()
 		const textNode = boardNameRef.value.childNodes[0]
@@ -60,19 +59,14 @@ async function onDeleteBoard() {
 async function makeBoard() {
 	return alert('No')
 }
-
-// const isDark = useDark({ storageKey: 'color-scheme' })
-// const toggleDark = useToggle(isDark)
 </script>
 
 <template>
 	<header id="header">
-		<button
-			class="sidebar-toggle"
+		<ButtonIcon
+			icon="f7:sidebar-left"
 			@click="settings.sidebar = !settings.sidebar"
-		>
-			<Icon name="f7:sidebar-left" size="1rem" />
-		</button>
+		/>
 		<div
 			v-if="board.id"
 			class="toolbar"
@@ -82,24 +76,29 @@ async function makeBoard() {
 					class="nav-button"
 					@click="router.back()"
 				>
-					<Icon name="material-symbols:arrow-back-ios-rounded" size="14px" />
+					<Icon
+						name="material-symbols:arrow-back-ios-rounded"
+						size="14px"
+					/>
 				</a>
 				<a
 					class="nav-button"
-					:class="{ disabled: oldcrumbs.length === 0 }"
 					@click="router.forward()"
 				>
-					<Icon name="material-symbols:arrow-forward-ios-rounded" size="14px" />
+					<Icon
+						name="material-symbols:arrow-forward-ios-rounded"
+						size="14px"
+					/>
 				</a>
 				<span class="bread-separator">/</span>
-				<div
+				<!-- div
 					v-for="bread, index in breadcrumbs"
 					:key="bread.path"
 					class="bread"
 				>
 					<a @click="router.go(-(breadcrumbs.length - index))">{{ bread.name }}</a>
 					<span class="bread-separator">/</span>
-				</div>
+				</div> -->
 				<div
 					ref="boardNameRef"
 					class="board-name"
@@ -112,65 +111,42 @@ async function makeBoard() {
 				</div>
 				<span class="bread-separator">/</span>
 			</div>
-			<label class="option" style="text-decoration: line-through;">
-				<input
-					type="checkbox"
-					:checked="settings.grid.snap"
-					@change="(event) => settings.grid.snap = (event.target as HTMLInputElement).checked"
-				>
-				Snap cards to grid
-			</label>
-			<button @click="onDeleteBoard">
-				Delete Board
-			</button>
-			<button
+			<ButtonIcon
 				v-if="!board.parent"
+				:icon="board.fav ? 'mdi:star' : 'mdi:star-outline'"
 				@click="toggleBoardFav"
+			/>
+			<ButtonIcon
+				style="margin-left: auto;"
+				@click="onDeleteBoard"
 			>
-				<Icon :name="board.fav ? 'mdi:star' : 'mdi:star-outline'" size="1rem" />
-			</button>
-			<button
-				@click="makeBoard"
-			>
-				<Icon name="lucide:plus" size="1rem" />
-				Create Board
-			</button>
-			<div
-				v-if="false"
-				class="toolbox"
-			>
-				<div class="tool active">
-					<Icon
-						name="material-symbols:text-fields"
-						size="1rem"
-					/>
-				</div>
-				<div class="tool">
-					<Icon
-						name="material-symbols:dashboard"
-						size="1rem"
-					/>
-				</div>
-				<div class="tool">
-					<Icon
-						name="material-symbols:checklist"
-						size="1rem"
-					/>
-				</div>
-			</div>
+				Delete Board
+			</ButtonIcon>
 		</div>
 		<div
 			v-else
 			class="header-title"
+			@click="makeBoard()"
 		>
-			<Icon name="material-symbols:search" size="16px" />
+			<Icon
+				name="material-symbols:search"
+				size="16px"
+			/>
 			Cardboard<kbd>⌘</kbd><kbd>K</kbd>
 		</div>
 	</header>
 </template>
 
 <style>
+.outbox {
+	display: none !important;
+}
+
 .header-title {
+	width: 50%;
+	max-width: 480px;
+	min-width: 240px;
+	margin: auto;
 	display: flex;
 	grid-area: header;
 	gap: .25rem;
@@ -201,6 +177,7 @@ async function makeBoard() {
 
 #header {
 	position: fixed;
+	width: calc(100% - 240px);
 	left: 240px;
 	display: flex;
 	gap: 1rem;
@@ -269,6 +246,7 @@ async function makeBoard() {
 
 	.toolbar {
 		display: flex;
+		width: 100%;
 		gap: 1rem;
 		align-items: center;
 		font-weight: 500;

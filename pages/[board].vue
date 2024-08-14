@@ -72,8 +72,8 @@ const gridSize = computed(() => {
 let activeElement: Element | null
 
 definePageMeta({
-	middleware: ['auth', 'breadcrumbs'],
-	pageTransition: { name: 'slide' },
+	middleware: ['auth'],
+	// pageTransition: { name: 'slide' },
 	layout: 'board'
 })
 onMounted(resetPointerPos)
@@ -520,9 +520,19 @@ function updateSelectionRect() {
 				:width="gridSize"
 				:height="gridSize"
 			>
-				<circle cx=".75" cy=".75" r=".75" />
+				<circle
+					cx=".75"
+					cy=".75"
+					r=".75"
+				/>
 			</pattern>
-			<rect x="0" y="0" width="100%" height="100%" fill="url(#dot-pattern)" />
+			<rect
+				x="0"
+				y="0"
+				width="100%"
+				height="100%"
+				fill="url(#dot-pattern)"
+			/>
 		</svg>
 		<div
 			class="canvas"

@@ -11,51 +11,24 @@ export default defineNuxtConfig({
 	],
 
 	runtimeConfig: {
-		oauth: {
-			google: {
-				clientId: '',
-				clientSecret: ''
-			},
-			github: {
-				clientId: '',
-				clientSecret: ''
-			}
-		},
 		session: {
 			name: 'session',
-			password: '',
-			maxAge: 86400 * 30
+			maxAge: 60 * 60 * 24 * 365
 		}
 	},
 
 	app: {
-		pageTransition: { name: 'slide' },
-		layoutTransition: { name: 'slide' },
-		rootId: 'app'
+		rootAttrs: { id: 'app' }
 	},
 
 	css: [
 		'~/assets/style.css',
 		'~/assets/transitions.css',
-		'/codemirror/style.css'
+		'~/codemirror/style.css'
 	],
 
 	experimental: {
 		asyncContext: true
-	},
-
-	vite: {
-		build: {
-			target: 'esnext'
-		}
-	},
-
-	nitro: {
-		esbuild: {
-			options: {
-				target: 'esnext'
-			}
-		}
 	},
 
 	eslint: {

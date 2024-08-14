@@ -3,8 +3,8 @@ const session = useUserSession()
 const { user } = session
 
 definePageMeta({
-	middleware: ['auth', 'breadcrumbs'],
-	pageTransition: { name: 'slide' },
+	middleware: ['auth'],
+	// pageTransition: { name: 'slide' },
 	layout: 'board'
 })
 </script>
@@ -18,13 +18,20 @@ definePageMeta({
 			<div class="text-secondary">
 				User ID: {{ user.id }}
 			</div>
+			<div class="hero" />
 			<main class="outbox">
 				<div class="empty">
-					<Icon name="lucide:download" size="64px" />
+					<Icon
+						name="lucide:download"
+						size="64px"
+					/>
 					<h1>Inbox</h1>
 				</div>
 				<div class="input">
-					<input autocomplete="off" spellcheck="false">
+					<input
+						autocomplete="off"
+						spellcheck="false"
+					>
 					<button>Send</button>
 				</div>
 			</main>
@@ -33,6 +40,13 @@ definePageMeta({
 </template>
 
 <style>
+.hero {
+	position: relative;
+	width: 240px;
+	height: 240px;
+	top: 100px;
+}
+
 .dash {
 	position: absolute;
 	display: flex;

@@ -49,6 +49,6 @@ interface ContextMenuOptions {
 
 declare module '#auth-utils' {
 	interface UserSession {
-		user: User
+		user: Omit<User, 'createdAt'>
 	}
 }

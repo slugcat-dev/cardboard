@@ -1,4 +1,4 @@
-export default defineNuxtRouteMiddleware(async (to, from) => {
+/* export default defineNuxtRouteMiddleware(async (to, from) => {
 	const { breadcrumbs, oldcrumbs, route, push } = useBreadcrumbs()
 	const { findBoard } = await useBoards()
 
@@ -60,3 +60,4 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
 	push.value = false
 })
+*/

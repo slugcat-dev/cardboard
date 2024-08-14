@@ -1,82 +1,57 @@
 <script setup lang="ts">
 const { loggedIn } = useUserSession()
-const isLoading = ref(false)
+const redirecting = ref(false)
 
 if (loggedIn.value)
 	await navigateTo('/')
 
 function signin(provider: string) {
-	isLoading.value = true
+	redirecting.value = true
 
 	navigateTo(`/signin/${provider}`, { external: true })
 }
 </script>
 
 <template>
-	<main>
-		<div class="signin">
-			<h1>Sign In</h1>
-			<button
-				class="signin-button"
-				:disabled="isLoading"
-				@click="signin('google')"
-			>
-				<Icon
-					name="mdi:google"
-					size="1.5rem"
-				/>
-				Google
-			</button>
-			<button
-				class="signin-button"
-				:disabled="isLoading"
-				@click="signin('github')"
-			>
-				<Icon
-					name="mdi:github"
-					size="1.5rem"
-				/>
-				GitHub
-			</button>
-			<span>If you can not sign in, ask to join<br>by <a href="mailto:mail@doublekekse.dev?subject=Request%20to%20join&body=Hey%2C%20I'd%20love%20to%20join%20the%20private%20beta%0A">sending an e-mail</a></span>
-		</div>
-	</main>
+	<div id="signin">
+		<h1>SIGN IN</h1>
+		<ButtonIcon
+			class="large"
+			icon="mdi:google"
+			large
+			:disabled="redirecting"
+			@click="signin('google')"
+		>
+			Google
+		</ButtonIcon>
+		<ButtonIcon
+			class="large"
+			icon="mdi:github"
+			large
+			:disabled="redirecting"
+			@click="signin('github')"
+		>
+			GitHub
+		</ButtonIcon>
+	</div>
 </template>
 
 <style>
-main {
+#signin {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	justify-content: center;
+	width: 140px;
 	height: 100vh;
-}
-
-.signin {
-	display: flex;
-	flex-direction: column;
-	gap: .75rem;
+	gap: .5rem;
+	margin: auto;
+	justify-content: center;
 	user-select: none;
 
-	.signin-button {
-		display: flex;
-		gap: .75rem;
-		align-items: center;
-		justify-content: center;
-		width: 250px;
-		padding: .75rem;
-		color: currentcolor;
-		font-weight: bold;
-		font-size: 1rem;
-		background-color: transparent;
-		border: 1px solid gray;
-		border-radius: .375rem;
-		box-shadow: var(--color-scrollbar) 0 1px;
-		transition: box-shadow .2s;
-
-		&:hover:not(:disabled) {
-			box-shadow: var(--color-scrollbar) 0 0 0 2px;
-		}
+	h1 {
+		margin: 0;
+		margin-bottom: .5rem;
+		line-height: 2rem;
+		text-align: center;
 	}
 }
 </style>

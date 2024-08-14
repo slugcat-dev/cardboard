@@ -27,12 +27,12 @@ function match() {
 					{{ user.email }}
 				</div>
 			</div>
-			<Btn
+			<ButtonIcon
 				icon="mdi:logout"
 				@click="session.clear()"
 			>
 				Log Out
-			</Btn>
+			</ButtonIcon>
 		</div>
 		<BoardList />
 	</div>

@@ -30,6 +30,9 @@
 	--color-icon-shadow: #00000060;
 	--icon-contrast: .75;
 
+	--color-button-background: #333;
+	--color-button-border: #444;
+
 	color-scheme: dark;
 	accent-color: var(--color-accent);
 }
@@ -55,8 +58,17 @@ body {
 
 button,
 input {
-	font-size: .75rem;
+	color: inherit;
+	font-size: .875rem;
 	font-family: inherit;
+}
+
+button {
+	padding: .25rem .5rem;
+	color: inherit;
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
 }
 
 button,
