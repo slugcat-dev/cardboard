@@ -4,7 +4,7 @@
 import type { Input, NodePropSource, ParseWrapper, PartialParse,	SyntaxNode, TreeBuffer, TreeCursor, TreeFragment } from '@lezer/common'
 import { NodeProp, NodeSet, NodeType, Parser, Tree } from '@lezer/common'
 import { Tag, styleTags, tags as t } from '@lezer/highlight'
-import { markTag } from '../customTags'
+import { markTag, underlineTag } from '../customTags'
 
 class CompositeBlock {
 	static create(type: number, value: number, from: number, parentHash: number, end: number) {
@@ -57,9 +57,10 @@ export enum Type {
 
 	// Inline
 	Escape,
-	HardBreak,
 	Emphasis,
 	StrongEmphasis,
+	Underline,
+	Strikethrough,
 	InlineCode,
 	Link,
 
@@ -70,6 +71,7 @@ export enum Type {
 	ListMark,
 	OrderedListMark,
 	EmphasisMark,
+	StrikethroughMark,
 	CodeMark,
 	CodeText,
 	CodeInfo,
@@ -1307,6 +1309,7 @@ export interface DelimiterType {
 
 const EmphasisUnderscore: DelimiterType = { resolve: 'Emphasis', mark: 'EmphasisMark' }
 const EmphasisAsterisk: DelimiterType = { resolve: 'Emphasis', mark: 'EmphasisMark' }
+const Strikethrough: DelimiterType = { resolve: 'Strikethrough', mark: 'StrikethroughMark' }
 
 class InlineDelimiter {
 	constructor(readonly type: DelimiterType, readonly from: number, readonly to: number, public side: Mark) {}
@@ -1336,21 +1339,35 @@ const DefaultInline: { [name: string]: (cx: InlineContext, next: number, pos: nu
 	},
 
 	Emphasis(cx, next, start) {
-		if (next != 95 && next != 42)
+		if (![95, 42, 126].includes(next))
 			return -1
+
 		let pos = start + 1
-		while (cx.char(pos) == next) pos++
+
+		while (cx.char(pos) == next)
+			pos++
+
 		const before = cx.slice(start - 1, start)
 		const after = cx.slice(pos, pos + 1)
-		const pBefore = Punctuation.test(before)
-		const pAfter = Punctuation.test(after)
-		const sBefore = /\s|^$/.test(before)
-		const sAfter = /\s|^$/.test(after)
-		const leftFlanking = !sAfter && (!pAfter || sBefore || pBefore)
-		const rightFlanking = !sBefore && (!pBefore || sAfter || pAfter)
-		const canOpen = leftFlanking && (next == 42 || !rightFlanking || pBefore)
-		const canClose = rightFlanking && (next == 42 || !leftFlanking || pAfter)
-		return cx.append(new InlineDelimiter(next == 95 ? EmphasisUnderscore : EmphasisAsterisk, start, pos, (canOpen ? Mark.Open : Mark.None) | (canClose ? Mark.Close : Mark.None)))
+
+		const punctuationBefore = Punctuation.test(before)
+		const punctuationAfter = Punctuation.test(after)
+		const spaceBefore = /\s|^$/.test(before)
+		const spaceAfter = /\s|^$/.test(after)
+
+		const leftFlanking = !spaceAfter && (!punctuationAfter || spaceBefore || punctuationBefore)
+		const rightFlanking = !spaceBefore && (!punctuationBefore || spaceAfter || punctuationAfter)
+
+		// Originally, intraword strong emphasis is forbidden with __
+		// It is allowed anyways because it serves as underline instead of strong emphasis in this implementation
+		const canOpen = leftFlanking && ([42, 126].includes(next) || cx.char(start + 1) == 95 || !rightFlanking || punctuationBefore)
+		const canClose = rightFlanking && ([42, 126].includes(next) || cx.char(start + 1) == 95 || !leftFlanking || punctuationAfter)
+
+		return cx.append(new InlineDelimiter(
+			next == 95 ? EmphasisUnderscore : next == 42 ? EmphasisAsterisk : Strikethrough,
+			start,
+			pos,
+			(canOpen ? Mark.Open : Mark.None) | (canClose ? Mark.Close : Mark.None)))
 	},
 
 	URL(cx, next, start) {
@@ -1388,18 +1405,6 @@ const DefaultInline: { [name: string]: (cx: InlineContext, next: number, pos: nu
 				}
 			} else
 				curSize = 0
-		}
-		return -1
-	},
-
-	HardBreak(cx, next, start) {
-		if (next == 92 /* '\\' */ && cx.char(start + 1) == 10 /* '\n' */)
-			return cx.append(elt(Type.HardBreak, start, start + 2))
-		if (next == 32) {
-			let pos = start + 1
-			while (cx.char(pos) == 32) pos++
-			if (cx.char(pos) == 10 && pos >= start + 2)
-				return cx.append(elt(Type.HardBreak, start, pos + 1))
 		}
 		return -1
 	}
@@ -1457,66 +1462,107 @@ export class InlineContext {
 		// Scan forward, looking for closing tokens
 		for (let i = from; i < this.parts.length; i++) {
 			const close = this.parts[i]
+
 			if (!(close instanceof InlineDelimiter && close.type.resolve && (close.side & Mark.Close)))
 				continue
 
 			const emp = close.type == EmphasisUnderscore || close.type == EmphasisAsterisk
+			const st = close.type == Strikethrough
 			const closeSize = close.to - close.from
 			let open: InlineDelimiter | undefined
 			let j = i - 1
+
 			// Continue scanning for a matching opening token
 			for (; j >= from; j--) {
 				const part = this.parts[j]
-				if (part instanceof InlineDelimiter && (part.side & Mark.Open) && part.type == close.type
-				// Ignore emphasis delimiters where the character count doesn't match
-					&& !(emp && ((close.side & Mark.Open) || (part.side & Mark.Close))
-					&& (part.to - part.from + closeSize) % 3 == 0 && ((part.to - part.from) % 3 || closeSize % 3))) {
+
+				if (
+					part instanceof InlineDelimiter
+					&& (part.side & Mark.Open)
+					&& part.type == close.type
+					// Ignore emphasis delimiters where the character count doesn't match
+					&& !(
+						emp
+						&& ((close.side & Mark.Open) || (part.side & Mark.Close))
+						&& (part.to - part.from + closeSize) % 3 == 0
+						&& ((part.to - part.from) % 3 || closeSize % 3)
+					)
+					&& !(
+						st
+						&& (part.to - part.from < 2 || closeSize < 2)
+					)
+				) {
 					open = part
 					break
 				}
 			}
+
 			if (!open)
 				continue
 
-			let type = close.type.resolve
 			const content = []
 			let start = open.from
 			let end = close.to
+			let type = close.type.resolve
+
 			// Emphasis marker effect depends on the character count. Size consumed is minimum of the two
 			// markers.
 			if (emp) {
 				const size = Math.min(2, open.to - open.from, closeSize)
 				start = open.to - size
 				end = close.from + size
-				type = size == 1 ? 'Emphasis' : 'StrongEmphasis'
+				type = size == 1
+					? 'Emphasis'
+					: close.type == EmphasisAsterisk
+						? 'StrongEmphasis'
+						: 'Underline'
+			} else if (st) {
+				start = open.to - 2
+				end = close.from + 2
 			}
+
 			// Move the covered region into content, optionally adding marker nodes
 			if (open.type.mark)
 				content.push(this.elt(open.type.mark, start, open.to))
+
 			for (let k = j + 1; k < i; k++) {
 				if (this.parts[k] instanceof Element)
 					content.push(this.parts[k] as Element)
+
 				this.parts[k] = null
 			}
+
 			if (close.type.mark)
 				content.push(this.elt(close.type.mark, close.from, end))
+
 			const element = this.elt(type, start, end, content)
+
 			// If there are leftover emphasis marker characters, shrink the close/open markers. Otherwise, clear them.
-			this.parts[j] = emp && open.from != start ? new InlineDelimiter(open.type, open.from, start, open.side) : null
-			const keep = this.parts[i] = emp && close.to != end ? new InlineDelimiter(close.type, end, close.to, close.side) : null
+			this.parts[j] = (emp || st) && open.from != start
+				? new InlineDelimiter(open.type, open.from, start, open.side)
+				: null
+
+			const keep = this.parts[i] = (emp || st) && close.to != end
+				? new InlineDelimiter(close.type, end, close.to, close.side)
+				: null
+
 			// Insert the new element in this.parts
 			if (keep)
 				this.parts.splice(i, 0, element)
-			else this.parts[i] = element
+			else
+				this.parts[i] = element
 		}
 
 		// Collect the elements remaining in this.parts into an array.
 		const result = []
+
 		for (let i = from; i < this.parts.length; i++) {
 			const part = this.parts[i]
+
 			if (part instanceof Element)
 				result.push(part)
 		}
+
 		return result
 	}
 
@@ -1709,9 +1755,11 @@ const markdownHighlighting = styleTags({
 	'ATXHeading6/...': t.heading6,
 	'Emphasis/...': t.emphasis,
 	'StrongEmphasis/...': t.strong,
+	'Underline/...': underlineTag,
+	'Strikethrough/...': t.strikethrough,
 	'OrderedList/... BulletList/...': t.list,
 	'InlineCode/...': t.monospace,
-	'EscapeMark HeaderMark QuoteMark EmphasisMark CodeMark LinkMark': markTag,
+	'EscapeMark HeaderMark QuoteMark EmphasisMark StrikethroughMark CodeMark LinkMark': markTag,
 	'CodeInfo': t.atom,
 	'Paragraph': t.content
 })

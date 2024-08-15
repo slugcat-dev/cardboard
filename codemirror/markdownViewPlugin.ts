@@ -2,7 +2,7 @@ import type { EditorView } from '@codemirror/view'
 import { ViewPlugin, highlightSpecialChars } from '@codemirror/view'
 import { languages } from '@codemirror/language-data'
 import { RichEditPlugin } from './richEdit'
-import { Autolink, HighlightLine, Strikethrough, TaskList, Underline, UnderlineItalic } from './markdownExtension'
+import { Autolink, HighlightLine, TaskList } from './markdownExtension'
 import theme from './theme'
 import { markdown, markdownLanguage } from './lang-markdown'
 
@@ -15,9 +15,6 @@ export function markdownViewPlugin() {
 				base: markdownLanguage,
 				codeLanguages: languages,
 				extensions: [
-					Underline,
-					UnderlineItalic,
-					Strikethrough,
 					HighlightLine,
 					TaskList,
 					Autolink

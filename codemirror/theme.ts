@@ -1,14 +1,13 @@
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { tags as t } from '@lezer/highlight'
 import { EditorView } from '@codemirror/view'
-import { markTag, underlineItalicTag, underlineTag } from './customTags'
+import { markTag, underlineTag } from './customTags'
 
 const highlightStyle = HighlightStyle.define([
 	{ tag: markTag, class: 'cm-markdown-mark' },
 	{ tag: [t.heading, t.strong], fontWeight: 'bold' },
 	{ tag: t.emphasis, class: 'cm-markdown-italic' },
 	{ tag: underlineTag, class: 'cm-markdown-underline' },
-	{ tag: underlineItalicTag, class: 'cm-markdown-underline cm-markdown-italic' },
 	{ tag: t.strikethrough, class: 'cm-markdown-strikethrough' },
 
 	{
