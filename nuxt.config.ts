@@ -40,5 +40,18 @@ export default defineNuxtConfig({
 		}
 	},
 
+	vite: {
+		build: {
+			target: 'esnext'
+		}
+	},
+	nitro: {
+		esbuild: {
+			options: {
+				target: 'esnext'
+			}
+		}
+	},
+
 	compatibilityDate: '2024-07-21'
 })
