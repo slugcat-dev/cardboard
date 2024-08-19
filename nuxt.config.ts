@@ -45,6 +45,7 @@ export default defineNuxtConfig({
 			target: 'esnext'
 		}
 	},
+
 	nitro: {
 		esbuild: {
 			options: {

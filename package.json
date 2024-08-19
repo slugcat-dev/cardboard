@@ -17,13 +17,13 @@
 		"@codemirror/language": "^6.10.2",
 		"@codemirror/language-data": "^6.5.1",
 		"@codemirror/state": "^6.4.1",
-		"@codemirror/view": "^6.31.0",
+		"@codemirror/view": "^6.32.0",
 		"@lezer/common": "^1.2.1",
-		"@lezer/highlight": "^1.2.0",
+		"@lezer/highlight": "^1.2.1",
 		"codemirror": "^6.0.1",
 		"fuse.js": "^7.0.0",
 		"nuxt-mongoose": "^1.0.6",
-		"puppeteer-core": "^23.0.2"
+		"puppeteer-core": "^23.1.0"
 	},
 	"devDependencies": {
 		"@nuxt/eslint": "^0.5.0",
@@ -33,7 +33,7 @@
 		"@vueuse/nuxt": "^10.11.1",
 		"eslint": "~9.9.0",
 		"nuxt": "^3.12.4",
-		"nuxt-auth-utils": "^0.3.2",
-		"vue": "^3.4.37"
+		"nuxt-auth-utils": "^0.3.4",
+		"vue": "^3.4.38"
 	}
 }

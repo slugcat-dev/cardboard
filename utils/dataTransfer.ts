@@ -1,6 +1,6 @@
 // TODO ---
 // Handle pasted and dropped data
-export async function handleDataTransfer(dataTransfer: DataTransfer, position: Position, card?: Card, textOnly?: boolean) {
+export async function handleDataTransfer(dataTransfer: DataTransfer, position: Position, card?: Card, textOnly?: boolean, withoutFormatting?: boolean) {
 	// const files = Array.from(dataTransfer.files)
 	const items = Array.from(dataTransfer.items)
 
@@ -34,6 +34,7 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 	let mode = null
 	let text = null
 	let url = null
+	let cards = null
 
 	const tasks = items.map((item) => {
 		return new Promise<void>((resolve) => {
@@ -57,6 +58,16 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 						resolve()
 					} catch {}
 				})
+			} else if (item.type === 'card-data') {
+				item.getAsString((json) => {
+					try {
+						const data = JSON.parse(json)
+
+						cards = data
+
+						resolve()
+					} catch {}
+				})
 			} else
 				resolve()
 		})
@@ -65,6 +76,9 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 	await Promise.all(tasks)
 
 	const fence = '```'
+
+	if (cards && !card)
+		return pasteCards(cards, position)
 
 	if (url)
 		text = url
@@ -119,6 +133,10 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 				mode = 'ts'
 			else if (mode === 'csharp')
 				mode = 'cs'
+			else if (mode === 'javascriptreact')
+				mode = 'jsx'
+			else if (mode === 'typescriptreact')
+				mode = 'tsx'
 
 			if (text.includes('\n'))
 				text = `${fence}${mode}\n${text}\n${fence}`
@@ -139,6 +157,7 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 	}
 }
 
+// TODO: paste without formatting
 function wrap(text: string) {
 	const s = 60
 
@@ -148,35 +167,45 @@ function wrap(text: string) {
 		if (line.length < s)
 			return line
 
-		let i
+		let i, j
 
 		for (i = s; i < line.length; i++)
 			if (/\s/.test(line[i]))
 				break
 
+		for (j = s; j > 0; j--)
+			if (/\s/.test(line[j]))
+				break
+
+		if (i - s > s - j)
+			i = j
+
 		if (i === line.length)
 			return line
 
-		return wrap(line.slice(0, i) + '\n' + line.slice(i + 1))
+		return line.slice(0, i) + '\n' + wrap(line.slice(i + 1))
 	}).join('\n')
 
 	return text
 }
 
-/*
-files.forEach(async (file, index) => {
-		// TODO: upload file, create card
-		// File inherits from Blob
-		// eslint-disable-next-line no-console
-		console.log(index, file.name, file.type, 'Size:', file.size)
-	})
-
-	if (files.length !== 0)
+function pasteCards(cards: Card[], pos: Position) {
+	if (cards.length === 0)
 		return
 
-	items.forEach(async (item, index) => {
-		// TODO: create cards
-		// eslint-disable-next-line no-console
-		console.log(index, item.type, 'Size:', dataTransfer.getData(item.type).length)
+	const initialPos = cards[0].position
+
+	cards.forEach((c) => {
+		const offsetX = c.position.x - initialPos.x
+		const offsetY = c.position.y - initialPos.y
+
+		createCard({
+			...c,
+			id: 'new:create',
+			position: {
+				x: pos.x + offsetX,
+				y: pos.y + offsetY
+			}
+		})
 	})
-*/
+}

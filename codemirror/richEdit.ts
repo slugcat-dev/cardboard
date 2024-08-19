@@ -166,7 +166,7 @@ export class RichEditPlugin implements PluginValue {
 					return !inSelection
 				else if (tokenHidden.includes(node.name))
 					decorations.push(decorationHidden.range(node.from, node.to))
-				else if (node.name === 'CodeMark' && text.length !== 3)
+				else if (node.name === 'CodeMark' && text.length <= 2)
 					decorations.push(decorationHidden.range(node.from, node.to))
 			} })
 		})

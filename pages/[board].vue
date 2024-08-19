@@ -85,7 +85,9 @@ defineHotkeys({
 	'meta a': () => selection.rect = new DOMRect(-Infinity, -Infinity, Infinity, Infinity),
 	'delete': deleteCards,
 	'shift delete': deleteCards,
-	'backspace': deleteCards
+	'backspace': deleteCards,
+	'meta c': copySelected,
+	'meta x': cutSelected
 })
 
 // Allow typing anywhere on the canvas to create a new card
@@ -163,6 +165,31 @@ function deleteCards(event: KeyboardEvent) {
 		return
 
 	fetchDeleteMany(selection.cards)
+	selection.clear()
+}
+
+function copySelected() {
+	if (usingInput.value || selection.cards.length < 1)
+		return
+
+	// Clipboard.write doesn't support custom types, so we do a little trickery
+	document.addEventListener('copy', (event) => {
+		if (!event.clipboardData)
+			return
+
+		event.preventDefault()
+		event.clipboardData.setData('card-data', JSON.stringify(selection.cards.map(c => ({
+			type: c.type,
+			position: c.position,
+			content: c.content
+		}))))
+	}, { once: true })
+	document.execCommand('copy')
+}
+
+async function cutSelected() {
+	copySelected()
+	await fetchDeleteMany(selection.cards)
 	selection.clear()
 }
 

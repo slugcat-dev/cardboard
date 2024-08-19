@@ -9,7 +9,6 @@ export async function useBoards() {
 
 	await callOnce(fetchBoards)
 
-	// TODO const route = useRoute()
 	const board = computed(() => findBoard(useRoute().params.board as string))
 
 	// Fetch board cards
