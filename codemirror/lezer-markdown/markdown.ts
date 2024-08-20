@@ -1316,10 +1316,10 @@ class InlineDelimiter {
 }
 
 const Escapable = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'
-
 let PunctuationRegex = /[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~\xA1\u2010-\u2027]/
+
 try {
-	PunctuationRegex = new RegExp('[\\p{Pc}|\\p{Pd}\\p{Pe}\\p{Pf}\\p{Pi}\\p{Po}\\p{Ps}]', 'u')
+	PunctuationRegex = new RegExp('[\\p{S}|\\p{P}]', 'u')
 } catch {}
 
 export const Punctuation = PunctuationRegex

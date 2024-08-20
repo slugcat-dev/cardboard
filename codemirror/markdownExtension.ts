@@ -45,8 +45,11 @@ export const HighlightLine: MarkdownExtension = {
 	],
 	parseBlock: [{
 		name: 'Highlight',
-		leaf() {
-			return new HighlightLineParser()
+		leaf(cx, leaf) {
+			if (/^(?:\[[ x]\] )?!! /i.test(leaf.content))
+				return new HighlightLineParser()
+
+			return null
 		},
 		endLeaf() {
 			return true

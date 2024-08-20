@@ -169,7 +169,7 @@ function deleteCards(event: KeyboardEvent) {
 }
 
 function copySelected() {
-	if (usingInput.value || selection.cards.length < 1)
+	if (selection.cards.length < 1)
 		return
 
 	// Clipboard.write doesn't support custom types, so we do a little trickery
