@@ -75,8 +75,6 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 
 	await Promise.all(tasks)
 
-	const fence = '```'
-
 	if (cards && !card)
 		return pasteCards(cards, position)
 
@@ -126,28 +124,10 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 			}
 		}
 
-		if (mode && !['plaintext', 'markdown'].includes(mode)) {
-			if (mode === 'javascript')
-				mode = 'js'
-			else if (mode === 'typescript')
-				mode = 'ts'
-			else if (mode === 'csharp')
-				mode = 'cs'
-			else if (mode === 'javascriptreact')
-				mode = 'jsx'
-			else if (mode === 'typescriptreact')
-				mode = 'tsx'
-
-			if (text.includes('\n'))
-				text = `${fence}${mode}\n${text}\n${fence}`
-			else
-				text = `\`${text}\``
-		} else {
-			text = wrap(text)
-		}
-
 		if (card)
 			return { mode, text }
+
+		text = processText(mode, text)
 
 		createCard({
 			id: 'new:create',
@@ -155,6 +135,35 @@ export async function handleDataTransfer(dataTransfer: DataTransfer, position: P
 			content: text
 		})
 	}
+}
+
+export function processText(mode: string | null, text: string, inCodeBlock: boolean = false) {
+	if (inCodeBlock)
+		return text
+
+	const fence = '```'
+
+	if (mode && !['plaintext', 'markdown'].includes(mode)) {
+		if (mode === 'javascript')
+			mode = 'js'
+		else if (mode === 'typescript')
+			mode = 'ts'
+		else if (mode === 'csharp')
+			mode = 'cs'
+		else if (mode === 'javascriptreact')
+			mode = 'jsx'
+		else if (mode === 'typescriptreact')
+			mode = 'tsx'
+
+		if (text.includes('\n'))
+			text = `${fence}${mode}\n${text}\n${fence}`
+		else
+			text = `\`${text}\``
+	} else {
+		text = wrap(text)
+	}
+
+	return text
 }
 
 // TODO: paste without formatting

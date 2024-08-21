@@ -74,7 +74,7 @@ function getContext(node: SyntaxNode, doc: Text) {
 
 			context.push(new Context(node.parent!, startPos, startPos + len, match[1], after, match[2], node))
 		} else if (node.name === 'ListItem' && node.parent!.name === 'BulletList'
-		&& (match = /^( *)([-+*])( {1,4}\[[ x]\])?( +)/i.exec(line.text.slice(startPos)))) {
+		&& (match = /^( *)([-*])( {1,4}\[[ x]\])?( +)/i.exec(line.text.slice(startPos)))) {
 			let after = match[4]
 			let len = match[0].length
 

@@ -3,6 +3,8 @@
 <script setup lang="ts">
 import { EditorView } from '@codemirror/view'
 import { Compartment } from '@codemirror/state'
+import { syntaxTree } from '@codemirror/language'
+import type { SyntaxNode } from '@lezer/common'
 import editor from '../../codemirror/editor'
 
 const { card } = defineProps(['card'])
@@ -113,12 +115,23 @@ async function onPaste(event: ClipboardEvent) {
 		const pasted = await handleDataTransfer(event.clipboardData, card.position, card, !isEmpty())
 
 		if (pasted) {
-			const { mode, text } = pasted
+			const { mode, text } = pasted as { mode: string, text: string }
+			const { state } = view
+			const tree = syntaxTree(state)
+			const range = state.selection.main
+			const cursor = state.selection.main.from
+			const currentNode = tree.resolve(cursor, -1)
+			let inCode = false
+			let node: SyntaxNode | null = currentNode
 
-			const range = view.state.selection.main
-			const cursor = view.state.selection.main.from
-			const line = view.state.doc.lineAt(cursor)
-			const insert = (mode && text.includes('\n') && cursor !== line.from ? '\n' : '') + text
+			while (node && node.name !== 'FencedCode')
+				node = node.parent
+
+			if (node?.name === 'FencedCode')
+				inCode = true
+
+			const line = state.doc.lineAt(cursor)
+			const insert = (mode && text.includes('\n') && cursor !== line.from ? '\n' : '') + processText(mode, text, inCode)
 
 			view.dispatch({
 				changes: {
