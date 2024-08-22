@@ -1,9 +1,0 @@
-{
-	"name": "Cardboard",
-	"start_url": "/",
-	"display": "standalone",
-	"icons": [{
-		"src": "favicon.ico",
-		"sizes": "any"
-	}]
-}

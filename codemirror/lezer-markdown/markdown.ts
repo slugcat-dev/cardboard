@@ -1,10 +1,9 @@
-/* eslint-disable no-cond-assign */
-// https://github.com/lezer-parser/markdown/tree/main/src
-
 import type { Input, NodePropSource, ParseWrapper, PartialParse,	SyntaxNode, TreeBuffer, TreeCursor, TreeFragment } from '@lezer/common'
 import { NodeProp, NodeSet, NodeType, Parser, Tree } from '@lezer/common'
 import { Tag, styleTags, tags as t } from '@lezer/highlight'
-import { markTag, underlineTag } from '../customTags'
+
+export const markTag = Tag.define()
+export const underlineTag = Tag.define()
 
 class CompositeBlock {
 	static create(type: number, value: number, from: number, parentHash: number, end: number) {

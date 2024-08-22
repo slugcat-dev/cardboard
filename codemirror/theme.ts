@@ -1,7 +1,7 @@
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { tags as t } from '@lezer/highlight'
 import { EditorView } from '@codemirror/view'
-import { markTag, underlineTag } from './customTags'
+import { markTag, underlineTag } from './lezer-markdown/markdown'
 
 const highlightStyle = HighlightStyle.define([
 	{ tag: markTag, class: 'cm-markdown-mark' },

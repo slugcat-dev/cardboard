@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const router = useRouter()
-const settings = useSettings()
 const boardNameRef = ref()
 const { board, deleteBoard } = await useBoards()
 
@@ -57,10 +56,6 @@ async function makeBoard() {
 
 <template>
 	<header id="header">
-		<ButtonIcon
-			icon="f7:sidebar-left"
-			@click="settings.sidebar = !settings.sidebar"
-		/>
 		<div
 			v-if="board.id"
 			class="toolbar"

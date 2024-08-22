@@ -3,7 +3,6 @@
 		<BoardSidebar />
 		<BoardHeader />
 		<slot />
-		<ContextMenu />
 	</div>
 </template>
 

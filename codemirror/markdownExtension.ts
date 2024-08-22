@@ -1,6 +1,6 @@
 import { tags as t } from '@lezer/highlight'
 import type { BlockContext, LeafBlock, LeafBlockParser, MarkdownExtension } from './lezer-markdown'
-import { markTag } from './customTags'
+import { markTag } from './lezer-markdown/markdown'
 
 class HighlightLineParser implements LeafBlockParser {
 	nextLine() {

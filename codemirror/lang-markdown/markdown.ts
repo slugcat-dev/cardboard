@@ -1,5 +1,3 @@
-// https://github.com/codemirror/lang-markdown/tree/main/src
-
 import { Language, LanguageDescription, ParseContext, defineLanguageFacet, foldNodeProp, foldService, indentNodeProp, languageDataProp, syntaxTree } from '@codemirror/language'
 import type { NodeType, SyntaxNode } from '@lezer/common'
 import { NodeProp } from '@lezer/common'

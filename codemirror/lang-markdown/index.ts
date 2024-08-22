@@ -1,4 +1,4 @@
-// https://github.com/codemirror/lang-markdown/tree/main/src
+// https://github.com/codemirror/lang-markdown
 
 import { Prec } from '@codemirror/state'
 import type { KeyBinding } from '@codemirror/view'

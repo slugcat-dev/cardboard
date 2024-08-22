@@ -1,6 +1,3 @@
-/* eslint-disable no-cond-assign */
-// https://github.com/codemirror/lang-markdown/tree/main/src
-
 import type { ChangeSpec, EditorState, Line, StateCommand, Text } from '@codemirror/state'
 import { EditorSelection, countColumn } from '@codemirror/state'
 import { indentUnit, syntaxTree } from '@codemirror/language'

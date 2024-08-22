@@ -1,20 +1,10 @@
 <script setup lang="ts">
 const session = useUserSession()
 const { user } = session
-const settings = useSettings()
-
-/*
-function match() {
-	return window.matchMedia('(width <= 480px)').matches
-}
-*/
 </script>
 
 <template>
-	<div
-		id="sidebar"
-		:class="{ hidden: !settings.sidebar }"
-	>
+	<div id="sidebar">
 		<div class="profile">
 			<img
 				class="profile-picture"
@@ -64,15 +54,6 @@ function match() {
 	border-right: 1px solid var(--color-border);
 	transition: margin-left .2s, box-shadow .2s;
 	user-select: none;
-
-	&.hidden{
-		margin-left: -240px;
-		box-shadow: none;
-
-		&::after {
-			left: -1px;
-		}
-	}
 
 	.profile {
 		display: flex;

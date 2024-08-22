@@ -1,4 +1,4 @@
-// https://github.com/lezer-parser/markdown/tree/main/src
+// https://github.com/lezer-parser/markdown
 
 import { parseMixed } from '@lezer/common'
 import type { Input, Parser, SyntaxNodeRef } from '@lezer/common'
