@@ -62,9 +62,11 @@ export function useSmoothScroll(canvas: any) {
 
 		function continuousScrollStep(timestamp: number) {
 			const delta = Math.max(timestamp - prevTimestamp, 0) / 1000
+			const scrollX = continuousScroll.direction.x * continuousScroll.speed * delta
+			const scrollY = continuousScroll.direction.y * continuousScroll.speed * delta
 
-			canvas.scroll.x += continuousScroll.direction.x * continuousScroll.speed * delta
-			canvas.scroll.y += continuousScroll.direction.y * continuousScroll.speed * delta
+			canvas.scroll.x += scrollX
+			canvas.scroll.y += scrollY
 
 			animateSmoothScroll()
 

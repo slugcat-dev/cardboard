@@ -73,7 +73,6 @@ let activeElement: Element | null
 
 definePageMeta({
 	middleware: ['auth'],
-	// pageTransition: { name: 'slide' },
 	layout: 'board'
 })
 onMounted(resetPointerPos)
@@ -87,7 +86,8 @@ defineHotkeys({
 	'shift delete': deleteCards,
 	'backspace': deleteCards,
 	'meta c': copySelected,
-	'meta x': cutSelected
+	'meta x': cutSelected,
+	'escape': selection.clear
 })
 
 // Allow typing anywhere on the canvas to create a new card

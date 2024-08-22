@@ -6,12 +6,6 @@ const { board, deleteBoard } = await useBoards()
 
 useSeoMeta({ title: () => board.value.name })
 defineHotkeys({
-	/* escape: () => {
-		if (breadcrumbs.value.length === 0)
-			return
-
-		router.back()
-	}, */
 	f2: () => {
 		const range = document.createRange()
 		const textNode = boardNameRef.value.childNodes[0]
@@ -71,7 +65,7 @@ async function makeBoard() {
 			v-if="board.id"
 			class="toolbar"
 		>
-			<div class="breadcrumbs">
+			<div class="nav">
 				<a
 					class="nav-button"
 					@click="router.back()"
@@ -90,15 +84,6 @@ async function makeBoard() {
 						size="14px"
 					/>
 				</a>
-				<span class="bread-separator">/</span>
-				<!-- div
-					v-for="bread, index in breadcrumbs"
-					:key="bread.path"
-					class="bread"
-				>
-					<a @click="router.go(-(breadcrumbs.length - index))">{{ bread.name }}</a>
-					<span class="bread-separator">/</span>
-				</div> -->
 				<div
 					ref="boardNameRef"
 					class="board-name"
@@ -109,7 +94,6 @@ async function makeBoard() {
 				>
 					{{ board.name }}
 				</div>
-				<span class="bread-separator">/</span>
 			</div>
 			<ButtonIcon
 				v-if="!board.parent"
@@ -188,7 +172,7 @@ async function makeBoard() {
 	user-select: none;
 	z-index: 5;
 
-	.breadcrumbs {
+	.nav {
 		display: flex;
 		align-items: center;
 		font-weight: bold;
@@ -206,30 +190,6 @@ async function makeBoard() {
 
 			&.disabled {
 				color: var(--color-text-tertiary);
-			}
-		}
-
-		.bread-separator {
-			margin: 0 .25rem;
-			overflow: hidden;
-			color: var(--color-text-tertiary);
-			content: '/';
-		}
-
-		.bread {
-			display: flex;
-			align-items: center;
-
-			a {
-				padding: .125rem .25rem;
-				color: var(--color-accent);
-				text-decoration: none;
-				border-radius: .25rem;
-				transition: background-color .1s;
-
-				&:hover {
-					background-color: var(--color-accent-25);
-				}
 			}
 		}
 
