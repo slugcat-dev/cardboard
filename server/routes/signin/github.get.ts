@@ -7,7 +7,7 @@ export default oauthGitHubEventHandler({
 		if (!userLink) {
 			userLink = await new UserSchema({
 				email: user.email,
-				github: user.github
+				github: user.id
 			}).save()
 		} else if (!userLink.github)
 			await userLink.updateOne({ github: user.id })
