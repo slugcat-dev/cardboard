@@ -37,6 +37,7 @@ defineExpose({ active })
 
 <style>
 .card-content-image {
+	display: block;
 	width: auto;
 	max-width: 550px;
 	height: auto;

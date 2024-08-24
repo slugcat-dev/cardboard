@@ -1,4 +1,12 @@
 const {	board } = await useBoards()
+let dirty = false
+
+if (import.meta.client) {
+	window.addEventListener('beforeunload', (event) => {
+		if (dirty)
+			event.preventDefault()
+	})
+}
 
 export async function createCard(card: Partial<Omit<Card, 'id'> & { id: 'new:empty' | 'new:create' }> & { position: Position }) {
 	card = {
@@ -16,6 +24,8 @@ export async function createCard(card: Partial<Omit<Card, 'id'> & { id: 'new:emp
 
 export async function fetchUpdateCard(card: Partial<Card>) {
 	if (card.id?.startsWith('new')) {
+		dirty = true
+
 		delete card.id
 
 		const { id } = await $fetch<Card>(`/api/boards/${board.value.id}/cards`, {
@@ -24,6 +34,7 @@ export async function fetchUpdateCard(card: Partial<Card>) {
 		})
 
 		card.id = id
+		dirty = false
 
 		return card as Card
 	}
