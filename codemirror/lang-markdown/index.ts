@@ -26,9 +26,6 @@ export const markdownKeymap: readonly KeyBinding[] = [
 
 /// Markdown language support.
 export function markdown(config: {
-	/// When given, this language will be used by default to parse code
-	/// blocks.
-	defaultCodeLanguage?: Language | LanguageSupport
 	/// A source of language support for highlighting fenced code
 	/// blocks. When it is an array, the parser will use
 	/// [`LanguageDescription.matchLanguageName`](#language.LanguageDescription^matchLanguageName)
@@ -44,23 +41,14 @@ export function markdown(config: {
 	/// [`commonmarkLanguage`](#lang-markdown.commonmarkLanguage).
 	base?: Language
 } = {}) {
-	const { codeLanguages, defaultCodeLanguage, base: { parser } = commonmarkLanguage } = config
+	const { codeLanguages, base: { parser } = commonmarkLanguage } = config
 
 	if (!(parser instanceof MarkdownParser))
 		throw new RangeError('Base parser provided to `markdown` should be a Markdown parser')
 
 	const extensions = config.extensions ? [config.extensions] : []
 	const support = []
-	let defaultCode
-
-	if (defaultCodeLanguage instanceof LanguageSupport) {
-		support.push(defaultCodeLanguage.support)
-
-		defaultCode = defaultCodeLanguage.language
-	} else if (defaultCodeLanguage)
-		defaultCode = defaultCodeLanguage
-
-	const codeParser = codeLanguages || defaultCode ? getCodeParser(codeLanguages, defaultCode) : undefined
+	const codeParser = codeLanguages ? getCodeParser(codeLanguages) : undefined
 
 	extensions.push(parseCode({ codeParser }))
 	support.push(Prec.high(keymap.of(markdownKeymap)))

@@ -31,22 +31,6 @@ interface User {
 	createdAt: Date
 }
 
-interface Bread {
-	path: string
-	name: string
-}
-
-interface ContextMenuEntry {
-	name: string
-	handler: Function
-	role?: 'danger'
-}
-
-interface ContextMenuOptions {
-	position: Position
-	entries: ContextMenuEntry[]
-}
-
 declare module '#auth-utils' {
 	interface UserSession {
 		user: Omit<User, 'createdAt'>

@@ -6,22 +6,21 @@ import { CardContentImage, CardContentLink, CardContentText, CardContentTmp } fr
 const { card, canvas, selection } = defineProps<{
 	card: Card
 	canvas: any
-	selection: any
+	selection: CardSelection
 }>()
 const { animateEdgeScroll, stopEdgeScroll } = useSmoothScroll(canvas)
 const cardRef = ref()
 const contentRef = ref()
-const pointer = reactive({
-	type: 'unknown',
+const pointer = reactive<PointerData>({
+	type: null,
 	down: false,
-	downPos: { x: 0, y: 0 },
 	pos: { x: 0, y: 0 },
+	moved: false,
 	offset: {
 		x: 0,
 		y: 0,
 		zoom: 1
-	},
-	moved: false
+	}
 })
 const selected = ref(false)
 let longPressTimeout: ReturnType<typeof setTimeout> | undefined
@@ -47,7 +46,7 @@ watch(selection, () => {
 	const cardRect = toCanvasRect(canvas, cardRef.value.getBoundingClientRect())
 
 	// Check if the selection rect intersects with the card rect
-	selected.value = selection.rect && !(
+	selected.value = !!selection.rect && !(
 		selection.rect.right < cardRect.left
 		|| selection.rect.left > cardRect.right
 		|| selection.rect.bottom < cardRect.top
@@ -68,8 +67,7 @@ function onPointerDown(event: PointerEvent) {
 	const cardRect = cardRef.value.getBoundingClientRect()
 
 	pointer.type = event.pointerType
-	pointer.down = true
-	pointer.downPos = toPos(event)
+	pointer.down = toPos(event)
 	pointer.offset = {
 		x: event.clientX - cardRect.left,
 		y: event.clientY - cardRect.top,
@@ -93,7 +91,7 @@ function onPointerDown(event: PointerEvent) {
 function onPointerMove(event: PointerEvent) {
 	pointer.pos = toPos(event)
 
-	if (!pointer.down || !(pointer.moved || moveThreshold(pointer.downPos, pointer.pos, isPointerCoarse() ? 10 : 4)))
+	if (!pointer.down || !(pointer.moved || moveThreshold(pointer.down, pointer.pos, isPointerCoarse() ? 10 : 4)))
 		return
 
 	pointer.moved = true

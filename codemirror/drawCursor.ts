@@ -1,4 +1,4 @@
-// https://github.com/codemirror/view
+// https://github.com/codemirror/view/blob/main/src/draw-selection.ts
 
 import type { Extension } from '@codemirror/state'
 import { EditorSelection, Prec } from '@codemirror/state'

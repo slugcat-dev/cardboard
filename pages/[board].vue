@@ -2,10 +2,9 @@
 import { createCard } from '~/utils/cards'
 
 const canvasRef = ref()
-const pointer = reactive({
-	type: 'unknown',
+const pointer = reactive<PointerData>({
+	type: null,
 	down: false,
-	downPos: { x: 0, y: 0 },
 	pos: { x: 0, y: 0 },
 	moved: false,
 	gesture: false
@@ -29,12 +28,12 @@ const canvas = reactive({
 	select: false,
 	cardDragAllowed: computed(() => !pointer.down && !pointer.gesture)
 })
-const selection = reactive({
-	rect: import.meta.client ? new DOMRect() : undefined,
+const selection = reactive<CardSelection>({
+	rect: import.meta.client ? new DOMRect() : null,
 	cards: [] as Card[],
 	visible: false,
 	clear() {
-		selection.rect = undefined
+		selection.rect = null
 		selection.cards = []
 	}
 })
@@ -51,7 +50,7 @@ const {
 	animateEdgeScroll,
 	stopEdgeScroll
 } = useSmoothScroll(canvas)
-const {	board } = await useBoards()
+const { board } = await useBoards()
 const cards = ref(board.value.cards)
 const animating = computed(() => (
 	pointer.down
@@ -290,9 +289,8 @@ function onPointerDown(event: PointerEvent) {
 		return
 
 	pointer.type = event.pointerType
-	pointer.down = true
 	pointer.pos = toPos(event)
-	pointer.downPos = pointer.pos
+	pointer.down = pointer.pos
 	canvas.select = isMacOS ? event.metaKey : event.ctrlKey
 	activeElement = document.activeElement
 
@@ -303,7 +301,7 @@ function onPointerDown(event: PointerEvent) {
 function onPointerMove(event: PointerEvent) {
 	pointer.pos = toPos(event)
 
-	if (!pointer.down || !(pointer.moved || moveThreshold(pointer.downPos, pointer.pos, isPointerCoarse() ? 10 : 4)))
+	if (!pointer.down || !(pointer.moved || moveThreshold(pointer.down, pointer.pos, isPointerCoarse() ? 10 : 4)))
 		return
 
 	pointer.moved = true
@@ -488,11 +486,11 @@ function setCanvasZoom(zoom: number, adjust: Position, elastic = false) {
 }
 
 function updateSelectionRect() {
-	if (!canvas.select || !pointer.moved)
+	if (!canvas.select || !pointer.down || !pointer.moved)
 		return
 
 	if (!selection.rect) {
-		const downPos = toCanvasPos(canvas, pointer.downPos)
+		const downPos = toCanvasPos(canvas, pointer.down)
 
 		selection.rect = new DOMRect(downPos.x, downPos.y, 0, 0)
 		selection.visible = true

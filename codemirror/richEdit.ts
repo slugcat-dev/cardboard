@@ -132,7 +132,7 @@ export class RichEditPlugin implements PluginValue {
 
 				if (inSelection) {
 					if (node.name.startsWith('ATXHeading'))
-						visible.push('HeaderMark')
+						visible.push('HeadingMark')
 					else if (node.name === 'Highlight')
 						visible.push('HighlightMark')
 					else if (node.name === 'Blockquote')
@@ -142,7 +142,7 @@ export class RichEditPlugin implements PluginValue {
 				if (visible.includes(node.name))
 					return
 
-				if (node.name === 'HeaderMark')
+				if (node.name === 'HeadingMark')
 					decorations.push(decorationHidden.range(node.from, node.to + 1))
 				else if (node.name === 'HighlightMark')
 					decorations.push(decorationHidden.range(node.from, node.to + 1))
@@ -150,7 +150,7 @@ export class RichEditPlugin implements PluginValue {
 					decorations.push(decorationBlockquote.range(node.from, node.to))
 			}, leave(node) {
 				if (node.name.startsWith('ATXHeading'))
-					visible = visible.filter(item => item !== 'HeaderMark')
+					visible = visible.filter(item => item !== 'HeadingMark')
 				else if (node.name.startsWith('Highlight'))
 					visible = visible.filter(item => item !== 'HighlightMark')
 				else if (node.name.startsWith('Blockquote'))
