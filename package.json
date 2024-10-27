@@ -12,28 +12,28 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@codemirror/commands": "^6.6.0",
-		"@codemirror/lang-markdown": "^6.2.5",
-		"@codemirror/language": "^6.10.2",
+		"@codemirror/commands": "^6.7.1",
+		"@codemirror/lang-markdown": "^6.3.0",
+		"@codemirror/language": "^6.10.3",
 		"@codemirror/language-data": "^6.5.1",
 		"@codemirror/state": "^6.4.1",
-		"@codemirror/view": "^6.33.0",
-		"@lezer/common": "^1.2.1",
+		"@codemirror/view": "^6.34.1",
+		"@lezer/common": "^1.2.3",
 		"@lezer/highlight": "^1.2.1",
 		"codemirror": "^6.0.1",
 		"fuse.js": "^7.0.0",
 		"nuxt-mongoose": "^1.0.6",
-		"puppeteer-core": "^23.1.1"
+		"puppeteer-core": "^23.6.0"
 	},
 	"devDependencies": {
-		"@nuxt/eslint": "^0.5.2",
-		"@nuxt/icon": "^1.4.10",
+		"@nuxt/eslint": "^0.5.7",
+		"@nuxt/icon": "^1.5.8",
 		"@vueuse/core": "^10.11.1",
 		"@vueuse/math": "^10.11.1",
 		"@vueuse/nuxt": "^10.11.1",
-		"eslint": "^9.9.1",
-		"nuxt": "^3.13.0",
-		"nuxt-auth-utils": "^0.3.4",
-		"vue": "^3.4.38"
+		"eslint": "^9.13.0",
+		"nuxt": "^3.13.2",
+		"nuxt-auth-utils": "^0.3.9",
+		"vue": "^3.5.12"
 	}
 }
